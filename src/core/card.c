@@ -21,3 +21,14 @@ int validateSuit(char suit){
     }
     return 0;
 }
+
+Linked_Card *createCard(char rank, char suit){
+    if(validateRank(rank) && validateSuit(suit)){
+        Linked_Card *card = (Linked_Card *)malloc(sizeof(Linked_Card));
+        card->rank = rank;
+        card->suit = suit;
+        card->next = NULL;
+        return card;
+    }
+    return NULL;
+}
