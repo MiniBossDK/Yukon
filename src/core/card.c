@@ -1,9 +1,5 @@
 #include <core/card.h>
 #include <stdio.h>
-//change the naming to snake_case for entire file
-//change the naming to snake_case for entire file
-//change the naming to snake_case for entire file
-//go
 
 typedef struct card Linked_Card;
 struct card{
