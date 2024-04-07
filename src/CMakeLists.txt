@@ -1,5 +1,2 @@
-add_executable(Core
-        core/main.c
-        core/add.c
-        core/subtract.c
-)
+add_subdirectory(my_program)
+add_subdirectory(core)

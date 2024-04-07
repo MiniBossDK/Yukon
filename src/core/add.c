@@ -1,5 +1,4 @@
-// Include add.h from the include directory
-#include "../include/add.h"
+#include <core/add.h>
 
 int add(int a, int b)
 {

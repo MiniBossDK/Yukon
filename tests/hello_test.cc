@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
+
 extern "C" {
-    #include "../src/include/add.h"
-    #include "../src/include//subtract.h"
+    #include <core/add.h>
+    #include <core/subtract.h>
 }
 
 // Demonstrate some basic assertions.
