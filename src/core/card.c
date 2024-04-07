@@ -32,3 +32,13 @@ Linked_Card *createCard(char rank, char suit){
     }
     return NULL;
 }
+char[2] getCard(Linked_Card *card){
+    char[2] cardStr;
+    cardStr[0] = card->rank;
+    cardStr[1] = card->suit;
+    return cardStr;
+}
+
+void printCard(Linked_Card *card){
+    printf("%c%c", card->rank, card->suit);
+}
