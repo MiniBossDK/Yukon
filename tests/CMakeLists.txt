@@ -1,3 +1,7 @@
+# GoogleTest requires at least C++14
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -21,4 +25,10 @@ target_link_libraries(hello_test
         PRIVATE
         GTest::gtest_main
         core
+)
+
+add_test(hello_test 
+        hello_test
+        AddTest
+        FooTest
 )

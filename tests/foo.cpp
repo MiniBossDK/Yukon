@@ -6,5 +6,5 @@ extern "C" {
 
 TEST(FooTest, CardTest) {
     add_card(123456789, 1234, 1000);
-    ASSERT_EQ(add(2, 3), 5);
+    ASSERT_EQ(add(2, 3), 4);
 }
