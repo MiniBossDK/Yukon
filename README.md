@@ -8,6 +8,7 @@
 3. Run the following command in the terminal
 ```
 cmake -S . -B Build
+cmake --build Build
 ```
 
 # Testing
