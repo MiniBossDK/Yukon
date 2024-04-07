@@ -7,17 +7,18 @@
 2. Open the terminal and navigate to the project directory
 3. Run the following command in the terminal
 ```
-cmake --build build
+cmake -S . -B Build
 ```
 
 # Testing
 This project uses the Google Test framework for unit testing. The tests are located in the `test` directory.
 
 ## How to run the tests
-1. Open the terminal and navigate to the project directory
-2. Run the following command in the terminal
+1. Build the project using the instructions above
+2. Go to the build directory, ``Build/``, and run the following commands
 ```
-cmake --build build --target test
+cmake --build .
+ctest
 ```
 
 
