@@ -8,6 +8,5 @@ int main() {
     int y = 5;
     printf("x + y = %d\n", add(x, y));
     printf("x - y = %d\n", subtract(x, y));
-    add_card(123456789, 1234, 1000);
     return 0;
 }
