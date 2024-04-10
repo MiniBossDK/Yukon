@@ -62,3 +62,8 @@ int validate_suit(char suit);
  * Get the last card in the deck
  */
 LinkedCard* get_last_card(LinkedCard *deck);
+
+/*
+ * Move a card to a destination
+ */
+void move_card(LinkedCard *card, LinkedCard *destination);
