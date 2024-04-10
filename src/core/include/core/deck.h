@@ -8,8 +8,6 @@
 
 LinkedCard* create_deck();
 
-void destory_deck(LinkedCard* deck);
-
 int validate_deck(LinkedCard* deck);
 
 int save_deck_to_file(LinkedCard* deck);
