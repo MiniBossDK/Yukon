@@ -1,12 +1,25 @@
 #include <stdio.h>
-#include <core/add.h>
-#include <core/subtract.h>
 #include <core/card.h>
+#include <core/deck.h>
 
 int main() {
-    int x = 10;
-    int y = 5;
-    printf("x + y = %d\n", add(x, y));
-    printf("x - y = %d\n", subtract(x, y));
+    LinkedCard* deck = create_deck();
+    LinkedCard* deck_copy = deck;
+
+    LinkedCard* column[7];
+    for (int i = 0; i < 7; i++) {
+        column[i] = NULL;
+    }
+
+    LinkedCard* foundation_piles[4];
+    for (int i = 0; i < 4; i++) {
+        foundation_piles[i] = NULL;
+    }
+
+
+
+
+
+
     return 0;
 }
