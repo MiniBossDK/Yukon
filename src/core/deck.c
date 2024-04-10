@@ -3,6 +3,8 @@
 //
 
 #include <core/deck.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 LinkedCard* create_deck() {
     LinkedCard* deck = NULL;
