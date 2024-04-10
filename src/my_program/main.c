@@ -23,3 +23,29 @@ int main() {
 
     return 0;
 }
+
+void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
+    int index = 0;
+    for (int i = 0; i < 52; i++) {
+        if (deck != NULL) {
+            if (column[index] != NULL) {
+                LinkedCard* temp = column[index];
+                temp = get_last_card(temp);
+                LinkedCard* temp2 = deck;
+                deck = deck->next;
+                move_card(temp2, temp);
+            } else {
+                column[index] = deck;
+                LinkedCard* temp = column[index];
+                deck = deck->next;
+                deck ->prev = NULL;
+                temp->prev = NULL;
+                temp->next = NULL;
+            }
+        }
+        index++;
+        if (index == 7) {
+            index = 0;
+        }
+    }
+}
