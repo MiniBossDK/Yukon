@@ -3,21 +3,45 @@
 #include <core/deck.h>
 
 int main() {
-    LinkedCard* deck = create_deck();
-    LinkedCard* deck_copy = deck;
+    LinkedCard *deck = create_deck();
+    LinkedCard *deck_copy = deck;
 
-    LinkedCard* column[7];
+    LinkedCard *column[7];
     for (int i = 0; i < 7; i++) {
         column[i] = NULL;
     }
 
-    LinkedCard* foundation_piles[4];
+
+    LinkedCard *foundation_piles[4];
     for (int i = 0; i < 4; i++) {
         foundation_piles[i] = NULL;
     }
-
-    return 0;
 }
+
+    void game_init(LinkedCard* deck, LinkedCard* column[7]) {
+        num_cards = 52;
+        for (int i = 0; i < num_cards; i++) {
+
+            //flyt card
+
+            if (current == 6) {
+                if (i == 6 || i == 36; || i == 41; || i == 45; || i == 47; ||i == 50; || i == 51 ){
+                    startArr++;
+                }
+                current == startArr;
+
+            }
+
+
+        }
+    }
+/*
+ * for hide cards in every column
+ * int 1-index
+ * <=0
+ * 2-index
+ * <=0.......
+ */
 
 void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
     int index = 0;
