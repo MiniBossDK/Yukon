@@ -4,6 +4,7 @@
 void create_foundation_pile(char pile_pos) {
     Foundation_Pile* pile = (Foundation_Pile*)malloc(sizeof(Foundation_Pile));
     pile->pile_pos = pile_pos;
+    pile->prev = NULL;
     pile->next = NULL;
 }
 
