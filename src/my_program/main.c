@@ -16,11 +16,6 @@ int main() {
         foundation_piles[i] = NULL;
     }
 
-
-
-
-
-
     return 0;
 }
 
@@ -33,6 +28,7 @@ void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
                 temp = get_last_card(temp);
                 LinkedCard* temp2 = deck;
                 deck = deck->next;
+                deck -> prev = NULL;
                 move_card(temp2, temp);
             } else {
                 column[index] = deck;
