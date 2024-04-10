@@ -11,7 +11,7 @@ void destroy_foundation_pile(Foundation_Pile* pile) {
     free(pile);
 }
 
-char* print_foundation_pile(Foundation_Pile* pile) {
+char* get_foundation_pile_name(Foundation_Pile* pile) {
     char* str = (char*)malloc(3);
     str[0] = 'F';
     str[1] = pile->pile_pos;
