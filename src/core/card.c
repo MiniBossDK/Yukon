@@ -80,6 +80,13 @@ int validate_suit(char suit){
     return 0;
 }
 
+LinkedCard* get_last_card(LinkedCard* deck) {
+    while(deck->next != NULL){
+        deck = deck->next;
+    }
+    return deck;
+}
+
 
 
 
