@@ -1,0 +1,5 @@
+IF (WIN32)
+    set (CMAKE_GENERATOR "MinGW Makefiles" CACHE INTERNAL "" FORCE)
+ELSE ()
+    set (CMAKE_GENERATOR "Unix Makefiles" CACHE INTERNAL "" FORCE)
+ENDIF ()
