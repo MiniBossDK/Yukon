@@ -67,9 +67,3 @@ int validate_suit(char suit){
     }
     return 0;
 }
-
-
-
-
-
-
