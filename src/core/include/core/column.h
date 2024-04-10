@@ -6,6 +6,7 @@ typedef struct Column Column;
 struct Column {
     char pos;
     LinkedCard* next;
+    LinkedCard* prev;
 };
 
 /*
