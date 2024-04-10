@@ -23,3 +23,8 @@ Column* create_column(char pos);
  * Destroys the given column and all the cards that it links to.
  */
 void destroy_column(Column* column);
+
+/*
+ * Get the last card in the column.
+ */
+LinkedCard* get_last_column_card(Column* column);

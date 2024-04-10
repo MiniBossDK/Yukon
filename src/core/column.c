@@ -23,3 +23,11 @@ void destroy_column(Column* column) {
         free(temp);
     }
 }
+
+LinkedCard* get_last_column_card(Column* column) {
+    LinkedCard* temp = column->next;
+    while(temp->next != NULL) {
+        temp = temp->next;
+    }
+    return temp;
+}
