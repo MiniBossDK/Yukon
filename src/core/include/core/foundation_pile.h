@@ -8,9 +8,17 @@ struct Foundation_Pile {
     char pile_pos;
     LinkedCard* next;
 };
-
+/*
+ * Create a foundation pile.
+ */
 void create_foundation_pile(char pile_pos);
+/*
+ * Destroy the foundation pile.
+ */
 
 void destroy_foundation_pile(Foundation_Pile* pile);
+/*
+ * Get foundation pile name/id.
+ */
 
-char* print_foundation_pile(Foundation_Pile* pile);
+char* get_foundation_pile(Foundation_Pile* pile);
