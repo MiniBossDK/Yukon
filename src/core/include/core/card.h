@@ -7,6 +7,7 @@ struct LinkedCard {
     char suit;
     char hidden;
     int value;
+    LinkedCard* prev;
     LinkedCard* next;
 };
 

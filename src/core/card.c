@@ -9,6 +9,7 @@ LinkedCard* create_card(char rank, char suit) {
         card->suit = suit;
         card->hidden = 0;
         card->value = card_value(card);
+        card->prev = NULL;
         card->next = NULL;
         return card;
     }
