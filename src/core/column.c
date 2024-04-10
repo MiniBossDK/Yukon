@@ -1,4 +1,5 @@
 #include <core/column.h>
+#include <core/card.h>
 #include <stdlib.h>
 
 char* get_column_name(Column* column) {
@@ -17,10 +18,13 @@ Column* create_column(char pos) {
 }
 
 void destroy_column(Column* column) {
-    while(column->next != NULL) {
-        LinkedCard* temp = (LinkedCard *) column;
-        column = (Column *) column->next;
-        free(temp);
+    if(column->next == NULL) {
+        LinkedCard *card = column->next;
+        while(card->next != NULL) {
+            card = card->next;
+            destroy_card(card->prev);
+        }
+        destroy_card(card);
     }
     free(column);
 }
