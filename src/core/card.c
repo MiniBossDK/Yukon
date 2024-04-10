@@ -53,6 +53,13 @@ void unhide_card(LinkedCard *card){
     card->hidden = 0;
 }
 
+void move_card(LinkedCard *card, LinkedCard *destination){
+    LinkedCard* previous = card->prev; //store the previous card
+    previous -> next = NULL; //set the previous card's next to NULL
+    card -> prev = destination; //set the card's previous to the destination
+    destination -> next = card; //
+}
+
 int validate_rank(char rank){
     char valid_ranks[13] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
     for(int i = 0; i < 13; i++){
