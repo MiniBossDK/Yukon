@@ -22,6 +22,7 @@ void destroy_column(Column* column) {
         column = (Column *) column->next;
         free(temp);
     }
+    free(column);
 }
 
 LinkedCard* get_last_column_card(Column* column) {
