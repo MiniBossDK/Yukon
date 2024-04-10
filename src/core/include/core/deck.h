@@ -8,7 +8,7 @@
 
 LinkedCard* create_deck();
 
-void destory_deck(LinkedCard* deck);
+void destroy_deck(LinkedCard* deck);
 
 int validate_deck(LinkedCard* deck);
 
