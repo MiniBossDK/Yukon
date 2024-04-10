@@ -1,6 +1,7 @@
 #include <stdio.h>
-#include <core/card.h>
-#include <core/deck.h>
+#include <card.h>
+#include <deck.h>
+#include <test.h>
 
 int main() {
     LinkedCard* deck = create_deck();

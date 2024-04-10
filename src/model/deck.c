@@ -2,9 +2,9 @@
 // Created by Turan Talayhan on 10/04/2024.
 //
 
-#include <core/deck.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <deck.h>
 
 LinkedCard* create_deck() {
     LinkedCard* deck = NULL;

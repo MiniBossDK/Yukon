@@ -1,5 +1,5 @@
-#include <core/column.h>
-#include <core/card.h>
+#include <column.h>
+#include <card.h>
 
 int validate_move_to_column(LinkedCard* column_card, LinkedCard* moved_card) {
     if(column_card == 0) {
