@@ -19,13 +19,13 @@ int main() {
 }
 
     void game_init(LinkedCard* deck, LinkedCard* column[7]) {
-        num_cards = 52;
+      int  num_cards = 52;
         for (int i = 0; i < num_cards; i++) {
 
             //flyt card
 
             if (current == 6) {
-                if (i == 6 || i == 36; || i == 41; || i == 45; || i == 47; ||i == 50; || i == 51 ){
+                if (i == 6 || i == 36 || i == 41 || i == 45 || i == 47 ||i == 50 || i == 51 ){
                     startArr++;
                 }
                 current == startArr;
@@ -42,6 +42,21 @@ int main() {
  * 2-index
  * <=0.......
  */
+
+
+/*måske vi kan brug den :
+ * move(deck, column[0])
+ * while (deck ! = NULL)
+ * for(int i =1, i < number-Of-Columns; i++)
+ * move(deck, column[i]
+ * ......................
+ *
+ *
+ */
+
+
+
+
 
 void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
     int index = 0;
