@@ -15,9 +15,16 @@ struct LinkedCard {
  */
 LinkedCard* create_card(char rank, char suit);
 
+
+/*
+ * Destroy a card
+ */
+void destroy_card(LinkedCard* card);
+
 /*
  * Convert the card rank to an int value
  */
+
 int card_value(LinkedCard *card);
 
 /*

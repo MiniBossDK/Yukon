@@ -15,6 +15,10 @@ LinkedCard* create_card(char rank, char suit) {
     return NULL;
 }
 
+void destroy_card(LinkedCard* card){
+    free(card);
+}
+
 int card_value(LinkedCard *card){
     if(card->rank == 'A'){
         return 1;
