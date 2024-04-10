@@ -7,10 +7,26 @@ LinkedCard* create_card(char rank, char suit) {
         LinkedCard *card = (LinkedCard *)malloc(sizeof(LinkedCard));
         card->rank = rank;
         card->suit = suit;
+        card->hidden = 0;
+        card->value = card_value(card);
         card->next = NULL;
         return card;
     }
     return NULL;
+}
+
+void destroy_card(LinkedCard* card){
+    free(card);
+}
+
+int card_value(LinkedCard *card){
+    if(card->rank == 'A'){
+        return 1;
+    } else if(card->rank == 'T' || card->rank == 'J' || card->rank == 'Q' || card->rank == 'K'){
+        return 10;
+    } else {
+        return card->rank - '0';
+    }
 }
 
 char* get_card(LinkedCard *card){
@@ -22,6 +38,14 @@ char* get_card(LinkedCard *card){
 
 void print_card(LinkedCard *card){
     printf("%c%c ", card->rank, card->suit);
+}
+
+void hide_card(LinkedCard *card){
+    card->hidden = 1;
+}
+
+void unhide_card(LinkedCard *card){
+    card->hidden = 0;
 }
 
 int validate_rank(char rank){
@@ -43,8 +67,3 @@ int validate_suit(char suit){
     }
     return 0;
 }
-
-
-
-
-
