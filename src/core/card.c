@@ -16,8 +16,13 @@ LinkedCard* create_card(char rank, char suit) {
 }
 
 void destroy_card(LinkedCard* card){
-    free(card);
+     while(card->next != NULL) {      // check the next card if it exists so condition true.
+        card = card->next;            // go to the next card.
+        free(card->prev);     // destroy the previous card.
+    }
+    free(card);               // if while condition false and there are NULL next cards then it destroy the present card.
 }
+
 
 int card_value(LinkedCard *card){
     if(card->rank == 'A'){
