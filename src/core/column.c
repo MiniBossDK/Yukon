@@ -12,6 +12,7 @@ Column* create_column(char pos) {
     Column* column = (Column*) malloc(sizeof(Column));
     column->pos = pos;
     column->next = NULL;
+    column->prev = NULL;
     return column;
 }
 
