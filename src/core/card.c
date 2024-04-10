@@ -28,8 +28,14 @@ void destroy_card(LinkedCard* card){
 int card_value(LinkedCard *card){
     if(card->rank == 'A'){
         return 1;
-    } else if(card->rank == 'T' || card->rank == 'J' || card->rank == 'Q' || card->rank == 'K'){
+    } else if(card->rank == 'T'){
         return 10;
+    }else if(card->rank == 'J') {
+        return 11;
+    } else if(card->rank == 'Q') {
+        return 12;
+    } else if(card->rank == 'K') {
+        return 13;
     } else {
         return card->rank - '0';
     }
