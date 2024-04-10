@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "core/foundation.h"
+#include "core/foundation_pile.h"
 
 void create_foundation_pile(char pile_pos) {
     Foundation_Pile* pile = (Foundation_Pile*)malloc(sizeof(Foundation_Pile));
