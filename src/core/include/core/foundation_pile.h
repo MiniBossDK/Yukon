@@ -6,6 +6,7 @@ typedef struct Foundation_Pile Foundation_Pile;
 
 struct Foundation_Pile {
     char pile_pos;
+    LinkedCard* prev;
     LinkedCard* next;
 };
 /*
