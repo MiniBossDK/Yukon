@@ -5,6 +5,8 @@ typedef struct LinkedCard LinkedCard;
 struct LinkedCard {
     char rank;
     char suit;
+    char hidden;
+    int value;
     LinkedCard* next;
 };
 
@@ -14,24 +16,36 @@ struct LinkedCard {
 LinkedCard* create_card(char rank, char suit);
 
 /*
- * Create a deck of 52 cards
+ * Convert the card rank to an int value
  */
-LinkedCard* create_deck();
+int card_value(LinkedCard *card);
 
 /*
- * Create a deck of 52 cards from a file
+ * Hide the card
  */
-LinkedCard* create_deck_from_file(char *fileName);
+void hide_card(LinkedCard *card);
 
 /*
- * Save a deck of cards to a file
+ * Unhide the card
  */
-void save_deck_to_file(LinkedCard *deck, char *fileName);
+void unhide_card(LinkedCard *card);
 
+/*
+ * Get the card as a string
+ */
 char* get_card(LinkedCard *card);
 
+/*
+ * Print the card
+ */
 void print_card(LinkedCard *card);
 
+/*
+ * Validate the rank
+ */
 int validate_rank(char rank);
 
+/*
+ * Validate the suit
+ */
 int validate_suit(char suit);
