@@ -18,6 +18,43 @@ int main() {
     }
 }
 
+
+void game_init(LinkedCard **deck, LinkedCard *columns[7]) {
+
+    int totalCardsInColumn[7] = {1, 6, 7, 8, 9, 10, 11};
+    int faceDownCards[7] = {0, 1, 2, 3, 4, 5, 6};
+
+    for (int col = 0; col < 7; col++) {
+
+        for (int cardNum = 0; cardNum < totalCardsInColumn[col]; cardNum++) {
+
+            LinkedCard *currentCard = *deck;
+            *deck = (*deck)->next;
+
+            if (cardNum < faceDownCards[col]) {
+                hide_card(currentCard);
+            } else {
+                // Otherwise, it's set as faceup.
+                unhide_card(currentCard);
+            }
+
+            currentCard->next = NULL;
+
+            if (columns[col] == NULL) {
+                columns[col] = currentCard;
+
+                currentCard->prev = NULL;
+            } else {
+                move_card(currentCard, get_last_card(columns[col]));
+            }
+        }
+    }
+}
+
+
+
+
+/*
     void game_init(LinkedCard* deck, LinkedCard* column[7]) {
       int  num_cards = 52;
         for (int i = 0; i < num_cards; i++) {
@@ -35,6 +72,7 @@ int main() {
 
         }
     }
+    */
 /*
  * for hide cards in every column
  * int 1-index
@@ -47,7 +85,7 @@ int main() {
 /*måske vi kan brug den :
  * move(deck, column[0])
  * while (deck ! = NULL)
- * for(int i =1, i < number-Of-Columns; i++)
+ * for(int i =1, i < number-OfColumns; i++)
  * move(deck, column[i]
  * ......................
  *
