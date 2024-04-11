@@ -1,4 +1,4 @@
-#include <view/column_view.h>
+#include <view/terminal/column_view.h>
 #include <stdio.h>
 
 void test() {

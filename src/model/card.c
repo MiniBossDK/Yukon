@@ -49,7 +49,15 @@ char* get_card(LinkedCard *card){
 }
 
 void print_card(LinkedCard *card){
-    printf("%c%c ", card->rank, card->suit);
+    if(card == NULL) {
+        printf("XX");
+        return;
+    } else if(card->hidden) {
+        printf("[]");
+        return;
+    }
+
+    printf("%c%c", card->rank, card->suit);
 }
 
 void hide_card(LinkedCard *card){
