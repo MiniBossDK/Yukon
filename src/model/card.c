@@ -1,4 +1,4 @@
-#include <card.h>
+#include <model/card.h>
 #include <stdio.h>
 #include <stdlib.h>
 

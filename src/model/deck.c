@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <deck.h>
+#include <model/deck.h>
 
 LinkedCard* create_deck() {
     LinkedCard* deck = NULL;

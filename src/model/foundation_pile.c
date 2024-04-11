@@ -1,5 +1,5 @@
-#include <foundation_pile.h>
-#include <card.h>
+#include <model/foundation_pile.h>
+#include <model/card.h>
 
 int validate_move_to_foundation(LinkedCard* foundation_card, LinkedCard* moved_card) {
     if(foundation_card == 0) {

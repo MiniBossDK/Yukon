@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 extern "C" {
-    #include <card.h>
+    #include <model/card.h>
 }
 
 TEST(CardTest, CardCreateTest) {
