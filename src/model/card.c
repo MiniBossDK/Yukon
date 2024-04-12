@@ -1,4 +1,4 @@
-#include <core/card.h>
+#include <model/card.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -28,8 +28,14 @@ void destroy_card(LinkedCard* card){
 int card_value(LinkedCard *card){
     if(card->rank == 'A'){
         return 1;
-    } else if(card->rank == 'T' || card->rank == 'J' || card->rank == 'Q' || card->rank == 'K'){
+    } else if(card->rank == 'T'){
         return 10;
+    }else if(card->rank == 'J') {
+        return 11;
+    } else if(card->rank == 'Q') {
+        return 12;
+    } else if(card->rank == 'K') {
+        return 13;
     } else {
         return card->rank - '0';
     }
@@ -43,7 +49,15 @@ char* get_card(LinkedCard *card){
 }
 
 void print_card(LinkedCard *card){
-    printf("%c%c ", card->rank, card->suit);
+    if(card == NULL) {
+        printf("XX");
+        return;
+    } else if(card->hidden) {
+        printf("[]");
+        return;
+    }
+
+    printf("%c%c", card->rank, card->suit);
 }
 
 void hide_card(LinkedCard *card){
