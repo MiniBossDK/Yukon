@@ -77,7 +77,6 @@ void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
         }
         else {
             deck_clone = temp;
-            print_card(deck_clone);
         }
 
         index++;
