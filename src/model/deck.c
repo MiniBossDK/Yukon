@@ -27,6 +27,15 @@ LinkedCard* create_deck() {
     return deck;
 }
 
+void destroy_deck(LinkedCard* deck) {
+    LinkedCard* temp = deck;
+    while(temp != NULL){
+        LinkedCard* next = temp->next;
+        free(temp);
+        temp = next;
+    }
+}
+
 
 int validate_deck(LinkedCard* deck) {
     int ranks[13] = {0};

@@ -80,6 +80,7 @@ void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
             index = 0;
         }
     }
+    destroy_deck(deck_clone);
 }
 
 void game_init(LinkedCard **deck, LinkedCard *columns[7]);
