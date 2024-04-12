@@ -8,6 +8,8 @@
 
 LinkedCard* create_deck();
 
+void destroy_deck(LinkedCard* deck);
+
 int validate_deck(LinkedCard* deck);
 
 int save_deck_to_file(LinkedCard* deck);
@@ -23,3 +25,5 @@ LinkedCard* shuffle_deck(LinkedCard* deck);
 LinkedCard* split_deck(LinkedCard* deck);
 
 LinkedCard* split_deck_int(LinkedCard* deck, int number);
+
+LinkedCard* clone_deck(LinkedCard* deck);
