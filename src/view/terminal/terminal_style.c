@@ -48,6 +48,13 @@ void print_column_numbers() {
     }
 }
 
+void traverse_linked_list(LinkedCard* card, void (*callback)(LinkedCard*)) {
+    while (card != NULL) {
+        callback(card);
+        card = card->next;
+    }
+}
+
 void print_foundation_numbers(int pile_number) {
     printf("F%d", pile_number);
 }
@@ -60,7 +67,6 @@ void print_board(LinkedCard* columns[], LinkedCard* foundation_piles[]) {
     clear_terminal(1);
     print_column_numbers();
     printf("\n\n");
-    // Get the column with the most cards
     int max_cards = 0;
     const int min_cards = 7;
     for (int i = 0; i < 7; i++) {
@@ -97,7 +103,4 @@ void print_board(LinkedCard* columns[], LinkedCard* foundation_piles[]) {
 
         printf("\n");
     }
-    print_last_command("N/A");
-    print_message("OK");
-    print_input_prompt();
 }
