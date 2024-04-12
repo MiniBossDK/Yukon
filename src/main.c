@@ -71,8 +71,13 @@ void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
         }
         temp -> prev = NULL;
         if (temp -> next != NULL) {
+            temp -> prev = NULL;
             deck_clone = temp;
             temp = deck_clone -> next;
+        }
+        else {
+            deck_clone = temp;
+            print_card(deck_clone);
         }
 
         index++;
@@ -80,6 +85,7 @@ void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
             index = 0;
         }
     }
+    deck_clone = NULL;
     destroy_deck(deck_clone);
 }
 void game_init(LinkedCard *deck, LinkedCard *column[7]) {
@@ -111,8 +117,13 @@ void game_init(LinkedCard *deck, LinkedCard *column[7]) {
         }
         temp -> prev = NULL;
         if (temp -> next != NULL) {
+            temp -> prev = NULL;
             deck_clone = temp;
             temp = deck_clone -> next;
+        }
+        else {
+            deck_clone = temp;
+            print_card(deck_clone);
         }
 
         index++;
@@ -125,6 +136,7 @@ void game_init(LinkedCard *deck, LinkedCard *column[7]) {
         }
 
     }
+    deck_clone = NULL;
     destroy_deck(deck_clone);
 }
 
@@ -134,7 +146,8 @@ int main() {
     LinkedCard* column[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
     LinkedCard* foundation_piles[4];
     LinkedCard* deck = create_deck();
-    fill_columns(column);
+    show_deck(deck, column);
+    //fill_columns(column);
     fill_foundation_piles(foundation_piles);
     int keepRunning = 1;
     char command[3];
