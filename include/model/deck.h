@@ -23,3 +23,5 @@ LinkedCard* shuffle_deck(LinkedCard* deck);
 LinkedCard* split_deck(LinkedCard* deck);
 
 LinkedCard* split_deck_int(LinkedCard* deck, int number);
+
+LinkedCard* clone_deck(LinkedCard* deck);

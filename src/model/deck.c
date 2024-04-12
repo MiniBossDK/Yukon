@@ -223,3 +223,22 @@ LinkedCard* split_deck_int(LinkedCard* deck, int number){
     }
     return decks[0];
 }
+
+LinkedCard* clone_deck(LinkedCard* deck){
+    LinkedCard* clone = NULL;
+    LinkedCard* temp = deck;
+    while(temp != NULL){
+        LinkedCard* card = create_card(temp->rank, temp->suit);
+        if(clone == NULL){
+            clone = card;
+        }else{
+            LinkedCard* temp2 = clone;
+            while(temp2->next != NULL){
+                temp2 = temp2->next;
+            }
+            temp2->next = card;
+        }
+        temp = temp->next;
+    }
+    return clone;
+}

@@ -54,24 +54,25 @@ void free_foundation_piles(LinkedCard *card[4]) {
     }
 }
 void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
+    LinkedCard* deck_clone = clone_deck(deck);
     int index = 0;
-    LinkedCard* temp = deck->next;
+    LinkedCard* temp = deck_clone->next;
     for (int i = 0; i < 52; i++) {
         if (column[index] != NULL) {
             LinkedCard* temp2 = column[index];
             temp2 = get_last_card(temp2);
-            temp2 -> next = deck;
-            deck -> prev = temp2;
-            deck->next = NULL;
+            temp2 -> next = deck_clone;
+            deck_clone -> prev = temp2;
+            deck_clone->next = NULL;
         } else {
-            column[index] = deck;
+            column[index] = deck_clone;
             column[index] -> prev = NULL;
             column[index] -> next = NULL;
         }
         temp -> prev = NULL;
         if (temp -> next != NULL) {
-            deck = temp;
-            temp = deck -> next;
+            deck_clone = temp;
+            temp = deck_clone -> next;
         }
 
         index++;
@@ -88,7 +89,7 @@ int main() {
     LinkedCard* column[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
     LinkedCard* foundation_piles[4];
     LinkedCard* deck = create_deck();
-    show_deck(deck, column);
+    fill_foundation_piles(foundation_piles);
     fill_foundation_piles(foundation_piles);
     int keepRunning = 1;
     char command[3];
