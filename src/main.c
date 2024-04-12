@@ -53,16 +53,42 @@ void free_foundation_piles(LinkedCard *card[4]) {
         }
     }
 }
+void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
+    int index = 0;
+    LinkedCard* temp = deck->next;
+    for (int i = 0; i < 52; i++) {
+        if (column[index] != NULL) {
+            LinkedCard* temp2 = column[index];
+            temp2 = get_last_card(temp2);
+            temp2 -> next = deck;
+            deck -> prev = temp2;
+            deck->next = NULL;
+        } else {
+            column[index] = deck;
+            column[index] -> prev = NULL;
+            column[index] -> next = NULL;
+        }
+        temp -> prev = NULL;
+        if (temp -> next != NULL) {
+            deck = temp;
+            temp = deck -> next;
+        }
+
+        index++;
+        if (index == 7) {
+            index = 0;
+        }
+    }
+}
 
 void game_init(LinkedCard **deck, LinkedCard *columns[7]);
 
-void show_deck(LinkedCard* deck, LinkedCard* column[7]);
-
 int main() {
 
-    LinkedCard* column[7];
+    LinkedCard* column[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
     LinkedCard* foundation_piles[4];
-    fill_columns(column);
+    LinkedCard* deck = create_deck();
+    show_deck(deck, column);
     fill_foundation_piles(foundation_piles);
     int keepRunning = 1;
     char command[3];
@@ -115,30 +141,7 @@ void game_init(LinkedCard **deck, LinkedCard *columns[7]) {
     }
 }
 
-void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
-    int index = 0;
-    for (int i = 0; i < 52; i++) {
-        if (deck != NULL) {
-            if (column[index] != NULL) {
-                LinkedCard* temp = column[index];
-                temp = get_last_card(temp);
-                LinkedCard* temp2 = deck;
-                deck = deck->next;
-                deck -> prev = NULL;
-                move_card(temp2, temp);
-            } else {
-                column[index] = deck;
-                LinkedCard* temp = column[index];
-                deck = deck->next;
-                deck ->prev = NULL;
-                temp->prev = NULL;
-                temp->next = NULL;
-            }
-        }
-        index++;
-        if (index == 7) {
-            index = 0;
-        }
-    }
-}
+
+
+
 
