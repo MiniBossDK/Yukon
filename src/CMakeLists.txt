@@ -9,6 +9,7 @@ add_library(backend
         model/foundation_pile.c
         view/terminal/column_view.c
         view/terminal/terminal_style.c
+        view/terminal/command_parser.c
 )
 
 target_link_libraries(Main PUBLIC backend)

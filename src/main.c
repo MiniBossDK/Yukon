@@ -2,8 +2,10 @@
 #include <model/card.h>
 #include <model/deck.h>
 #include <view/terminal/terminal_style.h>
+#include <string.h>
+#include <view/terminal/command_parser.h>
 #include <stdlib.h>
-
+/*
 void fill_columns(LinkedCard *card[7]) {
     int number_of_cards = 1;
     int hidden_cards = 0;
@@ -53,32 +55,39 @@ void free_foundation_piles(LinkedCard *card[4]) {
         }
     }
 }
-
+*/
 void game_init(LinkedCard **deck, LinkedCard *columns[7]);
 
 void show_deck(LinkedCard* deck, LinkedCard* column[7]);
 
 int main() {
-
+    /*
     LinkedCard* column[7];
     LinkedCard* foundation_piles[4];
     fill_columns(column);
     fill_foundation_piles(foundation_piles);
+     */
     int keepRunning = 1;
-    char command[3];
+    char command[10];
+    char last_command[14];
     clear_terminal(1);
+    char message[100] = "";
     while (keepRunning) {
-        print_board(column, foundation_piles);
-        print_last_command("N/A");
-        print_message("OK");
+        //print_board(column, foundation_piles);
+        print_last_command(last_command);
+        print_message(message);
         print_input_prompt();
-        scanf("%2s", command);
+        fgets(command, 50, stdin);
+        parse_command(command, PLAY, message, last_command);
+
+        fflush(stdin);
         if (command[0] == 'q') {
             keepRunning = 0;
         }
+        clear_terminal(1);
     }
-    free_columns(column);
-    free_foundation_piles(foundation_piles);
+    //free_columns(column);
+    //free_foundation_piles(foundation_piles);
     reset_terminal_color();
     return 0;
 }
