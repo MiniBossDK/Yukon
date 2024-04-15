@@ -28,15 +28,12 @@ typedef struct {
 typedef struct {
     char *column;
     char *card;
-} ColumnLocation;
-
-typedef struct {
     char *pile;
-} FoundationLocation;
+} GameMoveSource;
 
 typedef struct {
-    void *from;
-    void *to;
+    GameMoveSource *from;
+    char *to;
 } GameMove;
 
 void destroy_command(ParsedCommand *command);
@@ -65,17 +62,17 @@ int parse_command(const char *command, GameState state, char *message, char *las
 
 int parse_game_move(const char *command, char *message, char *last_command);
 
-FoundationLocation* extract_foundation_location(const char *pile);
-
-ColumnLocation* extract_column_location(const char *column);
+GameMoveSource *extract_move_source(const char *source);
 
 int validate_foundation_pile(const char *pile);
 
 int validate_column(const char *column);
 
-int validate_card(const char *card);
+int validate_card_input(const char *card);
 
 void trim(char *str);
+
+void remove_all_spaces(char *str);
 
 int is_empty(char *str);
 

@@ -68,8 +68,8 @@ int main() {
     fill_foundation_piles(foundation_piles);
      */
     int keepRunning = 1;
-    char command[10];
-    char last_command[14];
+    char command[20];
+    char last_command[20];
     clear_terminal(1);
     char message[100] = "";
     while (keepRunning) {
@@ -78,7 +78,7 @@ int main() {
         print_message(message);
         print_input_prompt();
         fgets(command, 50, stdin);
-        parse_command(command, PLAY, message, last_command);
+        parse_command(command, STARTUP, message, last_command);
 
         fflush(stdin);
         if (command[0] == 'q') {

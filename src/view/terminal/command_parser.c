@@ -77,12 +77,13 @@ ParsedCommand* extract_command(const char* command) {
 
     char *rest;
     // Save the command (the first token)
-    cmd->command = strdup(strtok_r(command_copy, " ", &rest));
-    if (cmd->command == NULL) {
+    char* parsed_cmd = strtok_r(command_copy, " ", &rest);
+    if (parsed_cmd == NULL) {
         free(command_copy);
         free(cmd);
         return NULL;
     }
+    cmd->command = strdup(parsed_cmd);
     trim(cmd->command);
     int arg_count = 0;
 
@@ -110,6 +111,7 @@ ParsedCommand* extract_command(const char* command) {
 }
 
 int evaluate_command(const ParsedCommand* command, char* message) {
+    if (command == NULL) return 0;
     return 1;
 }
 
@@ -126,9 +128,18 @@ void destroy_command(ParsedCommand* command) {
 
 void destroy_game_move(GameMove* move) {
     if (move == NULL) return;
-    free(move->from);
-    free(move->to);
-    free(move);
+    if (move->from != NULL) {
+        if (move->from->column != NULL) {
+            free(move->from->column);
+        }
+        if (move->from->card != NULL) {
+            free(move->from->card);
+        }
+        if (move->from->pile != NULL) {
+            free(move->from->pile);
+        }
+        free(move->from);
+    }
 }
 
 CommandType get_command_type(const char* command) {
@@ -165,29 +176,57 @@ int parse_command(const char* command, GameState state, char* message, char* las
 }
 
 GameMove *extract_game_move(const char* game_move) {
-
     char *game_move_copy = strdup(game_move);
-    if (game_move_copy == NULL) return NULL;
+    if (game_move_copy == NULL) {
+        free(game_move_copy);
+        return NULL;
+    }
     GameMove *move = malloc(sizeof(GameMove));
     if (move == NULL) {
         free(game_move_copy);
         return NULL;
     }
-
+    // Separate the left and right side of the arrow
     char *rest;
-    move->from = strdup(strtok_r(game_move_copy, "->", &rest));
-    move->to = strdup(strtok_r(NULL, "->", &rest));
+    char* from = strdup(strtok_r(game_move_copy, "->", &rest));
+    char* to = strdup(strtok_r(NULL, "->", &rest));
+    if(from == NULL || to == NULL) {
+        free(from);
+        free(to);
+        free(game_move_copy);
+        free(move);
+        return NULL;
+    }
+    move->to = strdup(to);
     trim(move->to);
 
-    if(is_specific_card(move->from)) {
-        char *card = strtok(move->from, ":");
-        move->from = malloc(sizeof(ColumnLocation));
-        ((ColumnLocation *)move->from)->column = strdup(card);
-        ((ColumnLocation *)move->from)->card = strdup(strtok(NULL, ":"));
-    }
-
+    // Parse the left side
+    move->from = extract_move_source(from);
+    free(from);
     free(game_move_copy);
     return move;
+}
+
+GameMoveSource *extract_move_source(const char *source) {
+    char *source_copy = strdup(source);
+    GameMoveSource *game_move_source = malloc(sizeof(GameMoveSource));
+    game_move_source->column = NULL;
+    game_move_source->card = NULL;
+    game_move_source->pile = NULL;
+    if (is_specific_card(source)) {
+        char *rest;
+        game_move_source->column = strdup(strtok_r(source_copy, ":", &rest));
+        game_move_source->card = strdup(strtok_r(NULL, ":", &rest));
+        return game_move_source;
+    } else if(is_foundation_pile(source)) {
+        game_move_source->pile = strdup(source);
+        return game_move_source;
+    } else if (is_column(source)) {
+        game_move_source->column = strdup(source);
+        return game_move_source;
+    }
+    free(source_copy);
+    return NULL;
 }
 
 int is_specific_card(const char *command) {
@@ -241,6 +280,17 @@ void trim(char *str) {
         memmove(str, start, end - start + 1);
 }
 
+void remove_all_spaces(char *str) {
+    trim(str);
+    char *i = str;
+    char *j = str;
+    while(*j != 0) {
+        *i = *j++;
+        if(*i != ' ') i++;
+    }
+    *i = 0;
+}
+
 int is_empty(char *str) {
     if (str == NULL) return 1;
     if (strlen(str) == 0) return 1;
@@ -249,6 +299,7 @@ int is_empty(char *str) {
 
 int validate_game_move_syntax(const GameMove *move, char *message) {
     if (move == NULL) {
+        strcpy(message, "No move provided");
         return 0;
     }
 
@@ -256,11 +307,35 @@ int validate_game_move_syntax(const GameMove *move, char *message) {
         strcpy(message, "Invalid destination location");
         return 0;
     }
-    if (!validate_foundation_pile(move->from)
-    && !validate_column(move->from)
-    && !validate_card(move->from)) {
+
+    if (move->from == NULL) {
         strcpy(message, "Invalid source location");
         return 0;
+    }
+
+    if (move->from->pile != NULL) {
+        if (move->from->card != NULL) {
+            strcpy(message, "Cards can only be moved from the top of the foundation piles");
+            return 0;
+        }
+        if (!validate_foundation_pile(move->from->pile)) {
+            strcpy(message, "Invalid foundation pile");
+            return 0;
+        }
+    }
+
+    if (move->from->card != NULL) {
+        if (!validate_card_input(move->from->card)) {
+            strcpy(message, "Invalid card");
+            return 0;
+        }
+    }
+
+    if (move->from->column != NULL) {
+        if (!validate_column(move->from->column)) {
+            strcpy(message, "Invalid column");
+            return 0;
+        }
     }
 
     return 1;
@@ -282,24 +357,22 @@ int validate_column(const char *column) {
     return 1;
 }
 
-int validate_card(const char *card) {
+int validate_card_input(const char *card) {
     if (card == NULL) return 0;
     if (strlen(card) != 2) return 0;
-    if (!validate_rank(card[0])) return 0;
-    if (!validate_suit(card[1])) return 0;
+    if (!validate_card(card[0], card[1])) return 0;
     return 1;
 }
 
 int parse_game_move(const char* command, char* message, char* last_command) {
-    GameMove *move = extract_game_move(command);
-
+    char* command_copy = strdup(command);
+    remove_all_spaces(command_copy);
+    GameMove *move = extract_game_move(command_copy);
     if(!validate_game_move_syntax(move, message)) {
         destroy_game_move(move);
         return 0;
     }
-    //evaluate_game_move(move, message);
-    char* command_copy = strdup(command);
-    trim(command_copy);
+    evaluate_game_move(move, message);
     strcpy(last_command, command_copy);
 
     free(command_copy);
