@@ -20,6 +20,16 @@ typedef struct {
     int min_args;
 } Command;
 
+Command commands[] = {
+        {"LD", NULL, 0},
+        {"SW", NULL, 0},
+        {"SI", NULL, 0},
+        {"SR", NULL, 0},
+        {"SD", NULL, 0},
+        {"QQ", NULL, 0},
+
+};
+
 typedef struct {
     char *command;
     char *args[MAX_ARGS];
