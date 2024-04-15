@@ -1,17 +1,37 @@
-add_executable(Main
-    main.c
-)
+if (NOT USER_INTERFACE)
+    set(MAIN_TARGET Main)
+    add_executable(Main
+        main.c
+    )
+
+    add_library(view_terminal
+        view/terminal/column_view.c
+        view/terminal/terminal_style.c
+    )
+    target_link_libraries(${MAIN_TARGET} PUBLIC backend)
+ENDIF()
+
+IF (USER_INTERFACE)
+    set(MAIN_TARGET MainGui)
+    include(FetchContent)
+
+    find_package(SDL2 REQUIRED CONFIG REQUIRED COMPONENTS SDL2)
+
+    find_package(SDL2 REQUIRED CONFIG COMPONENTS SDL2main)
+
+    add_executable(MainGui
+        gui_main.c
+    )
+
+    target_link_libraries(MainGui SDL2::SDL2main SDL2::SDL2 backend)
+ENDIF()
 
 add_library(backend
         model/card.c
         model/deck.c
         model/column.c
         model/foundation_pile.c
-        view/terminal/column_view.c
-        view/terminal/terminal_style.c
 )
-
-target_link_libraries(Main PUBLIC backend)
 
 target_include_directories(backend
         PUBLIC
