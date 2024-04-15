@@ -73,17 +73,24 @@ int main() {
     char last_command[20];
     clear_terminal(1);
     char message[100] = "";
+    GameState state = STARTUP;
     while (keep_running) {
         //print_board(column, foundation_piles);
         print_last_command(last_command);
         print_message(message);
         print_input_prompt();
         fgets(command, 50, stdin);
-        int status = parse_command(command, STARTUP, message, last_command);
+        int status = parse_command(command, state, message, last_command);
         fflush(stdin);
 
         if (status == -1) {
             keep_running = 0;
+        }
+        if(status == -2) {
+            state = PLAY;
+        }
+        if(status == -3) {
+            state = STARTUP;
         }
         clear_terminal(1);
     }

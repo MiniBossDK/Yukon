@@ -8,21 +8,20 @@
 
 Command commands[] = {
         {"LD", handle_load_game},
-        {"SW", NULL},
-        {"SI", NULL},
-        {"SR", NULL},
-        {"SD", NULL},
-        {"QQ", handle_quit_game},
+        {"QQ", handle_quit_application},
+        {"Q", handle_quit_game},
+        {"P", switch_to_play_phase},
+
 
 };
 
-char* valid_startup_commands[] = {"LD", "SW", "SI", "SR", "SD", "QQ" };
-char* valid_game_commands[] = { "P", "Q", "U", "R", "S", "L" };
+char* valid_startup_commands[] = {"LD", "SW", "SI", "SR", "SD", "QQ", "P" };
+char* valid_game_commands[] = { "Q", "U", "R", "S", "L" };
 
 int validate_startup_command(const ParsedCommand* cmd) {
     if (cmd == NULL) return 0;
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 7; i++) {
         if (strcmp(cmd->command, valid_startup_commands[i]) == 0) {
             return 1;
         }
@@ -33,7 +32,7 @@ int validate_startup_command(const ParsedCommand* cmd) {
 
 int validate_game_command(const ParsedCommand* cmd) {
     if (cmd == NULL) return 0;
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 5; i++) {
         if (strcmp(cmd->command, valid_game_commands[i]) == 0) {
             return 1;
         }
@@ -123,7 +122,7 @@ ParsedCommand* extract_command(const char* command) {
 
 int evaluate_command(ParsedCommand* command, char* message) {
     if (command == NULL) return 0;
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 4; i++) {
         if (strcmp(command->command, commands[i].name) == 0) {
             return commands[i].func(command->args, message);
         }
