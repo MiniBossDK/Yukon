@@ -4,6 +4,17 @@
 #include <string.h>
 #include <ctype.h>
 #include <model/card.h>
+#include <controller/handle_commands.h>
+
+Command commands[] = {
+        {"LD", handle_load_game},
+        {"SW", NULL},
+        {"SI", NULL},
+        {"SR", NULL},
+        {"SD", NULL},
+        {"QQ", handle_quit_game},
+
+};
 
 char* valid_startup_commands[] = {"LD", "SW", "SI", "SR", "SD", "QQ" };
 char* valid_game_commands[] = { "P", "Q", "U", "R", "S", "L" };
@@ -110,8 +121,13 @@ ParsedCommand* extract_command(const char* command) {
     return cmd;
 }
 
-int evaluate_command(const ParsedCommand* command, char* message) {
+int evaluate_command(ParsedCommand* command, char* message) {
     if (command == NULL) return 0;
+    for (int i = 0; i < 6; i++) {
+        if (strcmp(command->command, commands[i].name) == 0) {
+            return commands[i].func(command->args, message);
+        }
+    }
     return 1;
 }
 
@@ -165,14 +181,14 @@ int parse_command(const char* command, GameState state, char* message, char* las
         return 0;
     }
 
-    evaluate_command(cmd, message);
+    int status = evaluate_command(cmd, message);
 
     char* command_copy = strdup(command);
     trim(command_copy);
     strcpy(last_command, command_copy); // copy the command to the last command message
     free(command_copy);
     destroy_command(cmd);
-    return 1;
+    return status;
 }
 
 GameMove *extract_game_move(const char* game_move) {

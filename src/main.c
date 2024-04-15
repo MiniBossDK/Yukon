@@ -4,6 +4,7 @@
 #include <view/terminal/terminal_style.h>
 #include <string.h>
 #include <view/terminal/command_parser.h>
+#include <controller/handle_commands.h>
 #include <stdlib.h>
 /*
 void fill_columns(LinkedCard *card[7]) {
@@ -67,22 +68,22 @@ int main() {
     fill_columns(column);
     fill_foundation_piles(foundation_piles);
      */
-    int keepRunning = 1;
+    int keep_running = 1;
     char command[20];
     char last_command[20];
     clear_terminal(1);
     char message[100] = "";
-    while (keepRunning) {
+    while (keep_running) {
         //print_board(column, foundation_piles);
         print_last_command(last_command);
         print_message(message);
         print_input_prompt();
         fgets(command, 50, stdin);
-        parse_command(command, STARTUP, message, last_command);
-
+        int status = parse_command(command, STARTUP, message, last_command);
         fflush(stdin);
-        if (command[0] == 'q') {
-            keepRunning = 0;
+
+        if (status == -1) {
+            keep_running = 0;
         }
         clear_terminal(1);
     }

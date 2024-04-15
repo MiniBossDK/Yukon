@@ -10,6 +10,7 @@ add_library(backend
         view/terminal/column_view.c
         view/terminal/terminal_style.c
         view/terminal/command_parser.c
+        controller/handle_commands.c
 )
 
 target_link_libraries(Main PUBLIC backend)

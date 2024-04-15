@@ -2,8 +2,6 @@
 
 #define MAX_ARGS 4
 
-typedef void (*CommandFunc)();
-
 typedef enum {
     GAME_MOVE,
     COMMAND,
@@ -16,19 +14,8 @@ typedef enum {
 
 typedef struct {
     char *name;
-    CommandFunc func;
-    int min_args;
+    int (*func)(char *args[MAX_ARGS], char* message);
 } Command;
-
-Command commands[] = {
-        {"LD", NULL, 0},
-        {"SW", NULL, 0},
-        {"SI", NULL, 0},
-        {"SR", NULL, 0},
-        {"SD", NULL, 0},
-        {"QQ", NULL, 0},
-
-};
 
 typedef struct {
     char *command;
@@ -50,7 +37,7 @@ void destroy_command(ParsedCommand *command);
 
 void destroy_game_move(GameMove *move);
 
-int evaluate_command(const ParsedCommand *command, char *message);
+int evaluate_command(ParsedCommand *command, char *message);
 
 int evaluate_game_move(const GameMove *move, char *message);
 
