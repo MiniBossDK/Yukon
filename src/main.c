@@ -91,7 +91,6 @@ int main() {
         }
         clear_terminal(1);
     }
-    //free_columns(column);
     //free_foundation_piles(foundation_piles);
     reset_terminal_color();
     return 0;
