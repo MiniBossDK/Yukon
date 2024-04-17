@@ -59,6 +59,11 @@ int validate_rank(char rank);
 int validate_suit(char suit);
 
 /*
+ * Validate the card
+ */
+int validate_card(char rank, char suit);
+
+/*
  * Get the last card in the deck
  */
 LinkedCard* get_last_card(LinkedCard *deck);

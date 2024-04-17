@@ -95,6 +95,10 @@ int validate_suit(char suit){
     return 0;
 }
 
+int validate_card(char rank, char suit){
+    return validate_rank(rank) && validate_suit(suit);
+}
+
 LinkedCard* get_last_card(LinkedCard* deck) {
     while(deck->next != NULL){
         deck = deck->next;
