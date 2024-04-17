@@ -158,7 +158,7 @@ int main() {
     char last_command[20];
     clear_terminal(1);
     char message[100] = "";
-    GameState state = STARTUP;
+    Phase state = STARTUP;
     while (keep_running) {
         print_board(column, foundation_piles);
         print_last_command(last_command);

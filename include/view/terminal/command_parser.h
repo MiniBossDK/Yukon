@@ -10,7 +10,7 @@ typedef enum {
 typedef enum {
     STARTUP,
     PLAY,
-} GameState;
+} Phase;
 
 typedef struct {
     char *name;
@@ -51,11 +51,11 @@ int validate_startup_command(const ParsedCommand *command);
 
 int validate_game_command(const ParsedCommand *command);
 
-int validate_command(const ParsedCommand *command, GameState state, char *message);
+int validate_command(const ParsedCommand *command, Phase state, char *message);
 
 int validate_game_move_syntax(const GameMove *move, char *message);
 
-int parse_command(const char *command, GameState state, char *message, char *last_command);
+int parse_command(const char *command, Phase state, char *message, char *last_command);
 
 int parse_game_move(const char *command, char *message, char *last_command);
 

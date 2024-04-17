@@ -41,7 +41,7 @@ int validate_game_command(const ParsedCommand* cmd) {
     return 0;
 }
 
-int validate_command(const ParsedCommand* command, GameState state, char* message) {
+int validate_command(const ParsedCommand* command, Phase state, char* message) {
     if (command == NULL) {
         strcpy(message, "No command provided");
         return 0;
@@ -164,7 +164,7 @@ CommandType get_command_type(const char* command) {
     return COMMAND;
 }
 
-int parse_command(const char* command, GameState state, char* message, char* last_command) {
+int parse_command(const char* command, Phase state, char* message, char* last_command) {
     if(state == PLAY) {
         if(get_command_type(command) == GAME_MOVE) {
             if(parse_game_move(command, message, last_command)) {
