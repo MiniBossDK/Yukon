@@ -16,3 +16,9 @@ struct GameState {
 };
 
 GameState* create_game_state(LinkedCard* deck, LinkedCard* columns[7], LinkedCard* foundation[4]);
+
+int check_win(GameState* game_state);
+
+void write_game_state_to_file(const char* filename, struct GameState* game_state);
+
+void read_game_state_from_file(const char* filename, struct GameState* game_state);
