@@ -75,10 +75,9 @@ int main() {
     int keep_running = 1;
     char command[20];
     clear_terminal(1);
-
     while (keep_running) {
         clear_terminal(1);
-        print_board(column, foundation_piles);
+        print_board(game_state->column, game_state->foundation);
         print_last_command(game_state->lastCommand);
         print_message(game_state->message);
         print_input_prompt();

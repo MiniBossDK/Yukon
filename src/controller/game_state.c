@@ -38,23 +38,19 @@ void destroy_game_state(GameState* game_state) {
 
 void show_deck(GameState* game_state) {
     LinkedCard* deck_clone = clone_deck(game_state->deck);
-    LinkedCard* column[7];
-    for(int i = 0; i < 7; i++) {
-        column[i] = game_state->column[i];
-    }
     int index = 0;
     LinkedCard* temp = deck_clone->next;
     for (int i = 0; i < 52; i++) {
-        if (column[index] != NULL) {
-            LinkedCard* temp2 = column[index];
+        if (game_state->column[index] != NULL) {
+            LinkedCard* temp2 = game_state->column[index];
             temp2 = get_last_card(temp2);
             temp2 -> next = deck_clone;
             deck_clone -> prev = temp2;
             deck_clone->next = NULL;
         } else {
-            column[index] = deck_clone;
-            column[index] -> prev = NULL;
-            column[index] -> next = NULL;
+            game_state->column[index] = deck_clone;
+            game_state->column[index] -> prev = NULL;
+            game_state->column[index] -> next = NULL;
         }
         temp -> prev = NULL;
         if (temp -> next != NULL) {
