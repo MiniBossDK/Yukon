@@ -31,3 +31,7 @@ int check_win(GameState* game_state) {
     }
     return 1;
 }
+
+void destroy_game_state(GameState* game_state) {
+    free(game_state);
+}

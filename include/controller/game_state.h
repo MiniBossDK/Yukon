@@ -16,3 +16,5 @@ struct GameState {
 };
 
 GameState* create_game_state(LinkedCard* deck, LinkedCard* columns[7], LinkedCard* foundation[4]);
+
+void destroy_game_state(GameState* game_state);
