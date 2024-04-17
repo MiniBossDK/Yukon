@@ -106,9 +106,6 @@ void game_init(GameState* game_state) {
 
     LinkedCard* deck_clone = clone_deck(game_state->deck);
     LinkedCard* column[7];
-    for(int i = 0; i < 7; i++) {
-        column[i] = game_state->column[i];
-    }
     int index = 0;
     int start_index = 0;
     int end_index = 6;
@@ -117,7 +114,7 @@ void game_init(GameState* game_state) {
     LinkedCard* temp = deck_clone->next;
     for (int i = 0; i < 52; i++) {
         if (column[index] != NULL) {
-            LinkedCard* temp2 = column[index];
+            LinkedCard* temp2 = game_state->column[index];
             temp2 = get_last_card(temp2);
             temp2 -> next = deck_clone;
             deck_clone -> prev = temp2;
@@ -128,7 +125,7 @@ void game_init(GameState* game_state) {
         } else {
             column[index] = deck_clone;
             if(index > 0) {
-                hide_card(column[index]);
+                hide_card(game_state->column[index]);
             }
             column[index] -> prev = NULL;
             column[index] -> next = NULL;
