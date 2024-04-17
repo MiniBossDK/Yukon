@@ -147,7 +147,7 @@ void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
 int main() {
     LinkedCard* column[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
   
-    LinkedCard* foundation_piles[4];
+    LinkedCard* foundation_piles[4] = {NULL, NULL, NULL, NULL};
     LinkedCard* deck = create_deck();
     show_deck(deck, column);
     //fill_columns(column);
