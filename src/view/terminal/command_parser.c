@@ -167,7 +167,7 @@ CommandType get_command_type(const char* command) {
 int parse_command(const char* command, GameState* state, char* message, char* last_command) {
     if(state->phase == PLAY) {
         if(get_command_type(command) == GAME_MOVE) {
-            if(parse_game_move(command, message, last_command)) {
+            if(parse_game_move(command, state, message, last_command)) {
                 strcpy(message, "OK");
                 return 1;
             }
@@ -267,9 +267,9 @@ int is_foundation_pile(const char *command) {
     return 0;
 }
 
-int evaluate_game_move(const GameMove *move, char *message) {
+int evaluate_game_move(const GameMove *move, GameState *state, char *message) {
     if (move == NULL) return 0;
-    handle_game_move(move, NULL, NULL, message);
+    //handle_game_move(move, state, message);
     return 1;
 }
 
@@ -379,24 +379,24 @@ int validate_card_input(const char *card) {
     return 1;
 }
 
-int parse_game_move(const char* command, char* message, char* last_command) {
+int parse_game_move(const char* command, GameState* state, char* message, char* last_command) {
     char* command_copy = strdup(command);
     remove_all_spaces(command_copy);
     GameMove *move = extract_game_move(command_copy);
-    //to_upper(move->to);
-    //to_upper(move->from->column);
-    //to_upper(move->from->pile);
-    //to_upper(move->from->card);
+    to_upper(move->to);
+    to_upper(move->from->column);
+    to_upper(move->from->pile);
+    to_upper(move->from->card);
     if(!validate_game_move_syntax(move, message)) {
         destroy_game_move(move);
         return 0;
     }
-    evaluate_game_move(move, message);
+    int status = evaluate_game_move(move, state, message);
     strcpy(last_command, command_copy);
 
     free(command_copy);
     destroy_game_move(move);
-    return 1;
+    return status;
 }
 
 void to_upper(char* str) {

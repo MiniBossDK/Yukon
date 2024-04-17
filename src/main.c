@@ -172,12 +172,6 @@ int main() {
         if (status == -1) {
             keep_running = 0;
         }
-        if(status == -2) {
-            game_state->phase = PLAY;
-        }
-        if(status == -3) {
-            game_state->phase = STARTUP;
-        }
         clear_terminal(1);
     }
     //free_columns(column);
