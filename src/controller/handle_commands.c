@@ -11,17 +11,23 @@
 
 int handle_load_game(char* args[4], GameState* game_state) {
     if(args[0] == NULL) {
-        strcpy(game_state->message, "No file name provided");
+        strcpy(game_state->message, "Loaded from default.dat");
+        read_game_state_from_file("default.dat", game_state);
         return 0;
     }
+    strcpy(game_state->message, "OK");
+    read_game_state_from_file(args[0], game_state);
     return 1;
 }
 
 int handle_save_game(char* args[4], GameState* game_state) {
     if(args[0] == NULL) {
-        strcpy(game_state->message, "No file name provided");
+        strcpy(game_state->message, "Saved to default.dat");
+        write_game_state_to_file("default.dat", game_state);
         return 0;
     }
+    strcpy(game_state->message, "OK");
+    write_game_state_to_file(args[0], game_state);
     return 1;
 }
 
@@ -51,7 +57,7 @@ int switch_to_play_phase(char* args[4], GameState* game_state) {
     empty_columns(game_state);
     empty_foundations(game_state);
     game_init(game_state);
-    return -2; // This is the special signal to switch to the play phase
+    return 1; // This is the special signal to switch to the play phase
 }
 
 int handle_quit_game(char* args[4], GameState* game_state) {
@@ -67,7 +73,7 @@ int handle_quit_application(char* args[4], GameState* game_state) {
 }
 
 int handle_shuffle_deck(char* args[4], GameState* game_state) {
-    shuffle_deck(game_state->deck);
+    game_state->deck = shuffle_deck(game_state->deck);
     return 1;
 }
 

@@ -18,7 +18,7 @@ Command commands[] = {
         {"P", switch_to_play_phase},
         {"SW", handle_show_deck},
         {"SR", handle_shuffle_deck},
-        {"SI", handle_split_deck},
+       {"SI", handle_split_deck},
 };
 
 char* valid_startup_commands[] = {"LD", "SW", "SI", "SR", "SD", "QQ", "P" };
@@ -128,7 +128,7 @@ ParsedCommand* extract_command(const char* command) {
 
 int evaluate_command(ParsedCommand* command, GameState *state) {
     if (command == NULL) return 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 10; i++) {
         if (strcmp(command->command, commands[i].name) == 0) {
             return commands[i].func(command->args, state);
         }

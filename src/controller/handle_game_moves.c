@@ -5,7 +5,7 @@
 #include <string.h>
 
 int handle_game_move(const GameMove *move, GameState *state, char *message) {
-
+    move_card()
     return 1;
 }
 

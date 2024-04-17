@@ -150,6 +150,7 @@ LinkedCard* shuffle_deck(LinkedCard* deck){
         size++;
         temp = temp->next;
     }
+
     LinkedCard* shuffledDeck = NULL;
     for(int i = 0; i < size; i++){
         LinkedCard* temp = deck;
@@ -175,6 +176,7 @@ LinkedCard* shuffle_deck(LinkedCard* deck){
             temp2->next = temp;
         }
     }
+    free(deck);
     return shuffledDeck;
 }
 
