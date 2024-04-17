@@ -21,3 +21,14 @@ void empty_columns(GameState* game_state) {
         game_state->column[i] = NULL;
     }
 }
+
+LinkedCard* find_card_column(char* card, LinkedCard* column){
+    LinkedCard* current = column;
+    while(current != NULL){
+        if(current->value == card[0] && current->suit == card[1]){
+            return current;
+        }
+        current = current->next;
+    }
+    return NULL;
+}
