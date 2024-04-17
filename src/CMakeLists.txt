@@ -11,6 +11,8 @@ add_library(backend
         view/terminal/terminal_style.c
         view/terminal/command_parser.c
         controller/handle_commands.c
+        controller/handle_game_moves.c
+        controller/game_state.c
 )
 
 target_link_libraries(Main PUBLIC backend)

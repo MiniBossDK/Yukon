@@ -5,14 +5,14 @@
 #include <ctype.h>
 #include <model/card.h>
 #include <controller/handle_commands.h>
+#include <controller/handle_game_moves.h>
+#include <controller/phase.h>
 
 Command commands[] = {
         {"LD", handle_load_game},
         {"QQ", handle_quit_application},
         {"Q", handle_quit_game},
         {"P", switch_to_play_phase},
-
-
 };
 
 char* valid_startup_commands[] = {"LD", "SW", "SI", "SR", "SD", "QQ", "P" };
@@ -41,7 +41,7 @@ int validate_game_command(const ParsedCommand* cmd) {
     return 0;
 }
 
-int validate_command(const ParsedCommand* command, GameState state, char* message) {
+int validate_command(const ParsedCommand* command, GameState *state, char* message) {
     if (command == NULL) {
         strcpy(message, "No command provided");
         return 0;
@@ -60,12 +60,12 @@ int validate_command(const ParsedCommand* command, GameState state, char* messag
         return 0;
     }
 
-    if (state == STARTUP && !valid_startup_command) {
+    if (state->phase == STARTUP && !valid_startup_command) {
         strcpy(message, "Can't use that command in the startup phase");
         return 0;
     }
 
-    if (state == PLAY && !valid_game_command) {
+    if (state->phase == PLAY && !valid_game_command) {
         strcpy(message, "Can't use that command in the play phase");
         return 0;
     }
@@ -120,11 +120,11 @@ ParsedCommand* extract_command(const char* command) {
     return cmd;
 }
 
-int evaluate_command(ParsedCommand* command, char* message) {
+int evaluate_command(ParsedCommand* command, char* message, GameState *state) {
     if (command == NULL) return 0;
     for (int i = 0; i < 4; i++) {
         if (strcmp(command->command, commands[i].name) == 0) {
-            return commands[i].func(command->args, message);
+            return commands[i].func(command->args, message, state);
         }
     }
     return 1;
@@ -164,8 +164,8 @@ CommandType get_command_type(const char* command) {
     return COMMAND;
 }
 
-int parse_command(const char* command, GameState state, char* message, char* last_command) {
-    if(state == PLAY) {
+int parse_command(const char* command, GameState* state, char* message, char* last_command) {
+    if(state->phase == PLAY) {
         if(get_command_type(command) == GAME_MOVE) {
             if(parse_game_move(command, message, last_command)) {
                 strcpy(message, "OK");
@@ -180,7 +180,7 @@ int parse_command(const char* command, GameState state, char* message, char* las
         return 0;
     }
 
-    int status = evaluate_command(cmd, message);
+    int status = evaluate_command(cmd, message, state);
 
     char* command_copy = strdup(command);
     trim(command_copy);
@@ -269,7 +269,7 @@ int is_foundation_pile(const char *command) {
 
 int evaluate_game_move(const GameMove *move, char *message) {
     if (move == NULL) return 0;
-
+    handle_game_move(move, NULL, NULL, message);
     return 1;
 }
 

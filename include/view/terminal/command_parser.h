@@ -1,5 +1,7 @@
 #pragma once
 
+#include <controller/game_state.h>
+
 #define MAX_ARGS 4
 
 typedef enum {
@@ -7,14 +9,9 @@ typedef enum {
     COMMAND,
 } CommandType;
 
-typedef enum {
-    STARTUP,
-    PLAY,
-} GameState;
-
 typedef struct {
     char *name;
-    int (*func)(char *args[MAX_ARGS], char* message);
+    int (*func)(char *args[MAX_ARGS], char* message, GameState* game_state);
 } Command;
 
 typedef struct {
@@ -37,7 +34,7 @@ void destroy_command(ParsedCommand *command);
 
 void destroy_game_move(GameMove *move);
 
-int evaluate_command(ParsedCommand *command, char *message);
+int evaluate_command(ParsedCommand *command, char *message, GameState* state);
 
 int evaluate_game_move(const GameMove *move, char *message);
 
@@ -51,11 +48,11 @@ int validate_startup_command(const ParsedCommand *command);
 
 int validate_game_command(const ParsedCommand *command);
 
-int validate_command(const ParsedCommand *command, GameState state, char *message);
+int validate_command(const ParsedCommand *command, GameState* state, char *message);
 
 int validate_game_move_syntax(const GameMove *move, char *message);
 
-int parse_command(const char *command, GameState state, char *message, char *last_command);
+int parse_command(const char *command, GameState* state, char *message, char *last_command);
 
 int parse_game_move(const char *command, char *message, char *last_command);
 

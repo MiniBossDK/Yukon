@@ -5,6 +5,8 @@
 #include <string.h>
 #include <view/terminal/command_parser.h>
 #include <controller/handle_commands.h>
+#include <controller/phase.h>
+#include <controller/game_state.h>
 #include <stdlib.h>
 /*
 void fill_columns(LinkedCard *card[7]) {
@@ -147,39 +149,37 @@ void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
 int main() {
     LinkedCard* column[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
   
-    LinkedCard* foundation_piles[4];
+    LinkedCard* foundation_piles[4] = {NULL, NULL, NULL, NULL};
     LinkedCard* deck = create_deck();
     show_deck(deck, column);
     //fill_columns(column);
     //fill_foundation_piles(foundation_piles);
-     
+    GameState *game_state = create_game_state(deck, column, foundation_piles);
     int keep_running = 1;
     char command[20];
-    char last_command[20];
     clear_terminal(1);
-    char message[100] = "";
-    GameState state = STARTUP;
+
     while (keep_running) {
+        clear_terminal(1);
         print_board(column, foundation_piles);
-        print_last_command(last_command);
-        print_message(message);
+        print_last_command(game_state->lastCommand);
+        print_message(game_state->message);
         print_input_prompt();
         fgets(command, 50, stdin);
-        int status = parse_command(command, state, message, last_command);
+        int status = parse_command(command, game_state, game_state->message, game_state->lastCommand);
         fflush(stdin);
 
         if (status == -1) {
             keep_running = 0;
         }
         if(status == -2) {
-            state = PLAY;
+            game_state->phase = PLAY;
         }
         if(status == -3) {
-            state = STARTUP;
+            game_state->phase = STARTUP;
         }
         clear_terminal(1);
     }
-    //free_columns(column);
     //free_foundation_piles(foundation_piles);
     reset_terminal_color();
     return 0;
