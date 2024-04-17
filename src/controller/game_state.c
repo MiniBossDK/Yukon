@@ -1,5 +1,7 @@
 #include <controller/game_state.h>
 #include <stdlib.h>
+#include <string.h>
+
 
 GameState* create_game_state(LinkedCard* deck, LinkedCard* columns[7], LinkedCard* foundation[4]) {
     GameState* game_state = (GameState*)malloc(sizeof(GameState));
@@ -12,8 +14,9 @@ GameState* create_game_state(LinkedCard* deck, LinkedCard* columns[7], LinkedCar
     for(int i = 0; i < 4; i++) {
         game_state->foundation[i] = foundation[i];
     }
-    game_state->messsage = (char*)malloc(100);
-    game_state->lastCommand = (char*)malloc(100);
+    game_state->phase = 0;
+    strcpy(game_state->message, "Hell");
+    strcpy(game_state->lastCommand, "Hell");
     return game_state;
 }
 
