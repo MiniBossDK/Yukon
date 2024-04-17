@@ -1,4 +1,8 @@
 #include <controller/handle_commands.h>
+#include <model/deck.h>
+#include <model/card.h>
+#include <controller/game_state.h>
+#include <controller/phase.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -9,6 +13,25 @@ int handle_load_game(char* args[4], char* message, GameState* game_state) {
     }
     return 1;
 }
+
+int handle_save_game(char* args[4], char* message, GameState* game_state) {
+    if(args[0] == NULL) {
+        strcpy(message, "No file name provided");
+        return 0;
+    }
+    return 1;
+}
+
+int handle_load_deck(char* args[4], char* message, GameState* game_state) {
+    if(args[0] == NULL) {
+        game_state -> deck = load_deck_from_file();
+    }
+    else {
+        game_state -> deck = load_deck_from_file_name(args[0]);
+    }
+    return 1;
+}
+
 
 int handle_save_deck(char* args[4], char* message, GameState* game_state) {
     if(args[0] == NULL) {
@@ -21,10 +44,12 @@ int handle_save_deck(char* args[4], char* message, GameState* game_state) {
 }
 
 int switch_to_play_phase(char* args[4], char* message, GameState* game_state) {
+    game_state->phase = PLAY_PHASE;
     return -2; // This is the special signal to switch to the play phase
 }
 
 int handle_quit_game(char* args[4], char* message, GameState* game_state) {
+    game_state->phase = START_PHASE;
     return -3; // This is the special signal to quit the game
 }
 
