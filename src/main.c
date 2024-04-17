@@ -68,10 +68,10 @@ int main() {
   
     LinkedCard* foundation_piles[4] = {NULL, NULL, NULL, NULL};
     LinkedCard* deck = create_deck();
-    show_deck(deck, column);
+    GameState* game_state = create_game_state(deck, column, foundation_piles);
+    show_deck(game_state);
     //fill_columns(column);
     //fill_foundation_piles(foundation_piles);
-    GameState *game_state = create_game_state(deck, column, foundation_piles);
     int keep_running = 1;
     char command[20];
     clear_terminal(1);

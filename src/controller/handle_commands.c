@@ -4,6 +4,7 @@
 #include <controller/game_state.h>
 #include <controller/phase.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 int handle_load_game(char* args[4], char* message, GameState* game_state) {
@@ -58,24 +59,27 @@ int handle_quit_application(char* args[4], char* message, GameState* game_state)
     return -1; // This is the special signal to quit the application
 }
 
-int handle_move_card(char* args[4], char* message, GameState* game_state) {
-    if(args[0] == NULL) {
-        strcpy(message, "No source pile provided");
-        return 0;
-    }
-    if(args[1] == NULL) {
-        strcpy(message, "No destination pile provided");
-        return 0;
-    }
-    return 1;
-}
-
 int handle_shuffle_deck(char* args[4], char* message, GameState* game_state) {
     shuffle_deck(game_state->deck);
     return 1;
 }
 
 int handle_show_deck(char* args[4], char* message, GameState* game_state) {
-    show_deck(game_state->deck);
+    show_deck(game_state);
+    return 1;
+}
+
+int handle_split_deck(char* args[4], char* message, GameState* game_state) {
+    if (args[1] == NULL) {
+        split_deck(game_state->deck);
+    }
+    else {
+        if (!atoi(args[1])) {
+            return 0;
+        }
+        else {
+            split_deck_int(game_state->deck, atoi(args[1]));
+        }
+    }
     return 1;
 }
