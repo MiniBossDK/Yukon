@@ -160,6 +160,7 @@ int main() {
     char message[100] = "";
     Phase state = STARTUP;
     while (keep_running) {
+        clear_terminal(1);
         print_board(column, foundation_piles);
         print_last_command(last_command);
         print_message(message);

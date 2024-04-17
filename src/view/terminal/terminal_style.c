@@ -83,9 +83,14 @@ void print_board(LinkedCard* columns[], LinkedCard* foundation_piles[]) {
 
     max_cards = (max_cards < min_cards) ? min_cards : max_cards;
 
+
+    int k = 0;
+    LinkedCard *tempArr[7] = {columns[0], columns[1], columns[2], columns[3], columns[4], columns[5], columns[6]};
     for (int i = 0; i < max_cards; i++) {
+        LinkedCard *temp = NULL;
         for (int j = 0; j < 7; j++) {
             LinkedCard* card = columns[j];
+            temp = card;
             if(card == NULL) {
                 print_empty_card();
                 continue;
@@ -93,6 +98,7 @@ void print_board(LinkedCard* columns[], LinkedCard* foundation_piles[]) {
             print_card(card);
             printf("\t");
             columns[j] = card->next;
+
         }
         if((i % 2) == 0 && i <= 6) {
             int pile = (int) floor(i / 2);
@@ -102,5 +108,8 @@ void print_board(LinkedCard* columns[], LinkedCard* foundation_piles[]) {
         }
 
         printf("\n");
+    }
+    for (int i = 0; i < 7; i++) {
+        columns[i] = tempArr[i];
     }
 }
