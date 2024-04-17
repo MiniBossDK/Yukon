@@ -160,6 +160,7 @@ int main() {
     clear_terminal(1);
 
     while (keep_running) {
+        clear_terminal(1);
         print_board(column, foundation_piles);
         print_last_command(game_state->lastCommand);
         print_message(game_state->message);

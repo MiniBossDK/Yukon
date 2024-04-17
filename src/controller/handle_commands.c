@@ -14,7 +14,12 @@ int handle_load_game(char* args[4], char* message, GameState* game_state) {
 }
 
 int handle_save_deck(char* args[4], char* message, GameState* game_state) {
-
+    if(args[0] == NULL) {
+        save_deck_to_file(game_state->deck);
+    }
+    else {
+        save_deck_to_file_name(game_state->deck, args[0]);
+    }
     return 1;
 }
 
