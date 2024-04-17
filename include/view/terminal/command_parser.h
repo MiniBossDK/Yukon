@@ -36,7 +36,7 @@ void destroy_game_move(GameMove *move);
 
 int evaluate_command(ParsedCommand *command, char *message, GameState* state);
 
-int evaluate_game_move(const GameMove *move, char *message);
+int evaluate_game_move(const GameMove *move, GameState *state, char *message);
 
 CommandType get_command_type(const char *command);
 
@@ -52,9 +52,9 @@ int validate_command(const ParsedCommand *command, GameState* state, char *messa
 
 int validate_game_move_syntax(const GameMove *move, char *message);
 
-int parse_command(const char *command, GameState* state, char *message, char *last_command);
+int parse_command(const char *command, GameState *state, char *message, char *last_command);
 
-int parse_game_move(const char *command, char *message, char *last_command);
+int parse_game_move(const char* command, GameState *state, char* message, char* last_command);
 
 GameMoveSource *extract_move_source(const char *source);
 
@@ -75,3 +75,5 @@ int is_specific_card(const char *source);
 int is_column(const char *column);
 
 int is_foundation_pile(const char *pile);
+
+void to_upper(char* str);

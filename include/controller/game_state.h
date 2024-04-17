@@ -22,3 +22,10 @@ int check_win(GameState* game_state);
 void write_game_state_to_file(const char* filename, struct GameState* game_state);
 
 void read_game_state_from_file(const char* filename, struct GameState* game_state);
+
+void destroy_game_state(GameState* game_state);
+
+void show_deck(GameState* game_state);
+
+void game_init(GameState* game_state);
+
