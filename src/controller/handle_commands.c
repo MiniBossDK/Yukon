@@ -56,7 +56,9 @@ int switch_to_play_phase(char* args[4], GameState* game_state) {
 
 int handle_quit_game(char* args[4], GameState* game_state) {
     game_state->phase = STARTUP;
-    return -3; // This is the special signal to quit the game
+    empty_columns(game_state);
+    empty_foundations(game_state);
+    return 1;
 }
 
 int handle_quit_application(char* args[4], GameState* game_state) {
