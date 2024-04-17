@@ -9,10 +9,16 @@
 #include <controller/phase.h>
 
 Command commands[] = {
-        {"LD", handle_load_game},
+        {"L", handle_load_game},
+        {"S", handle_save_game},
+        {"LD", handle_load_deck},
+        {"SD", handle_save_deck},
         {"QQ", handle_quit_application},
         {"Q", handle_quit_game},
         {"P", switch_to_play_phase},
+        {"SW", handle_show_deck},
+        {"SR", handle_shuffle_deck},
+        {"SI", handle_split_deck},
 };
 
 char* valid_startup_commands[] = {"LD", "SW", "SI", "SR", "SD", "QQ", "P" };

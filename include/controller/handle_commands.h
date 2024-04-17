@@ -22,3 +22,7 @@ int handle_show_cards(char* args[4], GameState* game_state);
 int switch_to_play_phase(char* args[4], GameState* game_state);
 
 int switch_to_start_phase(char* args[4], GameState* game_state);
+
+int handle_shuffle_deck(char* args[4], GameState* game_state);
+
+int handle_show_deck(char* args[4], GameState* game_state);
