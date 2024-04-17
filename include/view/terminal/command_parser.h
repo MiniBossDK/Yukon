@@ -75,3 +75,5 @@ int is_specific_card(const char *source);
 int is_column(const char *column);
 
 int is_foundation_pile(const char *pile);
+
+void to_upper(char* str);

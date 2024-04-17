@@ -44,12 +44,12 @@ int handle_save_deck(char* args[4], char* message, GameState* game_state) {
 }
 
 int switch_to_play_phase(char* args[4], char* message, GameState* game_state) {
-    game_state->phase = PLAY_PHASE;
+    game_state->phase = PLAY;
     return -2; // This is the special signal to switch to the play phase
 }
 
 int handle_quit_game(char* args[4], char* message, GameState* game_state) {
-    game_state->phase = START_PHASE;
+    game_state->phase = STARTUP;
     return -3; // This is the special signal to quit the game
 }
 
