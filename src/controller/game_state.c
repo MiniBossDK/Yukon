@@ -1,5 +1,5 @@
 #include <controller/game_state.h>
-#include <malloc.h>
+#include <stdlib.h>
 
 GameState* create_game_state(LinkedCard* deck, LinkedCard* columns[7], LinkedCard* foundation[4]) {
     GameState* game_state = (GameState*)malloc(sizeof(GameState));
@@ -15,4 +15,16 @@ GameState* create_game_state(LinkedCard* deck, LinkedCard* columns[7], LinkedCar
     game_state->messsage = (char*)malloc(100);
     game_state->lastCommand = (char*)malloc(100);
     return game_state;
+}
+
+int check_win(GameState* game_state) {
+    for (int i = 0; i < 4; i++) {
+        if (game_state -> foundation[i] == NULL) {
+            return 0;
+        }
+        if (game_state -> foundation[i]-> rank != 'K') {
+            return 0;
+        }
+    }
+    return 1;
 }
