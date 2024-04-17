@@ -69,3 +69,13 @@ int handle_move_card(char* args[4], char* message, GameState* game_state) {
     }
     return 1;
 }
+
+int handle_shuffle_deck(char* args[4], char* message, GameState* game_state) {
+    shuffle_deck(game_state->deck);
+    return 1;
+}
+
+int handle_show_deck(char* args[4], char* message, GameState* game_state) {
+    show_deck(game_state->deck);
+    return 1;
+}
