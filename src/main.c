@@ -3,6 +3,7 @@
 #include <model/deck.h>
 #include <view/terminal/terminal_style.h>
 #include <string.h>
+#include <controller/game_state.h>
 #include <view/terminal/command_parser.h>
 #include <controller/handle_commands.h>
 #include <controller/phase.h>
@@ -59,91 +60,7 @@ void free_foundation_piles(LinkedCard *card[4]) {
     }
 }
 */
-void game_init(LinkedCard *deck, LinkedCard *column[7]) {
 
-    LinkedCard* deck_clone = clone_deck(deck);
-    int index = 0;
-    int start_index = 0;
-    int end_index = 6;
-    int hide_index = 0;
-
-    LinkedCard* temp = deck_clone->next;
-    for (int i = 0; i < 52; i++) {
-        if (column[index] != NULL) {
-            LinkedCard* temp2 = column[index];
-            temp2 = get_last_card(temp2);
-            temp2 -> next = deck_clone;
-            deck_clone -> prev = temp2;
-            deck_clone->next = NULL;
-            if (index > hide_index) {
-                hide_card(deck_clone);
-            }
-        } else {
-            column[index] = deck_clone;
-            if(index > 0) {
-                hide_card(column[index]);
-            }
-            column[index] -> prev = NULL;
-            column[index] -> next = NULL;
-        }
-        temp -> prev = NULL;
-        if (temp -> next != NULL) {
-            temp -> prev = NULL;
-            deck_clone = temp;
-            temp = deck_clone -> next;
-        }
-        else {
-            deck_clone = temp;
-        }
-
-        index++;
-        if (i == 6 || i == 36 || i == 41 || i == 45 || i == 48 || i == 50 ) {
-            start_index++;
-        }
-        if (index > end_index) {
-            index = start_index;
-            hide_index++;
-        }
-
-    }
-    deck_clone = NULL;
-    destroy_deck(deck_clone);
-}
-
-void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
-    LinkedCard* deck_clone = clone_deck(deck);
-    int index = 0;
-    LinkedCard* temp = deck_clone->next;
-    for (int i = 0; i < 52; i++) {
-        if (column[index] != NULL) {
-            LinkedCard* temp2 = column[index];
-            temp2 = get_last_card(temp2);
-            temp2 -> next = deck_clone;
-            deck_clone -> prev = temp2;
-            deck_clone->next = NULL;
-        } else {
-            column[index] = deck_clone;
-            column[index] -> prev = NULL;
-            column[index] -> next = NULL;
-        }
-        temp -> prev = NULL;
-        if (temp -> next != NULL) {
-            temp -> prev = NULL;
-            deck_clone = temp;
-            temp = deck_clone -> next;
-        }
-        else {
-            deck_clone = temp;
-        }
-
-        index++;
-        if (index == 7) {
-            index = 0;
-        }
-    }
-    deck_clone = NULL;
-    destroy_deck(deck_clone);
-}
 
 
 int main() {

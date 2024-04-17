@@ -54,6 +54,7 @@ int handle_quit_game(char* args[4], char* message, GameState* game_state) {
 }
 
 int handle_quit_application(char* args[4], char* message, GameState* game_state) {
+    destroy_game_state(game_state);
     return -1; // This is the special signal to quit the application
 }
 
@@ -66,5 +67,15 @@ int handle_move_card(char* args[4], char* message, GameState* game_state) {
         strcpy(message, "No destination pile provided");
         return 0;
     }
+    return 1;
+}
+
+int handle_shuffle_deck(char* args[4], char* message, GameState* game_state) {
+    shuffle_deck(game_state->deck);
+    return 1;
+}
+
+int handle_show_deck(char* args[4], char* message, GameState* game_state) {
+    show_deck(game_state->deck);
     return 1;
 }
