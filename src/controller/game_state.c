@@ -1,6 +1,7 @@
 #include <controller/game_state.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 
 GameState* create_game_state(LinkedCard* deck, LinkedCard* columns[7], LinkedCard* foundation[4]) {
@@ -30,4 +31,34 @@ int check_win(GameState* game_state) {
         }
     }
     return 1;
+}
+
+// Function to write a struct to a file
+void write_game_state_to_file(const char* filename, GameState* game_state) {
+    FILE* file = fopen(filename, "wb"); // Open the file in binary write mode
+
+    if (file != NULL) {
+        // Write the struct to the file
+        fwrite(game_state, sizeof(GameState), 1, file);
+
+        // Close the file
+        fclose(file);
+    } else {
+        printf("Error: Unable to open file for writing.\n");
+    }
+}
+
+// Function to read a struct from a file
+void read_game_state_from_file(const char* filename, GameState* game_state) {
+    FILE* file = fopen(filename, "rb"); // Open the file in binary read mode
+
+    if (file != NULL) {
+        // Read the struct from the file
+        fread(game_state, sizeof(GameState), 1, file);
+
+        // Close the file
+        fclose(file);
+    } else {
+        printf("Error: Unable to open file for reading.\n");
+    }
 }
