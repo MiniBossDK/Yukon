@@ -46,6 +46,7 @@ int handle_save_deck(char* args[4], GameState* game_state) {
 
 int switch_to_play_phase(char* args[4], GameState* game_state) {
     game_state->phase = PLAY;
+    game_init(game_state);
     return -2; // This is the special signal to switch to the play phase
 }
 
