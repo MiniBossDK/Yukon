@@ -5,14 +5,13 @@
 #include <ctype.h>
 #include <model/card.h>
 #include <controller/handle_commands.h>
+#include <controller/handle_game_moves.h>
 
 Command commands[] = {
         {"LD", handle_load_game},
         {"QQ", handle_quit_application},
         {"Q", handle_quit_game},
         {"P", switch_to_play_phase},
-
-
 };
 
 char* valid_startup_commands[] = {"LD", "SW", "SI", "SR", "SD", "QQ", "P" };
@@ -164,7 +163,7 @@ CommandType get_command_type(const char* command) {
     return COMMAND;
 }
 
-int parse_command(const char* command, Phase state, char* message, char* last_command) {
+int parse_command(const char* command, GameState state, char* message, char* last_command) {
     if(state == PLAY) {
         if(get_command_type(command) == GAME_MOVE) {
             if(parse_game_move(command, message, last_command)) {
@@ -269,7 +268,7 @@ int is_foundation_pile(const char *command) {
 
 int evaluate_game_move(const GameMove *move, char *message) {
     if (move == NULL) return 0;
-
+    handle_game_move(move, NULL, NULL, message);
     return 1;
 }
 
