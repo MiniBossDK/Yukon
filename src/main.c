@@ -57,17 +57,67 @@ void free_foundation_piles(LinkedCard *card[4]) {
     }
 }
 */
-void game_init(LinkedCard **deck, LinkedCard *columns[7]);
+void game_init(LinkedCard *deck, LinkedCard *column[7]) {
 
-void show_deck(LinkedCard* deck, LinkedCard* column[7]);
+    LinkedCard* deck_clone = clone_deck(deck);
+    int index = 0;
+    int start_index = 0;
+    int end_index = 6;
+    int hide_index = 0;
+
+    LinkedCard* temp = deck_clone->next;
+    for (int i = 0; i < 52; i++) {
+        if (column[index] != NULL) {
+            LinkedCard* temp2 = column[index];
+            temp2 = get_last_card(temp2);
+            temp2 -> next = deck_clone;
+            deck_clone -> prev = temp2;
+            deck_clone->next = NULL;
+            if (index > hide_index) {
+                hide_card(deck_clone);
+            }
+        } else {
+            column[index] = deck_clone;
+            if(index > 0) {
+                hide_card(column[index]);
+            }
+            column[index] -> prev = NULL;
+            column[index] -> next = NULL;
+        }
+        temp -> prev = NULL;
+        if (temp -> next != NULL) {
+            temp -> prev = NULL;
+            deck_clone = temp;
+            temp = deck_clone -> next;
+        }
+        else {
+            deck_clone = temp;
+        }
+
+        index++;
+        if (i == 6 || i == 36 || i == 41 || i == 45 || i == 48 || i == 50 ) {
+            start_index++;
+        }
+        if (index > end_index) {
+            index = start_index;
+            hide_index++;
+        }
+
+    }
+    deck_clone = NULL;
+    destroy_deck(deck_clone);
+}
+
 
 int main() {
-    /*
-    LinkedCard* column[7];
+    LinkedCard* column[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+  
     LinkedCard* foundation_piles[4];
-    fill_columns(column);
-    fill_foundation_piles(foundation_piles);
-     */
+    LinkedCard* deck = create_deck();
+    show_deck(deck, column);
+    //fill_columns(column);
+    //fill_foundation_piles(foundation_piles);
+     
     int keep_running = 1;
     char command[20];
     char last_command[20];
@@ -75,7 +125,7 @@ int main() {
     char message[100] = "";
     GameState state = STARTUP;
     while (keep_running) {
-        //print_board(column, foundation_piles);
+        print_board(column, foundation_piles);
         print_last_command(last_command);
         print_message(message);
         print_input_prompt();
@@ -100,62 +150,6 @@ int main() {
     return 0;
 }
 
-void game_init(LinkedCard **deck, LinkedCard *columns[7]) {
 
-    int totalCardsInColumn[7] = {1, 6, 7, 8, 9, 10, 11};
-    int faceDownCards[7] = {0, 1, 2, 3, 4, 5, 6};
 
-    for (int col = 0; col < 7; col++) {
-
-        for (int cardNum = 0; cardNum < totalCardsInColumn[col]; cardNum++) {
-
-            LinkedCard *currentCard = *deck;
-            *deck = (*deck)->next;
-
-            if (cardNum < faceDownCards[col]) {
-                hide_card(currentCard);
-            } else {
-                // Otherwise, it's set as faceup.
-                unhide_card(currentCard);
-            }
-
-            currentCard->next = NULL;
-
-            if (columns[col] == NULL) {
-                columns[col] = currentCard;
-
-                currentCard->prev = NULL;
-            } else {
-                move_card(currentCard, get_last_card(columns[col]));
-            }
-        }
-    }
-}
-
-void show_deck(LinkedCard* deck, LinkedCard* column[7]) {
-    int index = 0;
-    for (int i = 0; i < 52; i++) {
-        if (deck != NULL) {
-            if (column[index] != NULL) {
-                LinkedCard* temp = column[index];
-                temp = get_last_card(temp);
-                LinkedCard* temp2 = deck;
-                deck = deck->next;
-                deck -> prev = NULL;
-                move_card(temp2, temp);
-            } else {
-                column[index] = deck;
-                LinkedCard* temp = column[index];
-                deck = deck->next;
-                deck ->prev = NULL;
-                temp->prev = NULL;
-                temp->next = NULL;
-            }
-        }
-        index++;
-        if (index == 7) {
-            index = 0;
-        }
-    }
-}
 
