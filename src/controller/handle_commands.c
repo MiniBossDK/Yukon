@@ -1,7 +1,4 @@
 #include <controller/handle_commands.h>
-#include <model/deck.h>
-#include <model/card.h>
-#include <controller/game_state.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -24,7 +21,6 @@ int handle_save_deck(char* args[4], char* message, GameState* game_state) {
 }
 
 int switch_to_play_phase(char* args[4], char* message, GameState* game_state) {
-
     return -2; // This is the special signal to switch to the play phase
 }
 

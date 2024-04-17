@@ -175,7 +175,7 @@ int parse_command(const char* command, GameState* state, char* message, char* la
         }
     }
     ParsedCommand *cmd = extract_command(command);
-
+    to_upper(cmd->command);
     if (!validate_command(cmd, state, message)) {
         return 0;
     }
@@ -383,6 +383,10 @@ int parse_game_move(const char* command, char* message, char* last_command) {
     char* command_copy = strdup(command);
     remove_all_spaces(command_copy);
     GameMove *move = extract_game_move(command_copy);
+    //to_upper(move->to);
+    //to_upper(move->from->column);
+    //to_upper(move->from->pile);
+    //to_upper(move->from->card);
     if(!validate_game_move_syntax(move, message)) {
         destroy_game_move(move);
         return 0;
@@ -393,4 +397,11 @@ int parse_game_move(const char* command, char* message, char* last_command) {
     free(command_copy);
     destroy_game_move(move);
     return 1;
+}
+
+void to_upper(char* str) {
+    if (str == NULL) return;
+    for (int i = 0; i < strlen(str); i++) {
+        str[i] = toupper(str[i]);
+    }
 }
