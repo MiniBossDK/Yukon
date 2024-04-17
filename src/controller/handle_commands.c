@@ -1,6 +1,8 @@
 #include <controller/handle_commands.h>
 #include <model/deck.h>
 #include <model/card.h>
+#include <model/column.h>
+#include <model/foundation_pile.h>
 #include <controller/game_state.h>
 #include <controller/phase.h>
 #include <stdio.h>
@@ -46,6 +48,8 @@ int handle_save_deck(char* args[4], char* message, GameState* game_state) {
 
 int switch_to_play_phase(char* args[4], char* message, GameState* game_state) {
     game_state->phase = PLAY;
+    empty_columns(game_state);
+    empty_foundations(game_state);
     game_init(game_state);
     return -2; // This is the special signal to switch to the play phase
 }
@@ -66,6 +70,8 @@ int handle_shuffle_deck(char* args[4], char* message, GameState* game_state) {
 }
 
 int handle_show_deck(char* args[4], char* message, GameState* game_state) {
+    empty_columns(game_state);
+    empty_foundations(game_state);
     show_deck(game_state);
     return 1;
 }
