@@ -82,7 +82,7 @@ int main() {
         print_message(game_state->message);
         print_input_prompt();
         fgets(command, 50, stdin);
-        int status = parse_command(command, game_state, game_state->message, game_state->lastCommand);
+        int status = parse_command(command, game_state);
         fflush(stdin);
 
         if (status == -1) {

@@ -1,7 +1,8 @@
 //
 // Created by Turan Talayhan on 10/04/2024.
 //
-
+#include <unistd.h>
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <model/deck.h>
@@ -144,39 +145,65 @@ LinkedCard* load_deck_from_file_name(char* fileName){
 }
 
 LinkedCard* shuffle_deck(LinkedCard* deck){
-    int size = 0;
-    LinkedCard* temp = deck;
-    while(temp != NULL){
-        size++;
-        temp = temp->next;
-    }
-    LinkedCard* shuffledDeck = NULL;
-    for(int i = 0; i < size; i++){
-        LinkedCard* temp = deck;
-        LinkedCard* prev = NULL;
-        int random = rand() % size;
-        for(int j = 0; j < random; j++){
-            prev = temp;
-            temp = temp->next;
-        }
-        if(prev == NULL){
-            deck = temp->next;
-        }else{
-            prev->next = temp->next;
-        }
-        temp->next = NULL;
-        if(shuffledDeck == NULL){
-            shuffledDeck = temp;
-        }else{
-            LinkedCard* temp2 = shuffledDeck;
-            while(temp2->next != NULL){
-                temp2 = temp2->next;
+    LinkedCard* temp = deck->next; //Store next card in deck
+    LinkedCard* shuffled_deck = deck; //Deck which will be returned
+    LinkedCard* shuffled_deck_start = shuffled_deck; //Used to keep track of start of linked list
+    shuffled_deck->next = NULL;  //Detach first card from deck
+    deck = temp; //Set deck to next card
+    deck->prev = NULL; //Remove first card from deck
+    srand((unsigned)clock()); //Seed random number generator with clock
+    int random;
+    int max_rand = 1; //Upper limit for random number equal to current number of cards in shuffled deck
+    while(1){
+        temp = deck->next; //Store next card in deck
+        random = rand() % max_rand; //Generate random number between 0 and max_rand
+        if (random > 0 && random < max_rand) {
+            for(int i = 0; i < random; i++) {
+                shuffled_deck = shuffled_deck->next; //Move shuffled deck pointer to random position
             }
-            temp2->next = temp;
         }
+        if(random == 0) { //if random number is 0, insert card at start of shuffled deck
+            deck->next = shuffled_deck;
+            shuffled_deck->prev = deck;
+            if(temp != NULL) {
+                temp->prev = NULL;
+            }
+            shuffled_deck_start = deck;
+        }
+        else if(random == max_rand) { //if random number is max_rand, insert card at end of shuffled deck
+            deck->prev = shuffled_deck;
+            shuffled_deck->next = deck;
+            if(temp != NULL) {
+                temp->prev = NULL;
+            }
+        }
+        else { //insert card in middle of shuffled deck, so that the position of the card in the linked list is equal to random number
+            LinkedCard* temp2 = shuffled_deck->prev;
+            deck->prev = temp2;
+            temp2->next = deck;
+            deck->next = shuffled_deck;
+            shuffled_deck->prev = deck;
+            if(temp != NULL) {
+                temp->prev = NULL;
+            }
+        }
+        if(temp == NULL) {
+            break; //exit while loop when deck is empty
+        }
+        deck = temp; //set deck to next card
+        if(deck->next != NULL) {
+            temp = deck-> next; //store next card in deck
+        }
+        else {
+            temp = NULL;
+        }
+        shuffled_deck = shuffled_deck_start; //reset shuffled deck pointer to start of linked list
+        max_rand++; //increment max_rand
     }
-    return shuffledDeck;
+    return shuffled_deck_start;
+
 }
+
 
 LinkedCard* split_deck(LinkedCard* deck){
     int size = 0;
