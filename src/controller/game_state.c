@@ -102,53 +102,55 @@ void show_deck(GameState* game_state) {
     destroy_deck(deck_clone);
 }
 
-void game_init(GameState* game_state) {
+void game_init(GameState* game_state) { // Function to initialize the game
 
-    LinkedCard* deck_clone = clone_deck(game_state->deck);
+    LinkedCard* deck_clone = clone_deck(game_state->deck); // Clone the deck of cards
+    // Initialize the game state
     int index = 0;
     int start_index = 0;
     int end_index = 6;
     int hide_index = 0;
 
-    LinkedCard* temp = deck_clone->next;
-    for (int i = 0; i < 52; i++) {
-        if (game_state->column[index] != NULL) {
-            LinkedCard* temp2 = game_state->column[index];
-            temp2 = get_last_card(temp2);
-            temp2 -> next = deck_clone;
-            deck_clone -> prev = temp2;
-            deck_clone->next = NULL;
-            if (index > hide_index) {
-                hide_card(deck_clone);
+    LinkedCard* temp = deck_clone->next; // Temporary pointer to the deck of cards
+    for (int i = 0; i < 52; i++) { // Loop through the deck of cards
+        if (game_state->column[index] != NULL) { // If the column is not empty
+            LinkedCard* temp2 = game_state->column[index]; // Temporary pointer to the column
+            temp2 = get_last_card(temp2); // Get the last card in the column
+            temp2 -> next = deck_clone; // Set the next card in the column to the cloned deck
+            deck_clone -> prev = temp2; // Set the previous card in the cloned deck to the last card in the column
+            deck_clone->next = NULL; // Set the next card in the cloned deck to NULL
+            if (index > hide_index) { // If the index is greater than the hide index
+                hide_card(deck_clone); // Hide the card
             }
         } else {
-            game_state->column[index] = deck_clone;
-            if(index > 0) {
-                hide_card(game_state->column[index]);
+            game_state->column[index] = deck_clone; // Set the column to the cloned deck
+            if(index > 0) { // If the index is greater than 0
+                hide_card(game_state->column[index]); // Hide the card
             }
-            game_state->column[index] -> prev = NULL;
-            game_state->column[index] -> next = NULL;
+            game_state->column[index] -> prev = NULL; // Set the previous card in the column to NULL
+            game_state->column[index] -> next = NULL; // Set the next card in the column to NULL
         }
-        temp -> prev = NULL;
-        if (temp -> next != NULL) {
-            temp -> prev = NULL;
-            deck_clone = temp;
-            temp = deck_clone -> next;
+        temp -> prev = NULL; // Set the previous card in the deck to NULL
+        if (temp -> next != NULL) { // If the next card in the deck is not NULL
+            temp -> prev = NULL; // Set the previous card in the deck to NULL
+            deck_clone = temp; // Set the cloned deck to the next card in the deck
+            temp = deck_clone -> next; // Set the temporary pointer to the next card in the deck
         }
         else {
-            deck_clone = temp;
+            deck_clone = temp;// Set the cloned deck to the next card in the deck
         }
 
-        index++;
+        index++; // Increment the index
+        // If the index is equal to 6, 36, 41, 45, 48, or 50
         if (i == 6 || i == 36 || i == 41 || i == 45 || i == 48 || i == 50 ) {
-            start_index++;
+            start_index++; // Increment the start index
         }
-        if (index > end_index) {
-            index = start_index;
-            hide_index++;
+        if (index > end_index) { // If the index is greater than the end index
+            index = start_index; // Set the index to the start index
+            hide_index++; // Increment the hide index
         }
 
     }
-    deck_clone = NULL;
-    destroy_deck(deck_clone);
+    deck_clone = NULL; // Set the cloned deck to NULL
+    destroy_deck(deck_clone); // Destroy the cloned deck
 }
