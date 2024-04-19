@@ -13,7 +13,6 @@ add_library(backend
         controller/handle_commands.c
         controller/handle_game_moves.c
         controller/game_state.c
-        model/linked_list.c
 )
 
 target_link_libraries(Main PUBLIC backend)
