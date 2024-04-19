@@ -273,10 +273,9 @@ int is_foundation_pile(const char *command) {
     return 0;
 }
 
-int evaluate_game_move(const GameMove *move, GameState *state) {
+int evaluate_game_move(GameMove *move, GameState *state) {
     if (move == NULL) return 0;
-    //handle_game_move(move, state, state->message);
-    return 1;
+    return handle_game_move(move, state);
 }
 
 void trim(char *str) {
@@ -397,12 +396,13 @@ int parse_game_move(const char* command, GameState* state) {
         destroy_game_move(move);
         return 0;
     }
+    printf("Move: %s -> %s\n", move->from->column, move->to);
     int status = evaluate_game_move(move, state);
     strcpy(state->lastCommand, command_copy);
 
     free(command_copy);
     destroy_game_move(move);
-    return status;
+    return 1;
 }
 
 void to_upper(char* str) {

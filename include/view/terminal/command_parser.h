@@ -36,7 +36,7 @@ void destroy_game_move(GameMove *move);
 
 int evaluate_command(ParsedCommand *command, GameState* state);
 
-int evaluate_game_move(const GameMove *move, GameState *state);
+int evaluate_game_move(GameMove *move, GameState *state);
 
 CommandType get_command_type(const char *command);
 

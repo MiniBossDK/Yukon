@@ -1,6 +1,8 @@
 #include <model/card.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <model/column.h>
+#include <model/foundation_pile.h>
 
 LinkedCard* create_card(char rank, char suit) {
     if(validate_rank(rank) && validate_suit(suit)){
@@ -65,11 +67,22 @@ void unhide_card(LinkedCard *card){
     card->hidden = 0;
 }
 
-void move_card(LinkedCard *card, LinkedCard *destination){
-    LinkedCard* previous = card->prev; //store the previous card
-    previous -> next = NULL; //set the previous card's next to NULL
-    card -> prev = destination; //set the card's previous to the destination
-    destination -> next = card; //
+int move_card(LinkedCard *card, LinkedCard *destination){
+    // If source is a column:card, then use find_card_column to see if the card is in the column.
+
+// If source is just a column, then use get_last_card to get the last card in the column.
+
+// If the target is a column, then use validate_move_to_column to see if the move is valid.
+
+// If the target is a foundation, then use validate_move_to_foundation to see if the move is valid.
+
+// If the move is valid, then move the card from the source to the destination.
+
+// If the move is not valid, then return 0.
+
+
+
+    return 1;
 }
 
 int validate_rank(char rank){
