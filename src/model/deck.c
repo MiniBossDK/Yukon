@@ -1,7 +1,7 @@
 //
 // Created by Turan Talayhan on 10/04/2024.
 //
-
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <model/deck.h>
@@ -144,6 +144,35 @@ LinkedCard* load_deck_from_file_name(char* fileName){
 }
 
 LinkedCard* shuffle_deck(LinkedCard* deck){
+    LinkedCard* shuffled_deck = NULL;
+    LinkedCard* shuffled_deck_start = shuffled_deck;
+    srand(time(NULL));
+    int random;
+    int max_rand = 0;
+    while(deck != NULL){
+        random = rand() % max_rand;
+        LinkedCard* temp = deck->next;
+        for (int i = 0; i < random; i++) {
+            shuffled_deck= shuffled_deck->next;
+        }
+        LinkedCard* temp2 = shuffled_deck->prev;
+        deck->prev = shuffled_deck->prev;
+        deck->next = shuffled_deck;
+        shuffled_deck->prev = deck;
+        temp2->next = deck;
+        deck = temp;
+        shuffled_deck = shuffled_deck_start;
+        max_rand++;
+    }
+    if (validate_deck(shuffled_deck)) {
+        return shuffled_deck;
+    }
+    return NULL;
+
+
+}
+
+    /*
     int size = 0;
     LinkedCard* temp = deck;
     while(temp != NULL){
@@ -176,7 +205,7 @@ LinkedCard* shuffle_deck(LinkedCard* deck){
         }
     }
     return shuffledDeck;
-}
+    */
 
 LinkedCard* split_deck(LinkedCard* deck){
     int size = 0;
