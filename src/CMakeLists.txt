@@ -26,6 +26,10 @@ IF (USER_INTERFACE)
 
     include_directories(${SDL2_INCLUDE_DIRS})
 
+    find_package(SDL2_image REQUIRED)
+
+    include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
+
     add_executable(MainGui
         gui_main.c
     )
@@ -33,6 +37,7 @@ IF (USER_INTERFACE)
     target_link_libraries(MainGui
             SDL2::SDL2main
             SDL2::SDL2
+            SDL2_image::SDL2_image
             backend)
 ENDIF()
 
