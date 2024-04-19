@@ -11,7 +11,7 @@ typedef enum {
 
 typedef struct {
     char *name;
-    int (*func)(char *args[MAX_ARGS], char* message, GameState* game_state);
+    int (*func)(char *args[MAX_ARGS], GameState* game_state);
 } Command;
 
 typedef struct {
@@ -34,9 +34,9 @@ void destroy_command(ParsedCommand *command);
 
 void destroy_game_move(GameMove *move);
 
-int evaluate_command(ParsedCommand *command, char *message, GameState* state);
+int evaluate_command(ParsedCommand *command, GameState* state);
 
-int evaluate_game_move(const GameMove *move, GameState *state, char *message);
+int evaluate_game_move(GameMove *move, GameState *state);
 
 CommandType get_command_type(const char *command);
 
@@ -48,13 +48,13 @@ int validate_startup_command(const ParsedCommand *command);
 
 int validate_game_command(const ParsedCommand *command);
 
-int validate_command(const ParsedCommand *command, GameState* state, char *message);
+int validate_command(const ParsedCommand *command, GameState* state);
 
-int validate_game_move_syntax(const GameMove *move, char *message);
+int validate_game_move_syntax(const GameMove *move, GameState *state);
 
-int parse_command(const char *command, GameState *state, char *message, char *last_command);
+int parse_command(const char *command, GameState *state);
 
-int parse_game_move(const char* command, GameState *state, char* message, char* last_command);
+int parse_game_move(const char* command, GameState *state);
 
 GameMoveSource *extract_move_source(const char *source);
 
