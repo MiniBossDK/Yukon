@@ -161,6 +161,10 @@ void destroy_game_move(GameMove* move) {
         }
         free(move->from);
     }
+    if (move->to != NULL) {
+        free(move->to);
+    }
+    free(move);
 }
 
 CommandType get_command_type(const char* command) {
@@ -260,14 +264,14 @@ int is_specific_card(const char *command) {
 int is_column(const char *command) {
     if(is_specific_card(command)) return 0;
 
-    if (strstr(command, "C") != NULL) {
+    if (strstr(command, "C") != NULL || strstr(command, "c") != NULL) {
         return 1;
     }
     return 0;
 }
 
 int is_foundation_pile(const char *command) {
-    if (strstr(command, "F") != NULL) {
+    if (strstr(command, "F") != NULL || strstr(command, "f") != NULL) {
         return 1;
     }
     return 0;
@@ -387,22 +391,19 @@ int validate_card_input(const char *card) {
 int parse_game_move(const char* command, GameState* state) {
     char* command_copy = strdup(command);
     remove_all_spaces(command_copy);
+    to_upper(command_copy);
     GameMove *move = extract_game_move(command_copy);
-    to_upper(move->to);
-    to_upper(move->from->column);
-    to_upper(move->from->pile);
-    to_upper(move->from->card);
+
     if(!validate_game_move_syntax(move, state)) {
         destroy_game_move(move);
         return 0;
     }
-    printf("Move: %s -> %s\n", move->from->column, move->to);
     int status = evaluate_game_move(move, state);
     strcpy(state->lastCommand, command_copy);
 
     free(command_copy);
     destroy_game_move(move);
-    return 1;
+    return status;
 }
 
 void to_upper(char* str) {

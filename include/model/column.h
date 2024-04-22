@@ -7,4 +7,6 @@ int validate_move_to_column(LinkedCard* column_card, LinkedCard* moved_card);
 
 void empty_columns(GameState* game_state);
 
-LinkedCard* find_card_column(char* card, LinkedCard* column);
+LinkedCard* find_card_column(const char* card, LinkedCard* column);
+
+int is_empty_column(LinkedCard *column);

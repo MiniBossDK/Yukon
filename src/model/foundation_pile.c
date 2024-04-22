@@ -21,3 +21,18 @@ void empty_foundations(GameState* game_state) {
         game_state->foundation[i] = NULL;
     }
 }
+
+LinkedCard* get_first_card(const char* card, LinkedCard* foundation) {
+    LinkedCard* current = foundation;
+    while(current != NULL) {
+        if(current->value == card[0] && current->suit == card[1]) {
+            return current;
+        }
+        current = current->next;
+    }
+    return NULL;
+}
+
+int is_empty_foundation(LinkedCard *foundation_pile) {
+    return foundation_pile == NULL;
+}

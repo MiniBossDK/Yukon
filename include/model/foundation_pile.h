@@ -6,3 +6,7 @@
 int validate_move_to_foundation(LinkedCard* foundation_card, LinkedCard* moved_card);
 
 void empty_foundations(GameState* game_state);
+
+LinkedCard* get_first_card(const char* card, LinkedCard* foundation);
+
+int is_empty_foundation(LinkedCard *foundation_pile);

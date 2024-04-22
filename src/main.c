@@ -74,7 +74,6 @@ int main() {
     //fill_foundation_piles(foundation_piles);
     int keep_running = 1;
     char command[20];
-    clear_terminal(1);
     while (keep_running) {
         clear_terminal(1);
         print_board(game_state->column, game_state->foundation);
@@ -88,7 +87,6 @@ int main() {
         if (status == -1) {
             keep_running = 0;
         }
-        clear_terminal(1);
     }
     //free_foundation_piles(foundation_piles);
     reset_terminal_color();
