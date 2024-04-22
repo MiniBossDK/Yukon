@@ -129,7 +129,7 @@ void game_init(GameState* game_state) {
             game_state->column[index] -> prev = NULL;
             game_state->column[index] -> next = NULL;
         }
-        temp -> prev = NULL;
+        //temp -> prev = NULL;
         if (temp -> next != NULL) {
             temp -> prev = NULL;
             deck_clone = temp;

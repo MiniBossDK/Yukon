@@ -80,14 +80,15 @@ int move_card(LinkedCard **source, LinkedCard **destination, LinkedCard *card) {
     // If the move is not valid, then return 0.
     if (card == NULL) return 0;
     // Unlink node from the source list
-    if (card->prev)
-        card->prev->next = card->next;
-    if (card->next)
-        card->next->prev = card->prev;
+    if (card->prev) {
+        card->prev->next = NULL;
+        if(card->prev->hidden) {
+            unhide_card(card->prev);
+        }
+    }
     if (*source == card)
         *source = NULL;
 
-    card->next = NULL;
     card->prev = NULL;
 
     // Append node to destination list
@@ -151,6 +152,8 @@ int validate_card(char rank, char suit){
 }
 
 LinkedCard* get_last_card(LinkedCard* deck) {
+    if(deck == NULL) return NULL;
+
     LinkedCard *temp = deck;
     while(temp->next != NULL){
         temp = temp->next;

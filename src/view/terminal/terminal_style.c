@@ -92,7 +92,7 @@ void print_board(LinkedCard* columns[], LinkedCard* foundation_piles[]) {
         if((j % 2) == 0 && j <= 6) {
             int pile = (int) floor(j / 2);
             printf("\t");
-            print_card(foundation_piles[pile]);
+            print_card(get_top_card(foundation_piles[pile]));
             printf("\tF%d", pile + 1);
         }
         printf("\n");

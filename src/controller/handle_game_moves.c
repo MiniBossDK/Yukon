@@ -7,20 +7,26 @@
 
 int handle_game_move(GameMove *move, GameState *game_state) {
     // First validate if the move is valid according to the rules
-    /*
-    if(!validate_move(move, game_state)) {
-        return 0;
-    }
-    */
+    char *source_pile = (move->from->column != NULL) ? move->from->column : move->from->pile;
+    LinkedCard **source = get_pile(source_pile, game_state);
+    LinkedCard **destination = get_pile(move->to, game_state);
     LinkedCard *card = get_card_from_source(move->from, game_state);
-    if(card == NULL) {
-        strcpy(game_state->message, "Invalid source!");
+    if(!validate_move(source, destination, card, game_state)) {
         return 0;
     }
+    if(move->to[0] == 'F') {
+        if(!validate_move_to_foundation(destination, card)) {
+            strcpy(game_state->message, "Invalid move to foundation!");
+            return 0;
+        }
+    } else if(move->to[0] == 'C') {
+        if(!validate_move_to_column(destination, card)) {
+            strcpy(game_state->message, "Invalid move to column!");
+            return 0;
+        }
+    }
 
-    LinkedCard *destination = get_destination_pile(move->to, game_state);
-
-    int status = move_card(&game_state->column[char_to_int(move->from->column[1]) - 1], &destination, card);
+    int status = move_card(source, destination, card);
     return status;
 }
 
@@ -28,69 +34,51 @@ int char_to_int(const char c) {
     return c - '0';
 }
 
-int validate_move(GameMove *move, GameState *game_state) {
-    if(validate_move_source(move->from, game_state) == 0) {
+int validate_move(LinkedCard **src, LinkedCard **dest, LinkedCard *card, GameState *game_state) {
+    if(src == dest) {
+        strcpy(game_state->message, "Source and destination is the same!");
         return 0;
     }
-    //LinkedCard *source = get_card_from_source(move->from, game_state);
-    //LinkedCard *destination = get_destination_pile(move->to, game_state);
+    if(card == NULL) {
+        if(is_empty_pile(*src)) {
+            strcpy(game_state->message, "Source pile is empty!");
+            return 0;
+        }
+        strcpy(game_state->message, "Could not find card!");
+        return 0;
+    }
+    if(!validate_move_source(src, game_state)) {
+        return 0;
+    }
 
     return 1;
 }
 
-int is_distinct_piles(LinkedCard *source, LinkedCard *destination) {
+int validate_move_source(LinkedCard **src, GameState *game_state) {
 
+    if(is_empty_pile(*src)) {
+        sprintf(game_state->message, "Source pile is empty!");
+        return 0;
+    }
+    return 1;
 }
 
-int validate_move_source(GameMoveSource *source, GameState *game_state) {
-
-    if(source->pile != NULL) { // From here we know that the source is a foundation pile
-       if(is_empty_foundation(game_state->foundation[char_to_int(source->pile[1]) - 1])) {
-           sprintf(game_state->message, "Foundation pile %c is empty!", source->pile[1]);
-           return 0;
-       }
-       return 1;
-    }
-
-    if(source->column != NULL) { // From here we know that the source is a column
-        LinkedCard *column = game_state->column[char_to_int(source->column[1]) - 1];
-        if(source->card != NULL) { // From here we know that the source is a card
-            LinkedCard *card = find_card_column(source->card, column);
-            if(card == NULL) {
-                sprintf(game_state->message, "Card %s does not exist in column %c!", source->card, source->column[1]);
-                return 0;
-            }
-            return 1;
-        }
-        if(is_empty_column(game_state->column[char_to_int(source->column[1]) - 1])) {
-            sprintf(game_state->message, "Column %c is empty!", source->column[1]);
-            return 0;
-        }
-        return 1;
-    }
-
-    sprintf(game_state->message, "SOMETHING WENT WRONG!");
-    return 0;
-}
-
-LinkedCard* get_destination_pile(const char* pile, GameState *game_state) {
+LinkedCard **get_pile(const char* pile, GameState *game_state) {
     if(pile == NULL) {
         return NULL;
     }
 
     if(pile[0] == 'F') {
-        return game_state->foundation[char_to_int(pile[1]) - 1];
+        return &game_state->foundation[char_to_int(pile[1]) - 1];
     } else if(pile[0] == 'C') {
-        return game_state->column[char_to_int(pile[1]) - 1];
+        return &game_state->column[char_to_int(pile[1]) - 1];
     }
     return NULL;
 }
 
-
-
 LinkedCard* get_card_from_source(GameMoveSource* gameMoveSource, GameState *game_state) {
     if(gameMoveSource->pile != NULL) { // From here we know that the source is a foundation pile
-        LinkedCard* pile = game_state->foundation[char_to_int(gameMoveSource->pile[1]) - 1];
+        LinkedCard* pile = get_top_card(game_state->foundation[char_to_int(gameMoveSource->pile[1]) - 1]);
         if (pile == NULL) {
             return NULL;
         }
@@ -99,12 +87,17 @@ LinkedCard* get_card_from_source(GameMoveSource* gameMoveSource, GameState *game
 
     if(gameMoveSource->column != NULL) { // From here we know that the source is a column
         if(gameMoveSource->card != NULL) { // From here we know that the source is a specific card in a column
-            return game_state->column[char_to_int(gameMoveSource->column[1]) - 1];
+            return find_card_column(gameMoveSource->card, game_state->column[char_to_int(gameMoveSource->column[1]) - 1]);
         }
         return get_last_card(game_state->column[char_to_int(gameMoveSource->column[1]) - 1]);
     }
 
     return NULL;
+}
+
+int is_same_pile(LinkedCard *src, LinkedCard *dest) {
+    // TODO - Make a more valid check
+    return src == dest;
 }
 
 int execute_move() {

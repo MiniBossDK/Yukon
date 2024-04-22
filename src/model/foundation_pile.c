@@ -1,13 +1,14 @@
 #include <model/foundation_pile.h>
-#include <model/card.h>
 #include <stdlib.h>
-#include "controller/game_state.h"
 
-int validate_move_to_foundation(LinkedCard* foundation_card, LinkedCard* moved_card) {
-    if(foundation_card == 0) {
+int validate_move_to_foundation(LinkedCard **foundation_pile, LinkedCard* moved_card) {
+    if(moved_card->next != NULL) {
+        return 0;
+    }
+    if(*foundation_pile == NULL) {
         return moved_card->value == 1;
     }
-    return (foundation_card->value + 1 == moved_card->value && foundation_card->suit == moved_card->suit);
+    return ((*foundation_pile)->value + 1 == moved_card->value && (*foundation_pile)->suit == moved_card->suit);
 }
 
 void empty_foundations(GameState* game_state) {
@@ -31,6 +32,17 @@ LinkedCard* get_first_card(const char* card, LinkedCard* foundation) {
         current = current->next;
     }
     return NULL;
+}
+
+LinkedCard *get_top_card(LinkedCard *foundation_pile) {
+    if(foundation_pile == NULL) {
+        return NULL;
+    }
+    LinkedCard *current = foundation_pile;
+    while(current->next != NULL) {
+        current = current->next;
+    }
+    return current;
 }
 
 int is_empty_foundation(LinkedCard *foundation_pile) {
