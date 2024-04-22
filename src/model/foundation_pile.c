@@ -8,7 +8,8 @@ int validate_move_to_foundation(LinkedCard **foundation_pile, LinkedCard* moved_
     if(*foundation_pile == NULL) {
         return moved_card->value == 1;
     }
-    return ((*foundation_pile)->value + 1 == moved_card->value && (*foundation_pile)->suit == moved_card->suit);
+    LinkedCard *top_card = get_top_card(*foundation_pile);
+    return top_card->value + 1 == moved_card->value && top_card->suit == moved_card->suit;
 }
 
 void empty_foundations(GameState* game_state) {
