@@ -16,8 +16,8 @@ GameState* create_game_state(LinkedCard* deck, LinkedCard* columns[7], LinkedCar
         game_state->foundation[i] = foundation[i];
     }
     game_state->phase = 0;
-    strcpy(game_state->message, "Hell");
-    strcpy(game_state->lastCommand, "Hell");
+    strcpy(game_state->message, "Welcome to Yukon Solitaire!");
+    strcpy(game_state->lastCommand, "");
     return game_state;
 }
 
