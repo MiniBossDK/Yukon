@@ -112,6 +112,7 @@ ParsedCommand* extract_command(const char* command) {
     char *arg;
     while (arg_count < MAX_ARGS && (arg = strtok_r(NULL, " ", &rest)) != NULL) {
         cmd->args[arg_count] = strdup(arg);
+        // If memory allocation fails, free all allocated memory and return NULL
         if (cmd->args[arg_count] == NULL) {
             free(command_copy);
             for (int j = 0; j < arg_count; j++) free(cmd->args[j]);

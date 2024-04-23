@@ -1,4 +1,5 @@
 #include <controller/game_state.h>
+#include <model/foundation_pile.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -23,10 +24,10 @@ GameState* create_game_state(LinkedCard* deck, LinkedCard* columns[7], LinkedCar
 
 int check_win(GameState* game_state) {
     for (int i = 0; i < 4; i++) {
-        if (game_state -> foundation[i] == NULL) {
+        if (game_state->foundation[i] == NULL) {
             return 0;
         }
-        if (game_state -> foundation[i]-> rank != 'K') {
+        if (get_top_card(game_state -> foundation[i])->rank != 'K') {
             return 0;
         }
     }

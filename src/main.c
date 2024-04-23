@@ -84,6 +84,10 @@ int main() {
         int status = parse_command(command, game_state);
         fflush(stdin);
 
+        if(game_state->game_over) {
+
+        }
+
         if (status == -1) {
             keep_running = 0;
         }

@@ -27,6 +27,11 @@ int handle_game_move(GameMove *move, GameState *game_state) {
     }
 
     int status = move_card(source, destination, card);
+    if(check_win(game_state)) {
+        strcpy(game_state->message, "You win!");
+        game_state->game_over = 1;
+        return 1;
+    }
     return status;
 }
 
