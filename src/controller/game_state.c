@@ -1,4 +1,5 @@
 #include <controller/game_state.h>
+#include <model/foundation_pile.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -16,17 +17,17 @@ GameState* create_game_state(LinkedCard* deck, LinkedCard* columns[7], LinkedCar
         game_state->foundation[i] = foundation[i];
     }
     game_state->phase = 0;
-    strcpy(game_state->message, "Hell");
-    strcpy(game_state->lastCommand, "Hell");
+    strcpy(game_state->message, "Welcome to Yukon Solitaire!");
+    strcpy(game_state->lastCommand, "");
     return game_state;
 }
 
 int check_win(GameState* game_state) {
     for (int i = 0; i < 4; i++) {
-        if (game_state -> foundation[i] == NULL) {
+        if (game_state->foundation[i] == NULL) {
             return 0;
         }
-        if (game_state -> foundation[i]-> rank != 'K') {
+        if (get_top_card(game_state -> foundation[i])->rank != 'K') {
             return 0;
         }
     }
@@ -105,10 +106,6 @@ void show_deck(GameState* game_state) {
 void game_init(GameState* game_state) {
 
     LinkedCard* deck_clone = clone_deck(game_state->deck);
-    LinkedCard* column[7];
-    for(int i = 0; i < 7; i++) {
-        column[i] = game_state->column[i];
-    }
     int index = 0;
     int start_index = 0;
     int end_index = 6;
@@ -116,8 +113,8 @@ void game_init(GameState* game_state) {
 
     LinkedCard* temp = deck_clone->next;
     for (int i = 0; i < 52; i++) {
-        if (column[index] != NULL) {
-            LinkedCard* temp2 = column[index];
+        if (game_state->column[index] != NULL) {
+            LinkedCard* temp2 = game_state->column[index];
             temp2 = get_last_card(temp2);
             temp2 -> next = deck_clone;
             deck_clone -> prev = temp2;
@@ -126,14 +123,14 @@ void game_init(GameState* game_state) {
                 hide_card(deck_clone);
             }
         } else {
-            column[index] = deck_clone;
+            game_state->column[index] = deck_clone;
             if(index > 0) {
-                hide_card(column[index]);
+                hide_card(game_state->column[index]);
             }
-            column[index] -> prev = NULL;
-            column[index] -> next = NULL;
+            game_state->column[index] -> prev = NULL;
+            game_state->column[index] -> next = NULL;
         }
-        temp -> prev = NULL;
+        //temp -> prev = NULL;
         if (temp -> next != NULL) {
             temp -> prev = NULL;
             deck_clone = temp;

@@ -1,6 +1,7 @@
 #include <model/card.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 LinkedCard* create_card(char rank, char suit) {
     if(validate_rank(rank) && validate_suit(suit)){
@@ -65,11 +66,65 @@ void unhide_card(LinkedCard *card){
     card->hidden = 0;
 }
 
-void move_card(LinkedCard *card, LinkedCard *destination){
-    LinkedCard* previous = card->prev; //store the previous card
-    previous -> next = NULL; //set the previous card's next to NULL
-    card -> prev = destination; //set the card's previous to the destination
-    destination -> next = card; //
+int move_card(LinkedCard **source, LinkedCard **destination, LinkedCard *card) {
+    // If source is a column:card, then use find_card_column to see if the card is in the column.
+
+    // If source is just a column, then use get_last_card to get the last card in the column.
+
+    // If the target is a column, then use validate_move_to_column to see if the move is valid.
+
+    // If the target is a foundation, then use validate_move_to_foundation to see if the move is valid.
+
+    // If the move is valid, then move the card from the source to the destination.
+
+    // If the move is not valid, then return 0.
+    if (card == NULL) return 0;
+    // Unlink node from the source list
+    if (card->prev) {
+        card->prev->next = NULL;
+        if(card->prev->hidden) {
+            unhide_card(card->prev);
+        }
+    }
+    if (*source == card)
+        *source = NULL;
+
+    card->prev = NULL;
+
+    // Append node to destination list
+    if (*destination == NULL) {
+        *destination = card;
+    } else {
+        LinkedCard *lastCard = *destination;
+        while (lastCard->next != NULL) {
+            lastCard = lastCard->next;
+        }
+        lastCard->next = card;
+        card->prev = lastCard;
+    }
+    return 1;
+}
+
+int remove_card(char *card, LinkedCard **destination) {
+    LinkedCard *current = *destination;
+    while(current != NULL) {
+        char curr[2] = {current->rank, current->suit};
+        if(strcmp(curr, card) == 0) {
+            if(current->prev == NULL) {
+                *destination = current->next;
+            } else {
+                current->prev->next = current->next;
+            }
+            if(current->next != NULL) {
+                current->next->prev = current->prev;
+            }
+            free(current);
+            return 1;
+        }
+        current = current->next;
+    }
+    return 0;
+
 }
 
 int validate_rank(char rank){
@@ -97,8 +152,11 @@ int validate_card(char rank, char suit){
 }
 
 LinkedCard* get_last_card(LinkedCard* deck) {
-    while(deck->next != NULL){
-        deck = deck->next;
+    if(deck == NULL) return NULL;
+
+    LinkedCard *temp = deck;
+    while(temp->next != NULL){
+        temp = temp->next;
     }
-    return deck;
+    return temp;
 }

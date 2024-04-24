@@ -9,10 +9,16 @@
 #include <controller/phase.h>
 
 Command commands[] = {
-        {"LD", handle_load_game},
+        {"L", handle_load_game},
+        {"S", handle_save_game},
+        {"LD", handle_load_deck},
+        {"SD", handle_save_deck},
         {"QQ", handle_quit_application},
         {"Q", handle_quit_game},
         {"P", switch_to_play_phase},
+        {"SW", handle_show_deck},
+        {"SR", handle_shuffle_deck},
+       {"SI", handle_split_deck},
 };
 
 char* valid_startup_commands[] = {"LD", "SW", "SI", "SR", "SD", "QQ", "P" };
@@ -41,14 +47,14 @@ int validate_game_command(const ParsedCommand* cmd) {
     return 0;
 }
 
-int validate_command(const ParsedCommand* command, GameState *state, char* message) {
+int validate_command(const ParsedCommand* command, GameState *state) {
     if (command == NULL) {
-        strcpy(message, "No command provided");
+        strcpy(state->message, "No command provided");
         return 0;
     }
 
     if(is_empty(command->command)) {
-        strcpy(message, "No command provided");
+        strcpy(state->message, "No command provided");
         return 0;
     }
 
@@ -56,21 +62,21 @@ int validate_command(const ParsedCommand* command, GameState *state, char* messa
     int valid_startup_command = validate_startup_command(command);
 
     if (!valid_game_command && !valid_startup_command) {
-        strcpy(message, "Invalid command");
+        strcpy(state->message, "Invalid command");
         return 0;
     }
 
     if (state->phase == STARTUP && !valid_startup_command) {
-        strcpy(message, "Can't use that command in the startup phase");
+        strcpy(state->message, "Can't use that command in the startup phase");
         return 0;
     }
 
     if (state->phase == PLAY && !valid_game_command) {
-        strcpy(message, "Can't use that command in the play phase");
+        strcpy(state->message, "Can't use that command in the play phase");
         return 0;
     }
 
-    strcpy(message, "OK");
+    strcpy(state->message, "OK");
     return 1;
 }
 
@@ -106,6 +112,7 @@ ParsedCommand* extract_command(const char* command) {
     char *arg;
     while (arg_count < MAX_ARGS && (arg = strtok_r(NULL, " ", &rest)) != NULL) {
         cmd->args[arg_count] = strdup(arg);
+        // If memory allocation fails, free all allocated memory and return NULL
         if (cmd->args[arg_count] == NULL) {
             free(command_copy);
             for (int j = 0; j < arg_count; j++) free(cmd->args[j]);
@@ -120,11 +127,11 @@ ParsedCommand* extract_command(const char* command) {
     return cmd;
 }
 
-int evaluate_command(ParsedCommand* command, char* message, GameState *state) {
+int evaluate_command(ParsedCommand* command, GameState *state) {
     if (command == NULL) return 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 10; i++) {
         if (strcmp(command->command, commands[i].name) == 0) {
-            return commands[i].func(command->args, message, state);
+            return commands[i].func(command->args, state);
         }
     }
     return 1;
@@ -155,6 +162,10 @@ void destroy_game_move(GameMove* move) {
         }
         free(move->from);
     }
+    if (move->to != NULL) {
+        free(move->to);
+    }
+    free(move);
 }
 
 CommandType get_command_type(const char* command) {
@@ -164,11 +175,11 @@ CommandType get_command_type(const char* command) {
     return COMMAND;
 }
 
-int parse_command(const char* command, GameState* state, char* message, char* last_command) {
+int parse_command(const char* command, GameState* state) {
     if(state->phase == PLAY) {
         if(get_command_type(command) == GAME_MOVE) {
-            if(parse_game_move(command, state, message, last_command)) {
-                strcpy(message, "OK");
+            if(parse_game_move(command, state)) {
+                strcpy(state->message, "OK");
                 return 1;
             }
             return 0;
@@ -176,15 +187,15 @@ int parse_command(const char* command, GameState* state, char* message, char* la
     }
     ParsedCommand *cmd = extract_command(command);
     to_upper(cmd->command);
-    if (!validate_command(cmd, state, message)) {
+    if (!validate_command(cmd, state)) {
         return 0;
     }
 
-    int status = evaluate_command(cmd, message, state);
+    int status = evaluate_command(cmd, state);
 
     char* command_copy = strdup(command);
     trim(command_copy);
-    strcpy(last_command, command_copy); // copy the command to the last command message
+    strcpy(state->lastCommand, command_copy); // copy the command to the last command state->message
     free(command_copy);
     destroy_command(cmd);
     return status;
@@ -254,23 +265,22 @@ int is_specific_card(const char *command) {
 int is_column(const char *command) {
     if(is_specific_card(command)) return 0;
 
-    if (strstr(command, "C") != NULL) {
+    if (strstr(command, "C") != NULL || strstr(command, "c") != NULL) {
         return 1;
     }
     return 0;
 }
 
 int is_foundation_pile(const char *command) {
-    if (strstr(command, "F") != NULL) {
+    if (strstr(command, "F") != NULL || strstr(command, "f") != NULL) {
         return 1;
     }
     return 0;
 }
 
-int evaluate_game_move(const GameMove *move, GameState *state, char *message) {
+int evaluate_game_move(GameMove *move, GameState *state) {
     if (move == NULL) return 0;
-    //handle_game_move(move, state, message);
-    return 1;
+    return handle_game_move(move, state);
 }
 
 void trim(char *str) {
@@ -312,43 +322,43 @@ int is_empty(char *str) {
     return 0;
 }
 
-int validate_game_move_syntax(const GameMove *move, char *message) {
+int validate_game_move_syntax(const GameMove *move, GameState *state) {
     if (move == NULL) {
-        strcpy(message, "No move provided");
+        strcpy(state->message, "No move provided");
         return 0;
     }
 
     if (!validate_foundation_pile(move->to) && !validate_column(move->to)) {
-        strcpy(message, "Invalid destination location");
+        strcpy(state->message, "Invalid destination location");
         return 0;
     }
 
     if (move->from == NULL) {
-        strcpy(message, "Invalid source location");
+        strcpy(state->message, "Invalid source location");
         return 0;
     }
 
     if (move->from->pile != NULL) {
         if (move->from->card != NULL) {
-            strcpy(message, "Cards can only be moved from the top of the foundation piles");
+            strcpy(state->message, "Cards can only be moved from the top of the foundation piles");
             return 0;
         }
         if (!validate_foundation_pile(move->from->pile)) {
-            strcpy(message, "Invalid foundation pile");
+            strcpy(state->message, "Invalid foundation pile");
             return 0;
         }
     }
 
     if (move->from->card != NULL) {
         if (!validate_card_input(move->from->card)) {
-            strcpy(message, "Invalid card");
+            strcpy(state->message, "Invalid card");
             return 0;
         }
     }
 
     if (move->from->column != NULL) {
         if (!validate_column(move->from->column)) {
-            strcpy(message, "Invalid column");
+            strcpy(state->message, "Invalid column");
             return 0;
         }
     }
@@ -379,20 +389,18 @@ int validate_card_input(const char *card) {
     return 1;
 }
 
-int parse_game_move(const char* command, GameState* state, char* message, char* last_command) {
+int parse_game_move(const char* command, GameState* state) {
     char* command_copy = strdup(command);
     remove_all_spaces(command_copy);
+    to_upper(command_copy);
     GameMove *move = extract_game_move(command_copy);
-    to_upper(move->to);
-    to_upper(move->from->column);
-    to_upper(move->from->pile);
-    to_upper(move->from->card);
-    if(!validate_game_move_syntax(move, message)) {
+
+    if(!validate_game_move_syntax(move, state)) {
         destroy_game_move(move);
         return 0;
     }
-    int status = evaluate_game_move(move, state, message);
-    strcpy(last_command, command_copy);
+    int status = evaluate_game_move(move, state);
+    strcpy(state->lastCommand, command_copy);
 
     free(command_copy);
     destroy_game_move(move);
