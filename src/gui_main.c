@@ -1,169 +1,208 @@
-#include <SDL2/SDL.h>
+/*This source code copyrighted by Lazy Foo' Productions 2004-2024
+and may not be redistributed without written permission.*/
+
+//Using SDL, SDL_image, standard IO, and strings
+#include <SDL.h>
 #include <SDL_image.h>
+#include <view/gui/gui_card_view.h>
 #include <stdio.h>
-#define GRID_ROWS 4
-#define GRID_COLS 13
-#define CELL_WIDTH 450
-#define CELL_HEIGHT 630
-#define SCREEN_WIDTH (1920/2)
-#define SCREEN_HEIGHT (1080/2)
+#include <string.h>
 
-// Array of card names
-const char* cards[] = {
-        "2C", "2D", "2H", "2S", "3C", "3D", "3H", "3S", "4C", "4D", "4H", "4S", "5C",
-        "5D", "5H", "5S", "6C", "6D", "6H", "6S", "7C", "7D", "7H", "7S", "8C", "8D",
-        "8H", "8S", "9C", "9D", "9H", "9S", "TC", "TD", "TH", "TS", "JC", "JD", "JH",
-        "JS", "QC", "QD", "QH", "QS", "KC", "KD", "KH", "KS", "AC", "AD", "AH", "AS"
-};
+//Screen dimension constants
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
 
+//Starts up SDL and creates window
+int init();
+
+//Loads media
+int loadMedia();
+
+//Frees media and shuts down SDL
+void close();
+
+//Loads individual image as texture
+SDL_Texture* loadTexture();
+
+//The window we'll be rendering to
 SDL_Window* gWindow = NULL;
+
+//The window renderer
 SDL_Renderer* gRenderer = NULL;
 
-int initSDL() {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
-        return 0;
+//Current displayed texture
+SDL_Texture* gTexture = NULL;
+
+int init()
+{
+    //Initialization flag
+    int success = 1;
+
+    //Initialize SDL
+    if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+    {
+        printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
+        success = 0;
     }
-
-    gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-    if (gWindow == NULL) {
-        printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-        return 0;
-    }
-
-    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
-    if (gRenderer == NULL) {
-        printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
-        return 0;
-    }
-
-    int imgFlags = IMG_INIT_WEBP;
-    if (!(IMG_Init(imgFlags) & imgFlags)) {
-        printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
-        return 0;
-    }
-
-    return 1;
-}
-
-SDL_Texture* loadTexture(const char* path, double scale) {
-    SDL_Texture* texture = NULL;
-    SDL_Surface* loadedSurface = IMG_Load(path);
-    if (loadedSurface == NULL) {
-        printf("Unable to load image %s! SDL_image Error: %s\n", path, IMG_GetError());
-    } else {
-        texture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-        if (texture == NULL) {
-            printf("Unable to create texture from %s! SDL Error: %s\n", path, SDL_GetError());
+    else
+    {
+        //Set texture filtering to linear
+        if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+        {
+            printf( "Warning: Linear texture filtering not enabled!" );
         }
-        SDL_FreeSurface(loadedSurface);
+
+        //Create window
+        gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+        if( gWindow == NULL )
+        {
+            printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
+            success = 0;
+        }
+        else
+        {
+            //Create renderer for window
+            gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
+            if( gRenderer == NULL )
+            {
+                printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
+                success = 0;
+            }
+            else
+            {
+                //Initialize renderer color
+                SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+
+                //Initialize PNG loading
+                int imgFlags = IMG_INIT_WEBP;
+                if( !( IMG_Init( imgFlags ) & imgFlags ) )
+                {
+                    printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+                    success = 0;
+                }
+            }
+        }
     }
-    return texture;
+
+    return success;
 }
 
-void closeSDL() {
-    SDL_DestroyRenderer(gRenderer);
-    SDL_DestroyWindow(gWindow);
+int loadMedia()
+{
+    //Loading success flag
+    int success = 1;
+
+    //Load PNG texture
+    gTexture = loadTexture();
+    if( gTexture == NULL )
+    {
+        printf( "Failed to load texture image!\n" );
+        success = 0;
+    }
+    return success;
+}
+
+void close()
+{
+    //Free loaded image
+    SDL_DestroyTexture( gTexture );
+    gTexture = NULL;
+
+    //Destroy window
+    SDL_DestroyRenderer( gRenderer );
+    SDL_DestroyWindow( gWindow );
     gWindow = NULL;
     gRenderer = NULL;
+
+    //Quit SDL subsystems
     IMG_Quit();
     SDL_Quit();
 }
 
-int main(int argc, char* argv[]) {
+SDL_Texture* loadTexture()
+{
+    //The final texture
+    SDL_Texture* newTexture = NULL;
 
-    // Calculate scaling factor
-    double scaleW = (double)SCREEN_WIDTH / (GRID_COLS * CELL_WIDTH);
-    double scaleH = (double)SCREEN_HEIGHT / (GRID_ROWS * CELL_HEIGHT);
-    double scale = (scaleW < scaleH) ? scaleW : scaleH;
-
-    // Apply scaling factor to cell width and height
-    int scaledCellWidth = CELL_WIDTH * scale;
-    int scaledCellHeight = CELL_HEIGHT * scale;
-
-    if (!initSDL()) {
-        printf("Failed to initialize SDL!\n");
-        return -1;
+    //Load image at specified path
+    LinkedCard *card = create_card('K', 'C');
+    SDL_Surface* loadedSurface = get_card_image(card);
+    if( loadedSurface == NULL )
+    {
+        //printf( "Unable to load image %s! SDL_image Error: %s\n", path, IMG_GetError() );
     }
-
-    SDL_RenderClear(gRenderer);
-
-    for (int row = 0; row < GRID_ROWS; ++row) {
-        for (int col = 0; col < GRID_COLS; ++col) {
-            int cardIndex = row * GRID_COLS + col;
-            char path[256];
-            sprintf(path, "resources/cards/%s.webp", cards[cardIndex]);
-
-            SDL_Texture* texture = loadTexture(path, scale);
-            if (texture == NULL) {
-                printf("Failed to load texture!\n");
-                closeSDL();
-                return -1;
-            }
-            SDL_Rect destRect = {col * scaledCellWidth, row * scaledCellHeight, scaledCellWidth, scaledCellHeight};
-            SDL_RenderCopy(gRenderer, texture, NULL, &destRect);
-            SDL_DestroyTexture(texture); // Don't forget to destroy the texture after using it
+    else
+    {
+        //Create texture from surface pixels
+        newTexture = SDL_CreateTextureFromSurface( gRenderer, loadedSurface );
+        if( newTexture == NULL )
+        {
+            //printf( "Unable to create texture from %s! SDL Error: %s\n", path, SDL_GetError() );
         }
+
+        //Get rid of old loaded surface
+        SDL_FreeSurface( loadedSurface );
+    }
+    free(card);
+    return newTexture;
+}
+
+int main( int argc, char* args[] )
+{
+    //Start up SDL and create window
+    if( !init() )
+    {
+        printf( "Failed to initialize!\n" );
+        return 0;
     }
 
-    SDL_RenderPresent(gRenderer);
+    //Load media
+    if( !loadMedia() )
+    {
+        printf( "Failed to load media!\n" );
+        return 0;
+    }
 
-    // Event loop
-    SDL_Event e;
+    LinkedCard* column[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+    LinkedCard* foundation_piles[4] = {NULL, NULL, NULL, NULL};
+
+    //Main loop flag
     int quit = 0;
-    while (!quit) {
-        while (SDL_PollEvent(&e) != 0) {
-            if (e.type == SDL_QUIT) {
+
+    //Event handler
+    SDL_Event e;
+
+    //While application is running
+    while( !quit )
+    {
+        //Handle events on queue
+        while( SDL_PollEvent( &e ) != 0 )
+        {
+            //User requests quit
+            if( e.type == SDL_QUIT )
+            {
                 quit = 1;
-            } else if (e.type == SDL_KEYDOWN) {
-                switch (e.key.keysym.sym) {
-                    case SDLK_RETURN:
-                        quit = 1;
-                        break;
-                }
-            } else if (e.type == SDL_WINDOWEVENT) {
-                switch (e.window.event) {
-                    case SDL_WINDOWEVENT_RESIZED:
-                        // Recalculate scaling factor
-                        scaleW = (double)e.window.data1 / (GRID_COLS * CELL_WIDTH);
-                        scaleH = (double)e.window.data2 / (GRID_ROWS * CELL_HEIGHT);
-                        scale = (scaleW < scaleH) ? scaleW : scaleH;
-
-                        // Apply scaling factor to cell width and height
-                        scaledCellWidth = CELL_WIDTH * scale;
-                        scaledCellHeight = CELL_HEIGHT * scale;
-
-                        // Clear the renderer
-                        SDL_RenderClear(gRenderer);
-
-                        // Reload and redraw the images
-                        for (int row = 0; row < GRID_ROWS; ++row) {
-                            for (int col = 0; col < GRID_COLS; ++col) {
-                                int cardIndex = row * GRID_COLS + col;
-                                char path[256];
-                                sprintf(path, "resources/cards/%s.webp", cards[cardIndex]);
-
-                                SDL_Texture* texture = loadTexture(path, scale);
-                                if (texture == NULL) {
-                                    printf("Failed to load texture!\n");
-                                    closeSDL();
-                                    return -1;
-                                }
-                                SDL_Rect destRect = {col * scaledCellWidth, row * scaledCellHeight, scaledCellWidth, scaledCellHeight};
-                                SDL_RenderCopy(gRenderer, texture, NULL, &destRect);
-                                SDL_DestroyTexture(texture); // Don't forget to destroy the texture after using it
-                            }
-                        }
-
-                        // Update the screen
-                        SDL_RenderPresent(gRenderer);
-                        break;
-                }
             }
         }
+
+        //Clear screen
+        SDL_RenderClear( gRenderer );
+        SDL_Rect stretchRect;
+        stretchRect.x = 0;
+        stretchRect.y = 0;
+        stretchRect.w = 240;
+        stretchRect.h = 336;
+        //Render texture to screen
+        SDL_RenderCopy( gRenderer, gTexture, NULL, &stretchRect);
+
+        //Update screen
+        SDL_RenderPresent( gRenderer );
     }
 
-    closeSDL();
 
-    return 0;
+
+    //Free resources and close SDL
+    close();
+
+    return 1;
 }

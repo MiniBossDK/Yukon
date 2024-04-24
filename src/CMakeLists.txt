@@ -1,3 +1,10 @@
+add_library(backend
+        model/card.c
+        model/deck.c
+        model/column.c
+        model/foundation_pile.c
+)
+
 if (NOT USER_INTERFACE)
     set(MAIN_TARGET Main)
     add_executable(Main
@@ -8,7 +15,8 @@ if (NOT USER_INTERFACE)
         view/terminal/column_view.c
         view/terminal/terminal_style.c
     )
-    target_link_libraries(${MAIN_TARGET} PUBLIC backend)
+
+    target_link_libraries(${MAIN_TARGET} backend view_terminal)
 ENDIF()
 
 IF (USER_INTERFACE)
@@ -32,6 +40,10 @@ IF (USER_INTERFACE)
 
     add_executable(MainGui
         gui_main.c
+        view/gui/gui_card_view.c
+        view/gui/gui_column_view.c
+            view/gui/gui_foundation_view.c
+            view/gui/gui_board_view.c
     )
 
     target_link_libraries(MainGui
@@ -40,13 +52,6 @@ IF (USER_INTERFACE)
             SDL2_image::SDL2_image
             backend)
 ENDIF()
-
-add_library(backend
-        model/card.c
-        model/deck.c
-        model/column.c
-        model/foundation_pile.c
-)
 
 target_include_directories(backend
         PUBLIC
