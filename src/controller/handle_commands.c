@@ -32,6 +32,7 @@ int handle_save_game(char* args[4], GameState* game_state) {
 }
 
 int handle_load_deck(char* args[4], GameState* game_state) {
+    // TODO - Make error handling for this
     if(args[0] == NULL) {
         game_state -> deck = load_deck_from_file();
     }
@@ -57,7 +58,7 @@ int switch_to_play_phase(char* args[4], GameState* game_state) {
     empty_columns(game_state);
     empty_foundations(game_state);
     game_init(game_state);
-    return 1; // This is the special signal to switch to the play phase
+    return 1;
 }
 
 int handle_quit_game(char* args[4], GameState* game_state) {
@@ -89,6 +90,7 @@ int handle_split_deck(char* args[4], GameState* game_state) {
         split_deck(game_state->deck);
     }
     else {
+        // TODO - Make sure args[1] is a number before converting
         if (!atoi(args[1])) {
             return 0;
         }
