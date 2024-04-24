@@ -49,10 +49,7 @@ char* get_card(LinkedCard *card){
 }
 
 void print_card(LinkedCard *card){
-    if(card == NULL) {
-        printf("XX");
-        return;
-    } else if(card->hidden) {
+    if(card == NULL || card->hidden) {
         printf("[]");
         return;
     }
@@ -93,6 +90,10 @@ int validate_suit(char suit){
         }
     }
     return 0;
+}
+
+int validate_card(char rank, char suit){
+    return validate_rank(rank) && validate_suit(suit);
 }
 
 LinkedCard* get_last_card(LinkedCard* deck) {
