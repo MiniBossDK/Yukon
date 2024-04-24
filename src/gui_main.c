@@ -5,6 +5,8 @@ and may not be redistributed without written permission.*/
 #include <SDL.h>
 #include <SDL_image.h>
 #include <view/gui/gui_card_view.h>
+#include <view/gui/gui_column_view.h>
+#include <view/gui/gui_board_view.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -165,6 +167,9 @@ int main( int argc, char* args[] )
 
     LinkedCard* column[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
     LinkedCard* foundation_piles[4] = {NULL, NULL, NULL, NULL};
+
+    //BoardView board_view = create_board_view(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, column, foundation_piles);
+
 
     //Main loop flag
     int quit = 0;

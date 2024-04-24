@@ -3,7 +3,7 @@
 #include <view/gui/gui_card_view.h>
 
 typedef struct {
-    CardView cards[13];
+    CardView *cards;
     int number;
     int x;
     int y;
