@@ -71,4 +71,6 @@ LinkedCard* get_last_card(LinkedCard *deck);
 /*
  * Move a card to a destination
  */
-int move_card(LinkedCard *card, LinkedCard *destination);
+int move_card(LinkedCard **source, LinkedCard **destination, LinkedCard *card);
+
+int remove_card(char *card, LinkedCard **destination);

@@ -1,6 +1,7 @@
 #include <view/terminal/terminal_style.h>
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 // https://en.wikipedia.org/wiki/ANSI_escape_code#CSI_(Control_Sequence_Introducer)_sequences
 #define CLEAR_SCREEN "\e[2J" // ANSI escape code to clear the screen
@@ -67,49 +68,34 @@ void print_board(LinkedCard* columns[], LinkedCard* foundation_piles[]) {
     clear_terminal(1);
     print_column_numbers();
     printf("\n\n");
-    int max_cards = 0;
-    const int min_cards = 7;
-    for (int i = 0; i < 7; i++) {
-        LinkedCard* card = columns[i];
-        int count = 0;
-        while (card != NULL) {
-            count++;
-            card = card->next;
-        }
-        if (count > max_cards) {
-            max_cards = count;
-        }
+    LinkedCard* tempArr[7];
+    for (int i = 0; i < 7; ++i) {
+        tempArr[i] = columns[i];
     }
-
-    max_cards = (max_cards < min_cards) ? min_cards : max_cards;
-
-
-    int k = 0;
-    LinkedCard *tempArr[7] = {columns[0], columns[1], columns[2], columns[3], columns[4], columns[5], columns[6]};
-    for (int i = 0; i < max_cards; i++) {
-        LinkedCard *temp = NULL;
-        for (int j = 0; j < 7; j++) {
-            LinkedCard* card = columns[j];
-            temp = card;
+    int cards_left = 1;
+    int j = 0;
+    while (cards_left || j <= 7) {
+        cards_left = 0;
+        for (int i = 0; i < 7; i++) {
+            LinkedCard* card = tempArr[i];
             if(card == NULL) {
                 print_empty_card();
                 continue;
             }
             print_card(card);
             printf("\t");
-            columns[j] = card->next;
-
+            tempArr[i] = card->next;
+            if(tempArr[i] != NULL) {
+                cards_left = 1;
+            }
         }
-        if((i % 2) == 0 && i <= 6) {
-            int pile = (int) floor(i / 2);
+        if((j % 2) == 0 && j <= 6) {
+            int pile = (int) floor(j / 2);
             printf("\t");
-            print_card(foundation_piles[pile]);
+            print_card(get_top_card(foundation_piles[pile]));
             printf("\tF%d", pile + 1);
         }
-
         printf("\n");
-    }
-    for (int i = 0; i < 7; i++) {
-        columns[i] = tempArr[i];
+        j++;
     }
 }
