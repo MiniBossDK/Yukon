@@ -248,6 +248,8 @@ LinkedCard* split_deck_int(LinkedCard* deck, int number){
             break;
         }
     }
+    destroy_deck(temp_deck);
+    destroy_deck(deck);
     merged_deck = merged_deck_start;
     return merged_deck;
 
