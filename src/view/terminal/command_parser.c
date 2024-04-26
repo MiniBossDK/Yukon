@@ -67,12 +67,12 @@ int validate_command(const ParsedCommand* command, GameState *state) {
     }
 
     if (state->phase == STARTUP && !valid_startup_command) {
-        strcpy(state->message, "Can't use that command in the startup phase");
+        strcpy(state->message, "Command not available in the STARTUP phase");
         return 0;
     }
 
     if (state->phase == PLAY && !valid_game_command) {
-        strcpy(state->message, "Can't use that command in the play phase");
+        strcpy(state->message, "Command not available in the PLAY phase");
         return 0;
     }
 
