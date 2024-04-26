@@ -184,59 +184,70 @@ LinkedCard* shuffle_deck(LinkedCard* deck){
 }
 
 
-LinkedCard* split_deck(LinkedCard* deck){
-    int size = 0;
-    LinkedCard* temp = deck;
-    while(temp != NULL){
-        size++;
-        temp = temp->next;
-    }
-    LinkedCard* deck1 = NULL;
-    LinkedCard* deck2 = NULL;
-    for(int i = 0; i < size / 2; i++){
-        LinkedCard* temp = deck;
-        deck = deck->next;
-        temp->next = NULL;
-        if(deck1 == NULL){
-            deck1 = temp;
-        }else{
-            LinkedCard* temp2 = deck1;
-            while(temp2->next != NULL){
-                temp2 = temp2->next;
-            }
-            temp2->next = temp;
-        }
-    }
-    deck2 = deck;
-    return deck1;
+LinkedCard* split_deck(LinkedCard* deck) {
+    srand((unsigned) clock()); //Seed random number generator with clock
+    int random = 1 + rand() % 51; //Generate random number between 1 and 51
+    return split_deck_int(deck, random);
 }
 
+
 LinkedCard* split_deck_int(LinkedCard* deck, int number){
-    int size = 0;
-    LinkedCard* temp = deck;
-    while(temp != NULL){
-        size++;
-        temp = temp->next;
-    }
-    LinkedCard* decks[number];
-    for(int i = 0; i < number; i++){
-        decks[i] = NULL;
-    }
-    for(int i = 0; i < size; i++){
-        LinkedCard* temp = deck;
-        deck = deck->next;
-        temp->next = NULL;
-        if(decks[i % number] == NULL){
-            decks[i % number] = temp;
-        }else{
-            LinkedCard* temp2 = decks[i % number];
-            while(temp2->next != NULL){
-                temp2 = temp2->next;
-            }
-            temp2->next = temp;
+    LinkedCard* merged_deck = NULL;
+    LinkedCard* temp_deck = NULL;
+    LinkedCard* temp_deck_start = NULL; //Used to keep track of start of linked list
+    for (int i = 0; i < number; i++) { //Split deck at random number
+        if (i == 0) {
+            temp_deck = deck;
+            temp_deck_start= temp_deck;
+            deck = deck -> next;
+            temp_deck -> next = NULL;
+            deck -> prev = NULL;
+        } else {
+            temp_deck -> next = deck;
+            deck -> prev = temp_deck;
+            temp_deck = deck;
+            deck = deck -> next;
+            deck -> prev = NULL;
+            temp_deck -> next = NULL;
         }
     }
-    return decks[0];
+    temp_deck = temp_deck_start;
+    merged_deck = deck;
+    if (deck->next != NULL) {
+        deck = deck -> next;
+        deck -> prev = NULL;
+        merged_deck -> next = NULL;
+    }
+    else {
+        deck = NULL;
+    }
+    while(1) {
+        if(temp_deck != NULL) {
+            merged_deck -> next = temp_deck;
+            temp_deck -> prev = merged_deck;
+            temp_deck = temp_deck -> next;
+            merged_deck = merged_deck -> next;
+            if (temp_deck != NULL) {
+                temp_deck -> prev = NULL;
+            }
+            merged_deck -> next = NULL;
+        }
+        if(deck != NULL) {
+            merged_deck -> next = deck;
+            deck -> prev = merged_deck;
+            deck = deck -> next;
+            merged_deck = merged_deck -> next;
+            if (deck != NULL) {
+                deck -> prev = NULL;
+            }
+            merged_deck -> next = NULL;
+        }
+        if (deck == NULL && temp_deck == NULL) {
+            break;
+        }
+    }
+    return merged_deck;
+
 }
 
 LinkedCard* clone_deck(LinkedCard* deck, int hidden){
