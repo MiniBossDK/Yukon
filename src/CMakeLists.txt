@@ -48,8 +48,8 @@ IF (USER_INTERFACE)
         gui_main.c
         view/gui/gui_card_view.c
         view/gui/gui_column_view.c
-            view/gui/gui_foundation_view.c
-            view/gui/gui_board_view.c
+        view/gui/gui_foundation_view.c
+        view/gui/gui_board_view.c
     )
 
     target_link_libraries(MainGui

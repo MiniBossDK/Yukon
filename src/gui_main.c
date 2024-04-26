@@ -1,30 +1,17 @@
-/*This source code copyrighted by Lazy Foo' Productions 2004-2024
-and may not be redistributed without written permission.*/
-
-//Using SDL, SDL_image, standard IO, and strings
 #include <SDL.h>
 #include <SDL_image.h>
 #include <view/gui/gui_card_view.h>
-#include <view/gui/gui_column_view.h>
-#include <view/gui/gui_board_view.h>
 #include <stdio.h>
-#include <string.h>
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
 
 //Starts up SDL and creates window
 int init();
 
-//Loads media
-int loadMedia();
-
 //Frees media and shuts down SDL
 void close();
-
-//Loads individual image as texture
-SDL_Texture* loadTexture();
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
@@ -39,7 +26,6 @@ int init()
 {
     //Initialization flag
     int success = 1;
-
     //Initialize SDL
     if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
     {
@@ -53,7 +39,10 @@ int init()
         {
             printf( "Warning: Linear texture filtering not enabled!" );
         }
-
+        /*
+        SDL_DisplayMode DM;
+        SDL_GetCurrentDisplayMode(0, &DM);
+         */
         //Create window
         gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
         if( gWindow == NULL )
@@ -89,21 +78,6 @@ int init()
     return success;
 }
 
-int loadMedia()
-{
-    //Loading success flag
-    int success = 1;
-
-    //Load PNG texture
-    gTexture = loadTexture();
-    if( gTexture == NULL )
-    {
-        printf( "Failed to load texture image!\n" );
-        success = 0;
-    }
-    return success;
-}
-
 void close()
 {
     //Free loaded image
@@ -121,34 +95,6 @@ void close()
     SDL_Quit();
 }
 
-SDL_Texture* loadTexture()
-{
-    //The final texture
-    SDL_Texture* newTexture = NULL;
-
-    //Load image at specified path
-    LinkedCard *card = create_card('K', 'C');
-    SDL_Surface* loadedSurface = get_card_image(card);
-    if( loadedSurface == NULL )
-    {
-        //printf( "Unable to load image %s! SDL_image Error: %s\n", path, IMG_GetError() );
-    }
-    else
-    {
-        //Create texture from surface pixels
-        newTexture = SDL_CreateTextureFromSurface( gRenderer, loadedSurface );
-        if( newTexture == NULL )
-        {
-            //printf( "Unable to create texture from %s! SDL Error: %s\n", path, SDL_GetError() );
-        }
-
-        //Get rid of old loaded surface
-        SDL_FreeSurface( loadedSurface );
-    }
-    free(card);
-    return newTexture;
-}
-
 int main( int argc, char* args[] )
 {
     //Start up SDL and create window
@@ -158,53 +104,124 @@ int main( int argc, char* args[] )
         return 0;
     }
 
-    //Load media
-    if( !loadMedia() )
-    {
-        printf( "Failed to load media!\n" );
-        return 0;
+    /*
+    LinkedCard *deck = create_deck();
+    LinkedCard *column[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+    LinkedCard *foundation_piles[4] = {NULL, NULL, NULL, NULL};
+
+    GameState *game_state = create_game_state(deck, column, foundation_piles);
+
+    show_deck(game_state);
+
+    ColumnView *column_view[7];
+
+    FoundationView *foundation_view[4];
+
+    BoardView *board_view;
+
+    for (int i = 0; i < 7; ++i) {
+        column_view[i] = convert_column_to_column_view(game_state->column[i], gRenderer);
     }
 
-    LinkedCard* column[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-    LinkedCard* foundation_piles[4] = {NULL, NULL, NULL, NULL};
+    for (int i = 0; i < 4; ++i) {
+        foundation_view[i] = convert_foundation_to_foundation_view(game_state->foundation[i], gRenderer);
+    }
 
-    //BoardView board_view = create_board_view(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, column, foundation_piles);
-
-
+    board_view = create_board_view(0, 0, 0, 0, column_view, foundation_view);
+    */
     //Main loop flag
     int quit = 0;
 
+    //Clear screen
+    SDL_RenderClear( gRenderer );
+    //Render texture to screen
+    //SDL_RenderCopy( gRenderer, gTexture, NULL, &stretchRect);
+
+    CardView cards[35];
+    for (int i = 0; i < 7; ++i) {
+        for (int j = 0; j < 5; ++j) {
+            SDL_Rect *stretchRect = create_cardview_rect(0, 0);
+            stretchRect->x = ((240/2)+20)*i+50;
+            stretchRect->y = 50*j+50;
+            stretchRect->w = 240/2;
+            stretchRect->h = 320/2;
+            CardView *cardView = create_card_view(stretchRect, create_card('K', 'C'), gRenderer);
+            set_clickable_area(cardView, stretchRect->x, stretchRect->y, 0);
+            render_card_view(cardView, gRenderer);
+            cards[i*5+j] = *cardView;
+        }
+    }
+    //Update screen
+    SDL_RenderPresent(gRenderer);
     //Event handler
     SDL_Event e;
-
-    //While application is running
+    SDL_Point mouse_pos;
+    CardView *dragged_card = NULL;
+    int dragging = 0;
+    int drag_offset_x = 0;
+    int drag_offset_y = 0;
     while( !quit )
     {
+        SDL_PollEvent(&e);
         //Handle events on queue
-        while( SDL_PollEvent( &e ) != 0 )
-        {
-            //User requests quit
-            if( e.type == SDL_QUIT )
-            {
+        switch (e.type) {
+            case SDL_QUIT:
                 quit = 1;
-            }
+                break;
+            case SDL_MOUSEMOTION:
+
+                mouse_pos.x = e.motion.x;
+                mouse_pos.y = e.motion.y;
+
+                // TODO - Update card drag pos on this if dragged
+                if(dragging) {
+                    if(dragged_card == NULL) break;
+
+                    dragged_card->card_image_rect->x = mouse_pos.x - drag_offset_x;
+                    dragged_card->card_image_rect->y = mouse_pos.y - drag_offset_y;
+
+                    SDL_RenderClear(gRenderer);
+                    for (int i = 0; i < 35; ++i) {
+                        render_card_view(&cards[i], gRenderer);
+                    }
+                    SDL_RenderPresent(gRenderer);
+                }
+
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (e.button.button == SDL_BUTTON_LEFT && !dragging) {
+                    printf("Mouse down at (%d, %d)\n", e.button.x, e.button.y);
+                    for (int i = 0; i < 35; ++i) {
+                        if(SDL_PointInRect(&mouse_pos, cards[i].clickable_area)) {
+                            printf("Card clicked %d\n", i);
+                            dragging = 1;
+                            dragged_card = &cards[i];
+                            drag_offset_x = mouse_pos.x - dragged_card->card_image_rect->x;
+                            drag_offset_y = mouse_pos.y - dragged_card->card_image_rect->y;
+                        }
+                    }
+                }
+                break;
+            case SDL_MOUSEBUTTONUP:
+                if (e.button.button == SDL_BUTTON_LEFT) {
+                    printf("Mouse released at (%d, %d)\n", e.button.x, e.button.y);
+                    if(dragging) {
+                        // TODO - Check if card is dropped on a valid location and snap it there
+                        dragging = 0;
+                        if(dragged_card == NULL) break;
+                        dragged_card->clickable_area->x = mouse_pos.x - drag_offset_x;
+                        dragged_card->clickable_area->y = mouse_pos.y - drag_offset_y;
+                        dragged_card->clickable_area->h = dragged_card->card_image_rect->h;
+                        dragged_card = NULL;
+                    }
+                }
+                break;
         }
-
-        //Clear screen
-        SDL_RenderClear( gRenderer );
-        SDL_Rect stretchRect;
-        stretchRect.x = 0;
-        stretchRect.y = 0;
-        stretchRect.w = 240;
-        stretchRect.h = 336;
-        //Render texture to screen
-        SDL_RenderCopy( gRenderer, gTexture, NULL, &stretchRect);
-
-        //Update screen
-        SDL_RenderPresent( gRenderer );
     }
 
-
+    for (int i = 0; i < 35; ++i) {
+        destroy_card_view(&cards[i]);
+    }
 
     //Free resources and close SDL
     close();
