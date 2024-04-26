@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <model/deck.h>
+#include <controller/game_state.h>
 
 LinkedCard* create_deck() {
     LinkedCard* deck = NULL;
@@ -108,6 +109,7 @@ LinkedCard* load_deck_from_file_name(char* fileName){
     char rank, suit;
     while(fscanf(file, "%c%c\n", &rank, &suit) != EOF){
         LinkedCard* card = create_card(rank, suit);
+        hide_card(card);
         if(deck == NULL){
             deck = card;
         }else{
@@ -238,11 +240,14 @@ LinkedCard* split_deck_int(LinkedCard* deck, int number){
     return decks[0];
 }
 
-LinkedCard* clone_deck(LinkedCard* deck){
+LinkedCard* clone_deck(LinkedCard* deck, int hidden){
     LinkedCard* clone = NULL;
     LinkedCard* temp = deck;
     while(temp != NULL){
         LinkedCard* card = create_card(temp->rank, temp->suit);
+        if (hidden == 1) {
+            hide_card(card);
+        }
         if(clone == NULL){
             clone = card;
         }else{

@@ -68,8 +68,8 @@ void destroy_game_state(GameState* game_state) {
     free(game_state);
 }
 
-void show_deck(GameState* game_state) {
-    LinkedCard* deck_clone = clone_deck(game_state->deck);
+void show_deck(GameState* game_state, int hidden) {
+    LinkedCard* deck_clone = clone_deck(game_state->deck, hidden);
     int index = 0;
     LinkedCard* temp = deck_clone->next;
     for (int i = 0; i < 52; i++) {
@@ -105,7 +105,7 @@ void show_deck(GameState* game_state) {
 
 void game_init(GameState* game_state) {
 
-    LinkedCard* deck_clone = clone_deck(game_state->deck);
+    LinkedCard* deck_clone = clone_deck(game_state->deck,0);
     int index = 0;
     int start_index = 0;
     int end_index = 6;

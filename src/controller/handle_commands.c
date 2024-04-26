@@ -35,9 +35,15 @@ int handle_load_deck(char* args[4], GameState* game_state) {
     // TODO - Make error handling for this
     if(args[0] == NULL) {
         game_state -> deck = create_deck();
+        empty_columns(game_state);
+        empty_foundations(game_state);
+        show_deck(game_state, 1);
     }
     else {
         game_state -> deck = load_deck_from_file_name(args[0]);
+        empty_columns(game_state);
+        empty_foundations(game_state);
+        show_deck(game_state, 1);
     }
     return 1;
 }
@@ -81,7 +87,7 @@ int handle_shuffle_deck(char* args[4], GameState* game_state) {
 int handle_show_deck(char* args[4], GameState* game_state) {
     empty_columns(game_state);
     empty_foundations(game_state);
-    show_deck(game_state);
+    show_deck(game_state,0);
     return 1;
 }
 
