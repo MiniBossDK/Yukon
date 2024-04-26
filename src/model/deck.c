@@ -195,6 +195,7 @@ LinkedCard* split_deck_int(LinkedCard* deck, int number){
     LinkedCard* merged_deck = NULL;
     LinkedCard* temp_deck = NULL;
     LinkedCard* temp_deck_start = NULL; //Used to keep track of start of linked list
+    LinkedCard* merged_deck_start = NULL; //Used to keep track of start of linked list
     for (int i = 0; i < number; i++) { //Split deck at random number
         if (i == 0) {
             temp_deck = deck;
@@ -213,6 +214,7 @@ LinkedCard* split_deck_int(LinkedCard* deck, int number){
     }
     temp_deck = temp_deck_start;
     merged_deck = deck;
+    merged_deck_start = merged_deck;
     if (deck->next != NULL) {
         deck = deck -> next;
         deck -> prev = NULL;
@@ -246,6 +248,7 @@ LinkedCard* split_deck_int(LinkedCard* deck, int number){
             break;
         }
     }
+    merged_deck = merged_deck_start;
     return merged_deck;
 
 }
