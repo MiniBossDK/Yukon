@@ -100,7 +100,6 @@ int save_deck_to_file_name(LinkedCard* deck, char* fileName){
 }
 
 LinkedCard* load_deck_from_file_name(char* fileName){
-    fileName[strcspn(fileName, "\r\n")] = 0; //Trim newline character from file name
     FILE* file = fopen(fileName, "r"); //read file
     if(file == NULL){
         return NULL;
