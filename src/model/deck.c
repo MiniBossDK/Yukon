@@ -71,7 +71,7 @@ int validate_deck(LinkedCard* deck) {
 }
 
 int save_deck_to_file(LinkedCard* deck){
-    FILE* file = fopen("cards", "w");
+    FILE* file = fopen("cards.txt", "w");
     if(file == NULL){
         return 0;
     }
@@ -99,7 +99,7 @@ int save_deck_to_file_name(LinkedCard* deck, char* fileName){
 }
 
 LinkedCard* load_deck_from_file(){
-    FILE* file = fopen("cards", "r");
+    FILE* file = fopen("cards.txt", "r");
     if(file == NULL){
         return NULL;
     }
