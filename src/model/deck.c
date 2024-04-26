@@ -98,29 +98,6 @@ int save_deck_to_file_name(LinkedCard* deck, char* fileName){
     return 1;
 }
 
-LinkedCard* load_deck_from_file(){
-    FILE* file = fopen("cards.txt", "r");
-    if(file == NULL){
-        return NULL;
-    }
-    LinkedCard* deck = NULL;
-    char rank, suit;
-    while(fscanf(file, "%c%c\n", &rank, &suit) != EOF){
-        LinkedCard* card = create_card(rank, suit);
-        if(deck == NULL){
-            deck = card;
-        }else{
-            LinkedCard* temp = deck;
-            while(temp->next != NULL){
-                temp = temp->next;
-            }
-            temp->next = card;
-        }
-    }
-    fclose(file);
-    return deck;
-}
-
 LinkedCard* load_deck_from_file_name(char* fileName){
     FILE* file = fopen(fileName, "r");
     if(file == NULL){

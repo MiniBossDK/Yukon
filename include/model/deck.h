@@ -16,8 +16,6 @@ int save_deck_to_file(LinkedCard* deck);
 
 int save_deck_to_file_name(LinkedCard* deck, char* filename);
 
-LinkedCard* load_deck_from_file();
-
 LinkedCard* load_deck_from_file_name(char* filename);
 
 LinkedCard* shuffle_deck(LinkedCard* deck);

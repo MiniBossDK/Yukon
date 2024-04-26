@@ -34,7 +34,7 @@ int handle_save_game(char* args[4], GameState* game_state) {
 int handle_load_deck(char* args[4], GameState* game_state) {
     // TODO - Make error handling for this
     if(args[0] == NULL) {
-        game_state -> deck = load_deck_from_file();
+        game_state -> deck = create_deck();
     }
     else {
         game_state -> deck = load_deck_from_file_name(args[0]);
