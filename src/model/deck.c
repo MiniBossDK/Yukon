@@ -6,10 +6,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <model/deck.h>
+#include <controller/game_state.h>
 
 LinkedCard* create_deck() {
     LinkedCard* deck = NULL;
-    char suits[4] = {'S', 'H', 'D', 'C'};
+    char suits[4] = {'C', 'D', 'H', 'S'};
     char ranks[13] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
     for(int i = 0; i < 4; i++){
         for(int j = 0; j < 13; j++){
@@ -71,7 +72,7 @@ int validate_deck(LinkedCard* deck) {
 }
 
 int save_deck_to_file(LinkedCard* deck){
-    FILE* file = fopen("cards", "w");
+    FILE* file = fopen("cards.txt", "w");
     if(file == NULL){
         return 0;
     }
@@ -98,31 +99,8 @@ int save_deck_to_file_name(LinkedCard* deck, char* fileName){
     return 1;
 }
 
-LinkedCard* load_deck_from_file(){
-    FILE* file = fopen("cards", "r");
-    if(file == NULL){
-        return NULL;
-    }
-    LinkedCard* deck = NULL;
-    char rank, suit;
-    while(fscanf(file, "%c%c\n", &rank, &suit) != EOF){
-        LinkedCard* card = create_card(rank, suit);
-        if(deck == NULL){
-            deck = card;
-        }else{
-            LinkedCard* temp = deck;
-            while(temp->next != NULL){
-                temp = temp->next;
-            }
-            temp->next = card;
-        }
-    }
-    fclose(file);
-    return deck;
-}
-
 LinkedCard* load_deck_from_file_name(char* fileName){
-    FILE* file = fopen(fileName, "r");
+    FILE* file = fopen(fileName, "r"); //read file
     if(file == NULL){
         return NULL;
     }
@@ -130,6 +108,7 @@ LinkedCard* load_deck_from_file_name(char* fileName){
     char rank, suit;
     while(fscanf(file, "%c%c\n", &rank, &suit) != EOF){
         LinkedCard* card = create_card(rank, suit);
+        hide_card(card);
         if(deck == NULL){
             deck = card;
         }else{
@@ -260,11 +239,14 @@ LinkedCard* split_deck_int(LinkedCard* deck, int number){
     return decks[0];
 }
 
-LinkedCard* clone_deck(LinkedCard* deck){
+LinkedCard* clone_deck(LinkedCard* deck, int hidden){
     LinkedCard* clone = NULL;
     LinkedCard* temp = deck;
     while(temp != NULL){
         LinkedCard* card = create_card(temp->rank, temp->suit);
+        if (hidden == 1) {
+            hide_card(card);
+        }
         if(clone == NULL){
             clone = card;
         }else{

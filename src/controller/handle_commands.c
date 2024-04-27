@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 int handle_load_game(char* args[4], GameState* game_state) {
     if(args[0] == NULL) {
@@ -32,12 +33,33 @@ int handle_save_game(char* args[4], GameState* game_state) {
 }
 
 int handle_load_deck(char* args[4], GameState* game_state) {
-    // TODO - Make error handling for this
     if(args[0] == NULL) {
-        game_state -> deck = load_deck_from_file();
+        game_state -> deck = create_deck();
+        empty_columns(game_state);
+        empty_foundations(game_state);
+        show_deck(game_state, 1);
     }
     else {
-        game_state -> deck = load_deck_from_file_name(args[0]);
+        struct stat buffer;
+        args[0][strcspn(args[0], "\r\n")] = 0; //trim newline from filename
+        if(stat(args[0], &buffer) == 0) { // Check if file exists
+            LinkedCard* temp = game_state -> deck; //backup current deck
+            game_state -> deck = load_deck_from_file_name(args[0]);
+            if(validate_deck(game_state->deck)) {
+                empty_columns(game_state);
+                empty_foundations(game_state);
+                show_deck(game_state, 1);
+            }
+            else {
+                game_state -> deck = temp; //restore deck
+                strcpy(game_state->message, "Error: Invalid deck file");
+                return 0;
+            }
+        }
+        else {
+            strcpy(game_state->message, "Error: File not found");
+            return 0;
+        }
     }
     return 1;
 }
@@ -81,7 +103,7 @@ int handle_shuffle_deck(char* args[4], GameState* game_state) {
 int handle_show_deck(char* args[4], GameState* game_state) {
     empty_columns(game_state);
     empty_foundations(game_state);
-    show_deck(game_state);
+    show_deck(game_state,0);
     return 1;
 }
 

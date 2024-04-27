@@ -26,7 +26,7 @@ void read_game_state_from_file(const char* filename, struct GameState* game_stat
 
 void destroy_game_state(GameState* game_state);
 
-void show_deck(GameState* game_state);
+void show_deck(GameState* game_state, int hidden);
 
 void game_init(GameState* game_state);
 
