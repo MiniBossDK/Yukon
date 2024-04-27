@@ -123,7 +123,7 @@ int main( int argc, char* args[] )
 
 
     for (int i = 0; i < 7; ++i) {
-        column_view[i] = convert_column_to_column_view(create_columnview_rect(i * (240/2) + 20, 0),
+        column_view[i] = convert_column_to_column_view(create_columnview_rect(((240/2)+20)*i, 0),
                                                        &game_state->column[i],
                                                         i + 1,
                                                        gRenderer);
@@ -131,7 +131,8 @@ int main( int argc, char* args[] )
 
     for (int i = 0; i < 4; ++i) {
         foundation_view[i] = convert_foundation_to_foundation_view(
-                create_foundationview_rect(0, 0),
+                create_foundationview_rect(8 * (240/2) + 50, (336/2 + 20) * i ),
+                i + 1,
                 game_state->foundation,
                 gRenderer);
     }
@@ -193,82 +194,37 @@ int main( int argc, char* args[] )
             case SDL_QUIT:
                 quit = 1;
                 break;
-                /*
             case SDL_MOUSEMOTION:
 
                 mouse_pos.x = e.motion.x;
                 mouse_pos.y = e.motion.y;
 
-                // TODO - Update card drag pos on this if dragged
-                if(dragging) {
-                    if(dragged_card == NULL) break;
-
-                    dragged_card->card_image_rect->x = mouse_pos.x - drag_offset_x;
-                    dragged_card->card_image_rect->y = mouse_pos.y - drag_offset_y;
-
-                    SDL_RenderClear(gRenderer);
-                    for (int i = 0; i < 35; ++i) {
-                        render_card_view(&cards[i], gRenderer);
-                    }
-                    SDL_RenderPresent(gRenderer);
-                }
 
                 break;
             case SDL_MOUSEBUTTONDOWN:
-                if (e.button.button == SDL_BUTTON_LEFT && !dragging) {
+                if (e.button.button == SDL_BUTTON_LEFT) {
                     printf("Mouse down at (%d, %d)\n", e.button.x, e.button.y);
-                    for (int i = 0; i < 35; ++i) {
-                        if(SDL_PointInRect(&mouse_pos, cards[i].clickable_area)) {
-                            printf("Card clicked %d\n", i);
-                            dragging = 1;
-                            dragged_card = &cards[i];
-                            drag_offset_x = mouse_pos.x - dragged_card->card_image_rect->x;
-                            drag_offset_y = mouse_pos.y - dragged_card->card_image_rect->y;
-                            original_x = dragged_card->card_image_rect->x;
-                            original_y = dragged_card->card_image_rect->y;
+                    for (int i = 0; i < 7; ++i) {
+                        if(SDL_PointInRect(&mouse_pos, board_view->columns[i]->rect)) {
+                            printf("Clicked on column %d\n", i);
+                            CardView *card = get_card_view_at_position(board_view->columns[i], &mouse_pos);
+                            if(card == NULL) {
+                                printf("No card clicked\n");
+                                break;
+                            }
+                            printf("Card: %c%c\n", card->card->rank, card->card->suit);
                         }
+                    }
+                    if (SDL_PointInRect(&mouse_pos, board_view->foundations[0]->rect)) {
+                        printf("Clicked in foundation area\n");
                     }
                 }
                 break;
             case SDL_MOUSEBUTTONUP:
                 if (e.button.button == SDL_BUTTON_LEFT) {
-                    //printf("Mouse released at (%d, %d)\n", e.button.x, e.button.y);
-                    if(dragging) {
-                        // TODO - Check if card is dropped on a valid location and snap it there
-                        dragging = 0;
-                        for (int i = 0; i < 7; ++i) {
-                            if(SDL_PointInRect(&mouse_pos, snap_zones[i])) {
-                                printf("Card dropped on snap zone %d\n", i);
-                                if(dragged_card == NULL) break;
-                                SDL_RenderClear(gRenderer);
-                                dragged_card->card_image_rect->x = snap_zones[i]->x;
-                                dragged_card->card_image_rect->y = snap_zones[i]->y;
-                                dragged_card->clickable_area->x = snap_zones[i]->x;
-                                dragged_card->clickable_area->y = snap_zones[i]->y;
-                                dragged_card->clickable_area->w = snap_zones[i]->w;
-                                dragged_card->clickable_area->h = snap_zones[i]->h;
-                                for (int j = 0; j < 35; ++j) {
-                                    render_card_view(&cards[j], gRenderer);
-                                }
-                                SDL_RenderPresent(gRenderer);
-                                dragged_card = NULL;
-                                break;
-                            }
-                        }
-                        SDL_RenderClear(gRenderer);
-                        if(dragged_card == NULL) break;
-                        dragged_card->card_image_rect->x = original_x;
-                        dragged_card->card_image_rect->y = original_y;
-                        for (int i = 0; i < 35; ++i) {
-                            render_card_view(&cards[i], gRenderer);
-                        }
-                        SDL_RenderPresent(gRenderer);
 
-                        dragged_card = NULL;
-                    }
                 }
                 break;
-                 */
         }
     }
     /*

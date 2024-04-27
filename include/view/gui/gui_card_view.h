@@ -4,6 +4,9 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+#define CARD_WIDTH (240/2)
+#define CARD_HEIGHT (336/2)
+#define CARD_SPACING 50
 
 typedef struct CardView CardView;
 
@@ -26,6 +29,8 @@ SDL_Texture *get_card_texture(const LinkedCard* card, SDL_Renderer *renderer);
 CardView *convert_deck_to_card_views(LinkedCard *card, SDL_Renderer *renderer);
 
 void render_card_view(CardView *card_view, SDL_Renderer *renderer);
+
+void render_empty_card_view(SDL_Rect *rect, SDL_Renderer *renderer);
 
 void position_card_view(CardView *card_view, int x, int y);
 

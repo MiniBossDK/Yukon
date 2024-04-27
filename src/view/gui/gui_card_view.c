@@ -1,9 +1,5 @@
 #include <view/gui/gui_card_view.h>
 
-#define CARD_WIDTH (240/2)
-#define CARD_HEIGHT (336/2)
-#define CARD_SPACING 50
-
 CardView *create_card_view(SDL_Rect *image_rect, LinkedCard *card, SDL_Renderer *renderer) {
     if(card == NULL) return NULL;
     CardView *card_view = malloc(sizeof(CardView));
@@ -15,11 +11,14 @@ CardView *create_card_view(SDL_Rect *image_rect, LinkedCard *card, SDL_Renderer 
     return card_view;
 }
 
-char path[30];
-
 SDL_Surface *get_card_image(const LinkedCard* card) {
+    char path[30];
     sprintf(path, "resources/cards/%c%c.webp", card->rank, card->suit);
     return IMG_Load(path);
+}
+
+SDL_Surface *get_card_back_image() {
+    return IMG_Load("resources/cards/EmptyCard.webp");
 }
 
 SDL_Texture *get_card_texture(const LinkedCard* card, SDL_Renderer *renderer) {
@@ -46,6 +45,14 @@ CardView *convert_deck_to_card_views(LinkedCard *card, SDL_Renderer *renderer) {
 void render_card_view(CardView *card_view, SDL_Renderer *renderer) {
     if(card_view == NULL) return;
     SDL_RenderCopy(renderer, card_view->image, NULL, card_view->card_image_rect);
+}
+
+void render_empty_card_view(SDL_Rect *rect, SDL_Renderer *renderer) {
+    SDL_Surface *surface = get_card_back_image();
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+    SDL_RenderCopy(renderer, texture, NULL, rect);
+    SDL_DestroyTexture(texture);
 }
 
 void position_card_view(CardView *card_view, int x, int y) {

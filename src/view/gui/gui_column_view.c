@@ -14,7 +14,11 @@ ColumnView *create_column_view(SDL_Rect *rect, int column_number, CardView *card
 
 ColumnView *convert_column_to_column_view(SDL_Rect *rect, LinkedCard **column, int column_number, SDL_Renderer *renderer) {
     if (column == NULL || *column == NULL) {
-        return NULL;
+        return create_column_view(
+                rect,
+                column_number,
+                NULL
+                );
     }
 
     int y_position = 0;
@@ -43,9 +47,14 @@ ColumnView *convert_column_to_column_view(SDL_Rect *rect, LinkedCard **column, i
 }
 
 void render_column_view(ColumnView *column_view, SDL_Renderer *renderer) {
+    if(column_view->cards == NULL) return;
     CardView *current = column_view->cards;
     while (current != NULL) {
-        render_card_view(current, renderer);
+        if(current->card->hidden) {
+            render_empty_card_view(current->card_image_rect, renderer);
+        } else {
+            render_card_view(current, renderer);
+        }
         current = current->next;
     }
 }
@@ -54,7 +63,18 @@ SDL_Rect *create_columnview_rect(int x, int y) {
     SDL_Rect *rect = malloc(sizeof(SDL_Rect));
     rect->x = x;
     rect->y = y;
-    rect->w = 0;
-    rect->h = 0;
+    rect->w = CARD_WIDTH;
+    rect->h = 2000; // Arbitrary height, so that the column can be as long as needed
     return rect;
+}
+
+CardView *get_card_view_at_position(ColumnView *column_view, SDL_Point *point) {
+    CardView *current = column_view->cards;
+    while (current != NULL) {
+        if(SDL_PointInRect(point, current->card_image_rect)) {
+            return current;
+        }
+        current = current->next;
+    }
+    return NULL;
 }
