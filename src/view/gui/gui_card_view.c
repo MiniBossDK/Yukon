@@ -5,6 +5,7 @@
 #define CARD_SPACING 50
 
 CardView *create_card_view(SDL_Rect *image_rect, LinkedCard *card, SDL_Renderer *renderer) {
+    if(card == NULL) return NULL;
     CardView *card_view = malloc(sizeof(CardView));
     card_view->image = get_card_texture(card, renderer);
     card_view->card_image_rect = image_rect;
@@ -43,6 +44,7 @@ CardView *convert_deck_to_card_views(LinkedCard *card, SDL_Renderer *renderer) {
 }
 
 void render_card_view(CardView *card_view, SDL_Renderer *renderer) {
+    if(card_view == NULL) return;
     SDL_RenderCopy(renderer, card_view->image, NULL, card_view->card_image_rect);
 }
 

@@ -8,15 +8,13 @@ typedef struct ColumnView ColumnView;
 
 struct ColumnView {
     CardView *cards;
-    int number;
+    int column_number;
     SDL_Rect *rect;
-    int card_spacing;
-    int card_count;
 };
 
-ColumnView *create_column_view(SDL_Rect *rect, int card_spacing, CardView *cards);
+ColumnView *create_column_view(SDL_Rect *rect, int column_number, CardView *cards);
 
-ColumnView *convert_column_to_column_view(LinkedCard **column, SDL_Renderer *renderer);
+ColumnView *convert_column_to_column_view(SDL_Rect *rect, LinkedCard **column, int column_number, SDL_Renderer *renderer);
 
 void render_column_view(ColumnView *column_view, SDL_Renderer *renderer);
 

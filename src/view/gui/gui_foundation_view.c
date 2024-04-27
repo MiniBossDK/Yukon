@@ -11,23 +11,44 @@ FoundationView *create_foundation_view(SDL_Rect *rect, int card_spacing, CardVie
     return foundation_view;
 }
 
-FoundationView *convert_foundation_to_foundation_view(LinkedCard *foundation, SDL_Renderer *renderer) {
-    CardView *cardView = NULL;
-    LinkedCard *current = foundation;
-    while (current != NULL) {
-        current = current->next;
-        cardView = create_card_view(create_cardview_rect(0, 0), current, renderer);
-        if(current->prev != NULL) {
-            cardView->prev = create_card_view(create_cardview_rect(0, 0), current->prev, renderer);
-        }
-        cardView = cardView->next;
+FoundationView *convert_foundation_to_foundation_view(SDL_Rect* rect, LinkedCard **foundation, SDL_Renderer *renderer) {
+    if (foundation == NULL || *foundation == NULL) {
+        return NULL;
     }
-    return create_foundation_view(create_foundationview_rect(0, 0), 0, cardView);
+
+
+    int y_position = 0;
+    int card_spacing = 20;
+    // Save the first card in another variable to prevent it modifying the original
+    LinkedCard *current_card = *foundation;
+    // Create the first card view
+    CardView *card_view = create_card_view(create_cardview_rect(0, 0),
+                                           current_card,
+                                           renderer);
+    // Save pointer to the first node
+    CardView *card_view_first = card_view;
+    while (current_card != NULL) {
+        // Go to the next card
+        current_card = current_card->next;
+        if(current_card == NULL) break;
+        // Go to the next card view and make a card view
+        card_view->next = create_card_view(create_cardview_rect(0, 0),
+                                           current_card,
+                                           renderer);
+        card_view->next->prev = card_view;
+        card_view = card_view->next;
+    }
+    FoundationView *foundation_view = create_foundation_view(rect, card_spacing, card_view_first);
+
+    return foundation_view;
 }
 
 void render_foundation_view(FoundationView *foundation_view, SDL_Renderer *renderer) {
-    for (int i = 0; i < foundation_view->card_count; ++i) {
-        render_card_view(&foundation_view->cards[i], renderer);
+    if(foundation_view == NULL) return;
+    CardView *current = foundation_view->cards;
+    while (current != NULL) {
+        render_card_view(current, renderer);
+        current = current->next;
     }
 }
 

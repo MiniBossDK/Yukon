@@ -6,13 +6,13 @@
 typedef struct BoardView BoardView;
 
 struct BoardView {
-    ColumnView *columns;
-    FoundationView *foundations;
+    ColumnView *columns[7];
+    FoundationView *foundations[4];
     SDL_Rect *rect;
     int card_spacing;
 };
 
-BoardView *create_board_view(SDL_Rect *rect, ColumnView **columns, FoundationView **foundations);
+BoardView *create_board_view(SDL_Rect *rect, ColumnView *columns[], FoundationView *foundations[]);
 
 void render_board_view(BoardView *board_view, SDL_Renderer *renderer);
 

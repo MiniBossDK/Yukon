@@ -8,8 +8,8 @@
 #include <view/gui/gui_board_view.h>
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 1200;
+const int SCREEN_HEIGHT = 800;
 
 //Starts up SDL and creates window
 int init();
@@ -115,24 +115,34 @@ int main( int argc, char* args[] )
 
     GameState *game_state = create_game_state(deck, column, foundation_piles);
 
-    show_deck(game_state);
-
+    //show_deck(game_state, 1);
+    game_init(game_state);
     ColumnView *column_view[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
     FoundationView *foundation_view[4] = {NULL, NULL, NULL, NULL};
 
+
     for (int i = 0; i < 7; ++i) {
-        column_view[i] = convert_column_to_column_view(game_state->column, gRenderer);
+        column_view[i] = convert_column_to_column_view(create_columnview_rect(i * (240/2) + 20, 0),
+                                                       &game_state->column[i],
+                                                        i + 1,
+                                                       gRenderer);
     }
 
-    /*
+    for (int i = 0; i < 4; ++i) {
+        foundation_view[i] = convert_foundation_to_foundation_view(
+                create_foundationview_rect(0, 0),
+                game_state->foundation,
+                gRenderer);
+    }
+
     SDL_Rect board_rect;
     board_rect.x = 0;
     board_rect.y = 0;
     board_rect.w = SCREEN_WIDTH;
     board_rect.h = SCREEN_HEIGHT;
     BoardView *board_view = create_board_view(&board_rect, column_view, foundation_view);
-    */
+
 
     //Main loop flag
     int quit = 0;
@@ -141,7 +151,8 @@ int main( int argc, char* args[] )
     SDL_RenderClear( gRenderer );
     //Render texture to screen
     //SDL_RenderCopy( gRenderer, gTexture, NULL, &stretchRect);
-
+    render_board_view(board_view, gRenderer);
+    /*
     CardView cards[35];
     SDL_Rect *snap_zones[7];
     for (int i = 0; i < 7; ++i) {
@@ -160,6 +171,7 @@ int main( int argc, char* args[] )
             }
         }
     }
+     */
     //Update screen
     SDL_RenderPresent(gRenderer);
     //Event handler
@@ -181,6 +193,7 @@ int main( int argc, char* args[] )
             case SDL_QUIT:
                 quit = 1;
                 break;
+                /*
             case SDL_MOUSEMOTION:
 
                 mouse_pos.x = e.motion.x;
@@ -255,13 +268,14 @@ int main( int argc, char* args[] )
                     }
                 }
                 break;
+                 */
         }
     }
-
+    /*
     for (int i = 0; i < 35; ++i) {
         destroy_card_view(&cards[i]);
     }
-
+    */
     //Free resources and close SDL
     close();
 

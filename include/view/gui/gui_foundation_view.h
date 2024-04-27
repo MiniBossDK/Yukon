@@ -14,7 +14,7 @@ struct FoundationView {
 
 FoundationView *create_foundation_view(SDL_Rect *rect, int card_spacing, CardView *cards);
 
-FoundationView *convert_foundation_to_foundation_view(LinkedCard *foundation, SDL_Renderer *renderer);
+FoundationView *convert_foundation_to_foundation_view(SDL_Rect* rect, LinkedCard **foundation, SDL_Renderer *renderer);
 
 void render_foundation_view(FoundationView *foundation_view, SDL_Renderer *renderer);
 
