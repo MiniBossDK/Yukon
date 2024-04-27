@@ -8,24 +8,22 @@ ColumnView *create_column_view(SDL_Rect *rect, int card_spacing, CardView *cards
     column_view->card_spacing = card_spacing;
     column_view->card_count = 0;
     column_view->number = 0;
-    for (int i = 0; i < 52; ++i) {
-        column_view->cards[i] = cards[i];
-    }
+    column_view->cards = cards;
     return column_view;
 }
 
-ColumnView *convert_column_to_column_view(LinkedCard *column, SDL_Renderer *renderer) {
-    CardView *cardView = NULL;
-    LinkedCard *current = column;
+ColumnView *convert_column_to_column_view(LinkedCard **column, SDL_Renderer *renderer) {
+    LinkedCard *current = *column;
+    CardView *column_view = NULL;
     while (current != NULL) {
+        column_view = create_card_view(
+                create_cardview_rect(0, 0),
+                current,
+                renderer);
+        column_view = column_view->next;
         current = current->next;
-        cardView = create_card_view(create_cardview_rect(0, 0), current, renderer);
-        if(current->prev != NULL) {
-            cardView->prev = create_card_view(create_cardview_rect(0, 0), current->prev, renderer);
-        }
-        cardView = cardView->next;
     }
-    return create_column_view(create_columnview_rect(0, 0), 0, cardView);
+    return create_column_view(create_columnview_rect(0, 0), 0, column_view);
 }
 
 void render_column_view(ColumnView *column_view, SDL_Renderer *renderer) {

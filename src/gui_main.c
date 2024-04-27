@@ -2,6 +2,10 @@
 #include <SDL_image.h>
 #include <view/gui/gui_card_view.h>
 #include <stdio.h>
+#include <controller/game_state.h>
+#include <view/gui/gui_column_view.h>
+#include <view/gui/gui_foundation_view.h>
+#include <view/gui/gui_board_view.h>
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 800;
@@ -104,7 +108,7 @@ int main( int argc, char* args[] )
         return 0;
     }
 
-    /*
+
     LinkedCard *deck = create_deck();
     LinkedCard *column[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
     LinkedCard *foundation_piles[4] = {NULL, NULL, NULL, NULL};
@@ -113,22 +117,23 @@ int main( int argc, char* args[] )
 
     show_deck(game_state);
 
-    ColumnView *column_view[7];
+    ColumnView *column_view[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
-    FoundationView *foundation_view[4];
-
-    BoardView *board_view;
+    FoundationView *foundation_view[4] = {NULL, NULL, NULL, NULL};
 
     for (int i = 0; i < 7; ++i) {
-        column_view[i] = convert_column_to_column_view(game_state->column[i], gRenderer);
+        column_view[i] = convert_column_to_column_view(game_state->column, gRenderer);
     }
 
-    for (int i = 0; i < 4; ++i) {
-        foundation_view[i] = convert_foundation_to_foundation_view(game_state->foundation[i], gRenderer);
-    }
-
-    board_view = create_board_view(0, 0, 0, 0, column_view, foundation_view);
+    /*
+    SDL_Rect board_rect;
+    board_rect.x = 0;
+    board_rect.y = 0;
+    board_rect.w = SCREEN_WIDTH;
+    board_rect.h = SCREEN_HEIGHT;
+    BoardView *board_view = create_board_view(&board_rect, column_view, foundation_view);
     */
+
     //Main loop flag
     int quit = 0;
 
@@ -138,6 +143,7 @@ int main( int argc, char* args[] )
     //SDL_RenderCopy( gRenderer, gTexture, NULL, &stretchRect);
 
     CardView cards[35];
+    SDL_Rect *snap_zones[7];
     for (int i = 0; i < 7; ++i) {
         for (int j = 0; j < 5; ++j) {
             SDL_Rect *stretchRect = create_cardview_rect(0, 0);
@@ -149,6 +155,9 @@ int main( int argc, char* args[] )
             set_clickable_area(cardView, stretchRect->x, stretchRect->y, 0);
             render_card_view(cardView, gRenderer);
             cards[i*5+j] = *cardView;
+            if(j == 4) {
+                snap_zones[i] = create_cardview_rect(stretchRect->x, stretchRect->y+50);
+            }
         }
     }
     //Update screen
@@ -158,8 +167,12 @@ int main( int argc, char* args[] )
     SDL_Point mouse_pos;
     CardView *dragged_card = NULL;
     int dragging = 0;
+
     int drag_offset_x = 0;
     int drag_offset_y = 0;
+
+    int original_x = 0;
+    int original_y = 0;
     while( !quit )
     {
         SDL_PollEvent(&e);
@@ -198,20 +211,46 @@ int main( int argc, char* args[] )
                             dragged_card = &cards[i];
                             drag_offset_x = mouse_pos.x - dragged_card->card_image_rect->x;
                             drag_offset_y = mouse_pos.y - dragged_card->card_image_rect->y;
+                            original_x = dragged_card->card_image_rect->x;
+                            original_y = dragged_card->card_image_rect->y;
                         }
                     }
                 }
                 break;
             case SDL_MOUSEBUTTONUP:
                 if (e.button.button == SDL_BUTTON_LEFT) {
-                    printf("Mouse released at (%d, %d)\n", e.button.x, e.button.y);
+                    //printf("Mouse released at (%d, %d)\n", e.button.x, e.button.y);
                     if(dragging) {
                         // TODO - Check if card is dropped on a valid location and snap it there
                         dragging = 0;
+                        for (int i = 0; i < 7; ++i) {
+                            if(SDL_PointInRect(&mouse_pos, snap_zones[i])) {
+                                printf("Card dropped on snap zone %d\n", i);
+                                if(dragged_card == NULL) break;
+                                SDL_RenderClear(gRenderer);
+                                dragged_card->card_image_rect->x = snap_zones[i]->x;
+                                dragged_card->card_image_rect->y = snap_zones[i]->y;
+                                dragged_card->clickable_area->x = snap_zones[i]->x;
+                                dragged_card->clickable_area->y = snap_zones[i]->y;
+                                dragged_card->clickable_area->w = snap_zones[i]->w;
+                                dragged_card->clickable_area->h = snap_zones[i]->h;
+                                for (int j = 0; j < 35; ++j) {
+                                    render_card_view(&cards[j], gRenderer);
+                                }
+                                SDL_RenderPresent(gRenderer);
+                                dragged_card = NULL;
+                                break;
+                            }
+                        }
+                        SDL_RenderClear(gRenderer);
                         if(dragged_card == NULL) break;
-                        dragged_card->clickable_area->x = mouse_pos.x - drag_offset_x;
-                        dragged_card->clickable_area->y = mouse_pos.y - drag_offset_y;
-                        dragged_card->clickable_area->h = dragged_card->card_image_rect->h;
+                        dragged_card->card_image_rect->x = original_x;
+                        dragged_card->card_image_rect->y = original_y;
+                        for (int i = 0; i < 35; ++i) {
+                            render_card_view(&cards[i], gRenderer);
+                        }
+                        SDL_RenderPresent(gRenderer);
+
                         dragged_card = NULL;
                     }
                 }

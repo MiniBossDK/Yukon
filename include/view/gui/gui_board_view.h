@@ -3,12 +3,14 @@
 #include <view/gui/gui_column_view.h>
 #include <view/gui/gui_foundation_view.h>
 
-typedef struct {
+typedef struct BoardView BoardView;
+
+struct BoardView {
     ColumnView *columns;
     FoundationView *foundations;
     SDL_Rect *rect;
     int card_spacing;
-} BoardView;
+};
 
 BoardView *create_board_view(SDL_Rect *rect, ColumnView **columns, FoundationView **foundations);
 

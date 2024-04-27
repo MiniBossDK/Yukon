@@ -2,13 +2,15 @@
 
 #include <view/gui/gui_card_view.h>
 
-typedef struct {
+typedef struct FoundationView FoundationView;
+
+struct FoundationView {
     CardView *cards;
     int number;
     SDL_Rect *rect;
     int card_spacing;
     int card_count;
-} FoundationView;
+};
 
 FoundationView *create_foundation_view(SDL_Rect *rect, int card_spacing, CardView *cards);
 
