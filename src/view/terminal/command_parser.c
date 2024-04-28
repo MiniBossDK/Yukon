@@ -2,11 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <model/card.h>
 #include <controller/handle_commands.h>
 #include <controller/handle_game_moves.h>
-#include <controller/phase.h>
+#include <controller/string_utils.h>
 
 Command commands[] = {
         {"L", handle_load_game},
@@ -82,11 +80,11 @@ int validate_command(const ParsedCommand* command, GameState *state) {
 
 ParsedCommand* extract_command(const char* command) {
     ParsedCommand* cmd = malloc(sizeof(ParsedCommand));
-    if (cmd == NULL) return NULL;
+    if (cmd == NULL) return NULL; // Memory allocation failed
 
+    // Duplicate the command to avoid modifying the original string
     char *command_copy = strdup(command);
-
-    if (command_copy == NULL) {
+    if (command_copy == NULL) { // If memory allocation fails, free the allocated memory and return NULL
         free(cmd);
         return NULL;
     }
@@ -100,7 +98,7 @@ ParsedCommand* extract_command(const char* command) {
         return NULL;
     }
     cmd->command = strdup(parsed_cmd);
-    trim(cmd->command);
+    trim(cmd->command); // Remove leading and trailing spaces
     int arg_count = 0;
 
     // Initialize all arguments to NULL
@@ -169,6 +167,8 @@ void destroy_game_move(GameMove* move) {
 }
 
 CommandType get_command_type(const char* command) {
+    // Check if string contains the -> character, if so it is a game move
+    // Very basic check, but should be sufficient for now
     if (strstr(command, "->") != NULL) {
         return GAME_MOVE;
     }
@@ -178,6 +178,7 @@ CommandType get_command_type(const char* command) {
 int parse_command(const char* command, GameState* state) {
     if(state->phase == PLAY) {
         if(get_command_type(command) == GAME_MOVE) {
+            // Parse the game move separately from a normal command
             if(parse_game_move(command, state)) {
                 strcpy(state->message, "OK");
                 return 1;
@@ -193,10 +194,6 @@ int parse_command(const char* command, GameState* state) {
 
     int status = evaluate_command(cmd, state);
 
-    char* command_copy = strdup(command);
-    trim(command_copy);
-    strcpy(state->lastCommand, command_copy); // copy the command to the last command state->message
-    free(command_copy);
     destroy_command(cmd);
     return status;
 }
@@ -216,17 +213,19 @@ GameMove *extract_game_move(const char* game_move) {
     char *rest;
     char* from = strdup(strtok_r(game_move_copy, "->", &rest));
     char* to = strdup(strtok_r(NULL, "->", &rest));
-    if(from == NULL || to == NULL) {
+    if(from == NULL || to == NULL) { // Memory allocation failed
         free(from);
         free(to);
         free(game_move_copy);
         free(move);
         return NULL;
     }
-    move->to = strdup(to);
+    move->to = to;
+    // Since last part of the last part can contain spaces, we need to trim it
     trim(move->to);
 
-    // Parse the left side
+    // Since the from part can be a column, a foundation pile
+    // or a specific card, we need to determine the type
     move->from = extract_move_source(from);
     free(from);
     free(game_move_copy);
@@ -234,13 +233,21 @@ GameMove *extract_game_move(const char* game_move) {
 }
 
 GameMoveSource *extract_move_source(const char *source) {
+    // Duplicate the source to avoid modifying the original string
     char *source_copy = strdup(source);
+    if (source_copy == NULL) {
+        free(source_copy);
+        return NULL;
+    }
+
     GameMoveSource *game_move_source = malloc(sizeof(GameMoveSource));
     game_move_source->column = NULL;
     game_move_source->card = NULL;
     game_move_source->pile = NULL;
+    // If the source contains a : character, it is a specific card
     if (is_specific_card(source)) {
         char *rest;
+        // Separate the column and card part of the source
         game_move_source->column = strdup(strtok_r(source_copy, ":", &rest));
         game_move_source->card = strdup(strtok_r(NULL, ":", &rest));
         return game_move_source;
@@ -283,45 +290,6 @@ int evaluate_game_move(GameMove *move, GameState *state) {
     return handle_game_move(move, state);
 }
 
-void trim(char *str) {
-    char *start, *end;
-
-    // Trim leading space
-    for (start = str; *start; start++) {
-        if (!isspace((unsigned char)start[0]))
-            break;
-    }
-
-    // Trim trailing space
-    for (end = start + strlen(start); end > start; end--) {
-        if (!isspace((unsigned char)end[-1]))
-            break;
-    }
-
-    *end = 0;  // Set new null terminator
-
-    // Shift the trimmed string to the start of the buffer
-    if (start > str)
-        memmove(str, start, end - start + 1);
-}
-
-void remove_all_spaces(char *str) {
-    trim(str);
-    char *i = str;
-    char *j = str;
-    while(*j != 0) {
-        *i = *j++;
-        if(*i != ' ') i++;
-    }
-    *i = 0;
-}
-
-int is_empty(char *str) {
-    if (str == NULL) return 1;
-    if (strlen(str) == 0) return 1;
-    return 0;
-}
-
 int validate_game_move_syntax(const GameMove *move, GameState *state) {
     if (move == NULL) {
         strcpy(state->message, "No move provided");
@@ -340,6 +308,7 @@ int validate_game_move_syntax(const GameMove *move, GameState *state) {
 
     if (move->from->pile != NULL) {
         if (move->from->card != NULL) {
+            // If the user wrote something like: F1:AS, it is invalid
             strcpy(state->message, "Cards can only be moved from the top of the foundation piles");
             return 0;
         }
@@ -405,11 +374,4 @@ int parse_game_move(const char* command, GameState* state) {
     free(command_copy);
     destroy_game_move(move);
     return status;
-}
-
-void to_upper(char* str) {
-    if (str == NULL) return;
-    for (int i = 0; i < strlen(str); i++) {
-        str[i] = toupper(str[i]);
-    }
 }
