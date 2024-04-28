@@ -12,22 +12,27 @@
 
 int handle_load_game(char* args[4], GameState* game_state) {
     if(args[0] == NULL) {
-        strcpy(game_state->message, "Loaded from default.dat");
-        read_game_state_from_file("default.dat", game_state);
+        strcpy(game_state->message, "Error: No filename provided");
         return 0;
     }
-    strcpy(game_state->message, "OK");
-    read_game_state_from_file(args[0], game_state);
+    struct stat buffer;
+    args[0][strcspn(args[0], "\r\n")] = 0; //trim newline from filename
+    if(stat(args[0], &buffer) == 0) {
+        sprintf(game_state->message, "Loaded from %s", args[0]);
+        read_game_state_from_file(args[0], game_state);
+    } else {
+        strcpy(game_state->message, "Error: File not found");
+        return 0;
+    }
     return 1;
 }
 
 int handle_save_game(char* args[4], GameState* game_state) {
     if(args[0] == NULL) {
-        strcpy(game_state->message, "Saved to default.dat");
-        write_game_state_to_file("default.dat", game_state);
+        strcpy(game_state->message, "Error: No filename provided");
         return 0;
     }
-    strcpy(game_state->message, "OK");
+    sprintf(game_state->message, "Saved to %s", args[0]);
     write_game_state_to_file(args[0], game_state);
     return 1;
 }

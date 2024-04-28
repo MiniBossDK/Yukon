@@ -36,7 +36,13 @@ int check_win(GameState* game_state) {
 
 // Function to write a struct to a file
 void write_game_state_to_file(const char* filename, GameState* game_state) {
-    FILE* file = fopen(filename, "wb"); // Open the file in binary write mode
+    char* temp;
+    temp = strdup(filename);
+    temp[strcspn(temp, "\r\n")] = 0; //trim newline from filename
+    sprintf(temp, "%s.dat", temp);
+    FILE* file = fopen(temp, "wb"); // Open the file in binary write mode
+
+    free(temp);
 
     if (file != NULL) {
         // Write the struct to the file
@@ -51,7 +57,13 @@ void write_game_state_to_file(const char* filename, GameState* game_state) {
 
 // Function to read a struct from a file
 void read_game_state_from_file(const char* filename, GameState* game_state) {
-    FILE *file = fopen(filename, "rb"); // Open the file in binary read mode
+    char* temp;
+    temp = strdup(filename);
+    temp[strcspn(temp, "\r\n")] = 0; //trim newline from filename
+    sprintf(temp, "%s.dat", temp);
+    FILE *file = fopen(temp, "rb"); // Open the file in binary read mode
+
+    free(temp);
 
     if (file != NULL) {
         // Read the struct from the file
