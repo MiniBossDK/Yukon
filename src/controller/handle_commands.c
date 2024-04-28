@@ -114,7 +114,7 @@ int handle_show_deck(char* args[4], GameState* game_state) {
 
 int handle_split_deck(char* args[4], GameState* game_state) {
     if (args[1] == NULL) {
-        split_deck(game_state->deck);
+        game_state->deck = split_deck(game_state->deck);
     }
     else {
         // TODO - Make sure args[1] is a number before converting
@@ -122,7 +122,7 @@ int handle_split_deck(char* args[4], GameState* game_state) {
             return 0;
         }
         else {
-            split_deck_int(game_state->deck, atoi(args[1]));
+            game_state->deck = split_deck_int(game_state->deck, atoi(args[1]));
         }
     }
     return 1;
