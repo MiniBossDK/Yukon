@@ -1,10 +1,12 @@
 #include <view/gui/gui_card_view.h>
+#include <SDL_image.h>
 
 CardView *create_card_view(SDL_Rect *image_rect, LinkedCard *card, SDL_Renderer *renderer) {
     if(card == NULL) return NULL;
     CardView *card_view = malloc(sizeof(CardView));
     card_view->image = get_card_texture(card, renderer);
     card_view->card_image_rect = image_rect;
+    card_view->is_selected = 0;
     card_view->card = card;
     card_view->next = NULL;
     card_view->prev = NULL;
@@ -26,20 +28,6 @@ SDL_Texture *get_card_texture(const LinkedCard* card, SDL_Renderer *renderer) {
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
     return texture;
-}
-
-CardView *convert_deck_to_card_views(LinkedCard *card, SDL_Renderer *renderer) {
-    /*
-    LinkedCard *current = card;
-    CardView *card_view = create_card_view(0, 0, 0, 0, current, renderer);;
-    while (current->next != NULL) {
-        if(current->prev != NULL) card_view->prev = create_card_view(0, 0, 0, 0, current->prev, renderer);
-        if(current->next != NULL) card_view->next = create_card_view(0, 0, 0, 0, current->next, renderer);
-        current = current->next;
-        card_view = card_view->next;
-    }
-    return card_view;
-     */
 }
 
 void render_card_view(CardView *card_view, SDL_Renderer *renderer) {
@@ -83,7 +71,7 @@ SDL_Rect *create_clickable_area(int x, int y, int is_overlayed) {
     rect->x = x;
     rect->y = y;
     rect->w = CARD_WIDTH;
-    rect->h = CARD_HEIGHT;
+    rect->h = (is_overlayed) ? CARD_SPACING : CARD_HEIGHT;
 
     return rect;
 }

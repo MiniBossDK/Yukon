@@ -3,9 +3,8 @@
 #include <view/gui/gui_card_view.h>
 #include <stdio.h>
 #include <controller/game_state.h>
-#include <view/gui/gui_column_view.h>
-#include <view/gui/gui_foundation_view.h>
-#include <view/gui/gui_board_view.h>
+#include <view/gui/snap_zone.h>
+#include "view/gui/event_handler.h"
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 1200;
@@ -144,7 +143,7 @@ int main( int argc, char* args[] )
     board_rect.h = SCREEN_HEIGHT;
     BoardView *board_view = create_board_view(&board_rect, column_view, foundation_view);
 
-
+    set_board_snap_zones(board_view);
     //Main loop flag
     int quit = 0;
 
@@ -153,26 +152,6 @@ int main( int argc, char* args[] )
     //Render texture to screen
     //SDL_RenderCopy( gRenderer, gTexture, NULL, &stretchRect);
     render_board_view(board_view, gRenderer);
-    /*
-    CardView cards[35];
-    SDL_Rect *snap_zones[7];
-    for (int i = 0; i < 7; ++i) {
-        for (int j = 0; j < 5; ++j) {
-            SDL_Rect *stretchRect = create_cardview_rect(0, 0);
-            stretchRect->x = ((240/2)+20)*i+50;
-            stretchRect->y = 50*j+50;
-            stretchRect->w = 240/2;
-            stretchRect->h = 320/2;
-            CardView *cardView = create_card_view(stretchRect, create_card('K', 'C'), gRenderer);
-            set_clickable_area(cardView, stretchRect->x, stretchRect->y, 0);
-            render_card_view(cardView, gRenderer);
-            cards[i*5+j] = *cardView;
-            if(j == 4) {
-                snap_zones[i] = create_cardview_rect(stretchRect->x, stretchRect->y+50);
-            }
-        }
-    }
-     */
     //Update screen
     SDL_RenderPresent(gRenderer);
     //Event handler
@@ -186,52 +165,18 @@ int main( int argc, char* args[] )
 
     int original_x = 0;
     int original_y = 0;
+
+    ColumnView *selected_column = NULL;
     while( !quit )
     {
         SDL_PollEvent(&e);
         //Handle events on queue
-        switch (e.type) {
-            case SDL_QUIT:
-                quit = 1;
-                break;
-            case SDL_MOUSEMOTION:
-
-                mouse_pos.x = e.motion.x;
-                mouse_pos.y = e.motion.y;
-
-
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                if (e.button.button == SDL_BUTTON_LEFT) {
-                    printf("Mouse down at (%d, %d)\n", e.button.x, e.button.y);
-                    for (int i = 0; i < 7; ++i) {
-                        if(SDL_PointInRect(&mouse_pos, board_view->columns[i]->rect)) {
-                            printf("Clicked on column %d\n", i);
-                            CardView *card = get_card_view_at_position(board_view->columns[i], &mouse_pos);
-                            if(card == NULL) {
-                                printf("No card clicked\n");
-                                break;
-                            }
-                            printf("Card: %c%c\n", card->card->rank, card->card->suit);
-                        }
-                    }
-                    if (SDL_PointInRect(&mouse_pos, board_view->foundations[0]->rect)) {
-                        printf("Clicked in foundation area\n");
-                    }
-                }
-                break;
-            case SDL_MOUSEBUTTONUP:
-                if (e.button.button == SDL_BUTTON_LEFT) {
-
-                }
-                break;
+        int status = handle_event(&e, board_view, gRenderer);
+        if(status == -1) {
+            quit = 1;
+            break;
         }
     }
-    /*
-    for (int i = 0; i < 35; ++i) {
-        destroy_card_view(&cards[i]);
-    }
-    */
     //Free resources and close SDL
     close();
 

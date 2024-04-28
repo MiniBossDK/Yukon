@@ -1,8 +1,9 @@
 #pragma once
 
-#include <model/card.h>
-#include <SDL.h>
-#include <SDL_image.h>
+
+#include <SDL_render.h>
+
+#include "model/card.h"
 
 #define CARD_WIDTH (240/2)
 #define CARD_HEIGHT (336/2)
@@ -25,8 +26,6 @@ CardView *create_card_view(SDL_Rect *image_rect, LinkedCard *card, SDL_Renderer 
 SDL_Surface *get_card_image(const LinkedCard* card);
 
 SDL_Texture *get_card_texture(const LinkedCard* card, SDL_Renderer *renderer);
-
-CardView *convert_deck_to_card_views(LinkedCard *card, SDL_Renderer *renderer);
 
 void render_card_view(CardView *card_view, SDL_Renderer *renderer);
 

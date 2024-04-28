@@ -1,11 +1,13 @@
 #include <view/gui/gui_foundation_view.h>
+#include <view/gui/gui_board_view.h>
 
 
 FoundationView *create_foundation_view(SDL_Rect *rect, int foundation_number, CardView *cards) {
     FoundationView *foundation_view = malloc(sizeof(FoundationView));
-    foundation_view->rect = rect;
+    foundation_view->view_rect = rect;
     foundation_view->foundation_number = foundation_number;
     foundation_view->cards = cards;
+    foundation_view->clickable_area = create_cardview_rect(rect->x, rect->y);
     return foundation_view;
 }
 
@@ -44,12 +46,16 @@ FoundationView *convert_foundation_to_foundation_view(SDL_Rect* rect, int founda
 void render_foundation_view(FoundationView *foundation_view, SDL_Renderer *renderer) {
     if(foundation_view == NULL) return;
     if(foundation_view->cards == NULL) {
-        render_foundation_pile_placeholder(foundation_view->rect, renderer);
+        render_foundation_pile_placeholder(foundation_view->view_rect, renderer);
         return;
     }
 
     CardView *current = foundation_view->cards;
     while (current != NULL) {
+        if(current->is_selected) {
+            current = current->next;
+            continue;
+        }
         render_card_view(current, renderer);
         current = current->next;
     }
@@ -69,7 +75,8 @@ void render_foundation_pile_placeholder(SDL_Rect *foundation_rect, SDL_Renderer 
     outer_rect.h = 336/2 - 50;
 */
     SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
-    SDL_RenderFillRect( renderer, &outer_rect );
+    SDL_RenderDrawRect( renderer, &outer_rect );
+    SDL_SetRenderDrawColor( renderer, 255, 255, 255, 255 );
 //    SDL_SetRenderDrawColor( renderer, 255, 0, 0, 255);
 //    SDL_RenderFillRect( renderer, &inner_rect );
 }
@@ -83,3 +90,40 @@ SDL_Rect *create_foundationview_rect(int x, int y) {
     return rect;
 }
 
+void move_card_to_foundation_view(CardView *card_view, FoundationView *foundation_view) {
+    if(foundation_view->cards == NULL) {
+        foundation_view->cards = card_view;
+        card_view->prev = NULL;
+        card_view->next = NULL;
+        //position_card_view(card_view, foundation_view->view_rect->x, foundation_view->view_rect->y);
+        return;
+    }
+    CardView *current = foundation_view->cards;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = card_view;
+    card_view->prev = current;
+    card_view->next = NULL;
+    //position_card_view(card_view, foundation_view->view_rect->x, foundation_view->view_rect->y);
+}
+
+FoundationView *get_foundation_view_at_point(BoardView *board_view, SDL_Point *point) {
+    for (int i = 0; i < 4; ++i) {
+        if(SDL_PointInRect(point, board_view->foundations[i]->clickable_area)) {
+            return board_view->foundations[i];
+        }
+    }
+    return NULL;
+}
+
+CardView *get_card_view_at_position_foundation(FoundationView *foundation_view, SDL_Point *point) {
+    CardView *current = foundation_view->cards;
+    while (current != NULL) {
+        if(SDL_PointInRect(point, current->card_image_rect)) {
+            return current;
+        }
+        current = current->next;
+    }
+    return NULL;
+}
