@@ -73,6 +73,7 @@ int main() {
     //fill_foundation_piles(foundation_piles);
     int keep_running = 1;
     char command[20];
+    int i = 0;
     while (keep_running) {
         clear_terminal(1);
         print_board(game_state->column, game_state->foundation);
@@ -82,23 +83,22 @@ int main() {
         fgets(command, 50, stdin);
         int status = parse_command(command, game_state);
         fflush(stdin);
-
         if(game_state->game_over) {
-            char choice = 0;
-            print_win_screen();
-            while(choice == 0) {
-                printf("Do you want to play again? (Y/N): ");
-                fgets(&choice, 1, stdin);
-                char* args[4]; // Dummy args
-                if(choice == 'Y' || choice == 'y') {
-                    switch_to_play_phase(args, game_state);
-                } else if(choice == 'N' || choice == 'n') {
-                    handle_quit_game(args, game_state);
-                }
-                fflush(stdin);
+            char choice[2];
+            char* args[4] = {NULL, NULL, NULL, NULL};
+            print_win_screen(game_state);
+            fgets(choice, 2, stdin);
+            if (choice[0] == 'Y' || choice[0] == 'y') {
+                game_state->game_over = 0;
+                switch_to_play_phase(args, game_state);
+                strcpy(game_state->message, "");
+            } else if (choice[0] == 'N' || choice[0] == 'n') {
+                game_state->game_over = 0;
+                handle_quit_game(args, game_state);
+                show_deck(game_state, 1);
+                strcpy(game_state->message, "Welcome to Yukon Solitaire!");
             }
         }
-
         if (status == -1) {
             keep_running = 0;
         }

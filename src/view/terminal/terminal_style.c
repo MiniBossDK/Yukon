@@ -100,7 +100,10 @@ void print_board(LinkedCard* columns[], LinkedCard* foundation_piles[]) {
     }
 }
 
-void print_win_screen() {
+void print_win_screen(GameState* game_state) {
     clear_terminal(1);
-    printf("Congratulations! You win!\n");
+    print_board(game_state->column, game_state->foundation);
+    print_last_command(game_state->lastCommand);
+    print_message(game_state->message);
+    print_input_prompt();
 }

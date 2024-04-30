@@ -29,4 +29,4 @@ void print_empty_card();
 
 void traverse_linked_list(LinkedCard* card, void (*callback)(LinkedCard*));
 
-void print_win_screen();
+void print_win_screen(GameState* game_state);

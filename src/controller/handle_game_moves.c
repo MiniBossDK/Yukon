@@ -28,9 +28,9 @@ int handle_game_move(GameMove *move, GameState *game_state) {
 
     int status = move_card(source, destination, card);
     if(check_win(game_state)) {
-        strcpy(game_state->message, "You win!");
+        strcpy(game_state->message, "Congratulations! You have won the game! Would you like to play again? (Y/N)");
         game_state->game_over = 1;
-        return 1;
+        return 2; // This is to prevent the default message (OK) from being displayed. We want to display the win message instead.
     }
     return status;
 }
