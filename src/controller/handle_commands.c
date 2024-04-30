@@ -159,16 +159,21 @@ int handle_split_deck(char* args[4], GameState* game_state) {
     if(!validate_deck_loaded(game_state)) {
         return 0;
     }
-    if (args[1] == NULL) {
+    if (args[0] == NULL) {
         game_state->deck = split_deck(game_state->deck);
     }
     else {
-        // TODO - Make sure args[1] is a number before converting
-        if (!atoi(args[1])) {
+        if (!atoi(args[0])) {
+            strcpy(game_state->message, "Error: Invalid argument! <Integer> must be greater than 0 and less than 52");
             return 0;
         }
         else {
-            game_state->deck = split_deck_int(game_state->deck, atoi(args[1]));
+            if (atoi(args[0]) < 1 || atoi(args[0]) > 52) {
+                strcpy(game_state->message, "Error: Invalid argument! <Integer> must be greater than 0 and less than 52");
+                return 0;
+            } else {
+                game_state->deck = split_deck_int(game_state->deck, atoi(args[0]));
+            }
         }
     }
     return 1;
