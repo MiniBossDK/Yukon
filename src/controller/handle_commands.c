@@ -45,6 +45,7 @@ int handle_load_deck(char* args[4], GameState* game_state) {
         show_deck(game_state, 1);
     }
     else {
+        printf("Loading deck from file %s\n", args[0]);
         struct stat buffer;
         args[0][strcspn(args[0], "\r\n")] = 0; //trim newline from filename
         if(stat(args[0], &buffer) == 0) { // Check if file exists

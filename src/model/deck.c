@@ -40,35 +40,29 @@ void destroy_deck(LinkedCard* deck) {
 
 
 int validate_deck(LinkedCard* deck) {
-    int ranks[13] = {0};
-    int suits[4] = {0};
+    int card_counts[4][14] = {0}; // Initialize all counts to 0
     LinkedCard* temp = deck;
     while (temp != NULL) {
-        int rankIndex = temp->rank - 'A';
-        int suitIndex = temp->suit - 'S';
-        if (rankIndex < 0 || rankIndex > 12 || suitIndex < 0 || suitIndex > 3) {
-            return 0;
+        int rankIndex = card_value(temp);
+        int suitIndex = get_suite_value(temp);
+        if (rankIndex < 1 || rankIndex > 13 || suitIndex < 0 || suitIndex > 3) {
+            return 0; // Invalid rank or suit
         }
-        if (ranks[rankIndex] == 1 || suits[suitIndex] == 1) {
-            return 0;
+        if (card_counts[suitIndex][rankIndex] == 1) {
+            return 0; // Duplicate card
         }
-        ranks[rankIndex] = 1;
-        suits[suitIndex] = 1;
+        card_counts[suitIndex][rankIndex] = 1; // Mark this card as found
         temp = temp->next;
     }
 
-    for (int i = 0; i < 13; i++) {
-        if (ranks[i] == 0) {
-            return 0;
-        }
-    }
-
     for (int i = 0; i < 4; i++) {
-        if (suits[i] == 0) {
-            return 0;
+        for (int j = 1; j < 14; j++) {
+            if (card_counts[i][j] == 0) {
+                return 0; // Missing card
+            }
         }
     }
-    return 1;
+    return 1; // All cards are present exactly once
 }
 
 int save_deck_to_file(LinkedCard* deck){
