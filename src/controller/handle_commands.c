@@ -91,6 +91,7 @@ int handle_save_deck(char* args[4], GameState* game_state) {
         save_deck_to_file(game_state->deck);
     }
     else {
+        args[0][strcspn(args[0], "\r\n")] = 0; //trim newline from filename
         save_deck_to_file_name(game_state->deck, args[0]);
     }
     return 1;
