@@ -11,6 +11,9 @@
 #include <sys/stat.h>
 
 int handle_load_game(char* args[4], GameState* game_state) {
+    if(!validate_max_args(args, game_state, 1)) {
+        return 0;
+    }
     if(args[0] == NULL) {
         strcpy(game_state->message, "Error: No filename provided");
         return 0;
@@ -28,6 +31,9 @@ int handle_load_game(char* args[4], GameState* game_state) {
 }
 
 int handle_save_game(char* args[4], GameState* game_state) {
+    if(!validate_max_args(args, game_state, 1)) {
+        return 0;
+    }
     if(args[0] == NULL) {
         strcpy(game_state->message, "Error: No filename provided");
         return 0;
@@ -38,6 +44,9 @@ int handle_save_game(char* args[4], GameState* game_state) {
 }
 
 int handle_load_deck(char* args[4], GameState* game_state) {
+    if(!validate_max_args(args, game_state, 1)) {
+        return 0;
+    }
     if(args[0] == NULL) {
         game_state -> deck = create_deck();
         empty_columns(game_state);
@@ -72,6 +81,12 @@ int handle_load_deck(char* args[4], GameState* game_state) {
 
 
 int handle_save_deck(char* args[4], GameState* game_state) {
+    if(!validate_max_args(args, game_state, 1)) {
+        return 0;
+    }
+    if(!validate_deck_loaded(game_state)){
+        return 0;
+    }
     if(args[0] == NULL) {
         save_deck_to_file(game_state->deck);
     }
@@ -82,6 +97,12 @@ int handle_save_deck(char* args[4], GameState* game_state) {
 }
 
 int switch_to_play_phase(char* args[4], GameState* game_state) {
+    if(!validate_max_args(args, game_state, 0)) {
+        return 0;
+    }
+    if(!validate_deck_loaded(game_state)) {
+        return 0;
+    }
     game_state->phase = PLAY;
     empty_columns(game_state);
     empty_foundations(game_state);
@@ -90,6 +111,9 @@ int switch_to_play_phase(char* args[4], GameState* game_state) {
 }
 
 int handle_quit_game(char* args[4], GameState* game_state) {
+    if(!validate_max_args(args, game_state, 0)) {
+        return 0;
+    }
     game_state->phase = STARTUP;
     empty_columns(game_state);
     empty_foundations(game_state);
@@ -97,16 +121,31 @@ int handle_quit_game(char* args[4], GameState* game_state) {
 }
 
 int handle_quit_application(char* args[4], GameState* game_state) {
+    if(!validate_max_args(args, game_state, 0)) {
+        return 0;
+    }
     destroy_game_state(game_state);
     return -1; // This is the special signal to quit the application
 }
 
 int handle_shuffle_deck(char* args[4], GameState* game_state) {
+    if(!validate_max_args(args, game_state, 0)) {
+        return 0;
+    }
+    if(!validate_deck_loaded(game_state)) {
+        return 0;
+    }
     game_state->deck = shuffle_deck(game_state->deck);
     return 1;
 }
 
 int handle_show_deck(char* args[4], GameState* game_state) {
+    if(!validate_max_args(args, game_state, 0)) {
+        return 0;
+    }
+    if(!validate_deck_loaded(game_state)) {
+        return 0;
+    }
     empty_columns(game_state);
     empty_foundations(game_state);
     show_deck(game_state,0);
@@ -114,6 +153,12 @@ int handle_show_deck(char* args[4], GameState* game_state) {
 }
 
 int handle_split_deck(char* args[4], GameState* game_state) {
+    if(!validate_max_args(args, game_state, 2)) {
+        return 0;
+    }
+    if(!validate_deck_loaded(game_state)) {
+        return 0;
+    }
     if (args[1] == NULL) {
         game_state->deck = split_deck(game_state->deck);
     }
@@ -125,6 +170,22 @@ int handle_split_deck(char* args[4], GameState* game_state) {
         else {
             game_state->deck = split_deck_int(game_state->deck, atoi(args[1]));
         }
+    }
+    return 1;
+}
+
+int validate_deck_loaded(GameState* state) {
+    if(state->deck == NULL) {
+        strcpy(state->message, "Error: No deck loaded");
+        return 0;
+    }
+    return 1;
+}
+
+int validate_max_args(char* args[4], GameState* state, int max_args) {
+    if(args[max_args] != NULL) {
+        strcpy(state->message, "Error: Too many arguments");
+        return 0;
     }
     return 1;
 }
