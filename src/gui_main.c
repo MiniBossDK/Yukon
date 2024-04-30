@@ -5,10 +5,9 @@
 #include <controller/game_state.h>
 #include <view/gui/snap_zone.h>
 #include <view/gui/event_handler.h>
-#include <controller/handle_game_moves.h>
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 1200;
+const int SCREEN_WIDTH = 1400;
 const int SCREEN_HEIGHT = 800;
 
 //Starts up SDL and creates window
@@ -123,7 +122,7 @@ int main( int argc, char* args[] )
 
 
     for (int i = 0; i < 7; ++i) {
-        column_view[i] = convert_column_to_column_view(create_columnview_rect(((240/2)+20)*i, 0),
+        column_view[i] = convert_column_to_column_view(create_columnview_rect(((240/2)+20)*i+50, 50),
                                                        &game_state->column[i],
                                                         i + 1,
                                                        gRenderer);
@@ -131,7 +130,7 @@ int main( int argc, char* args[] )
 
     for (int i = 0; i < 4; ++i) {
         foundation_view[i] = convert_foundation_to_foundation_view(
-                create_foundationview_rect(8 * (240/2) + 50, (336/2 + 20) * i ),
+                create_foundationview_rect(8 * (240/2) + 100, (336/2 + 20) * i + 50),
                 i + 1,
                 game_state->foundation,
                 gRenderer);
@@ -150,24 +149,12 @@ int main( int argc, char* args[] )
 
     //Clear screen
     SDL_RenderClear( gRenderer );
-    //Render texture to screen
-    //SDL_RenderCopy( gRenderer, gTexture, NULL, &stretchRect);
+
     render_board_view(board_view, gRenderer);
     //Update screen
     SDL_RenderPresent(gRenderer);
     //Event handler
     SDL_Event e;
-    SDL_Point mouse_pos;
-    CardView *dragged_card = NULL;
-    int dragging = 0;
-
-    int drag_offset_x = 0;
-    int drag_offset_y = 0;
-
-    int original_x = 0;
-    int original_y = 0;
-
-    ColumnView *selected_column = NULL;
     while( !quit )
     {
         SDL_PollEvent(&e);

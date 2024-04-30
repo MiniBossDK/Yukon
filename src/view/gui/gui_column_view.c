@@ -20,7 +20,7 @@ ColumnView *convert_column_to_column_view(SDL_Rect *rect, LinkedCard **column, i
                 );
     }
 
-    int y_position = 0;
+    int y_position = rect->y;
     // Save the first card in another variable to prevent it modifying the original
     LinkedCard *current_card = *column;
     // Create the first card view
