@@ -84,7 +84,19 @@ int main() {
         fflush(stdin);
 
         if(game_state->game_over) {
-
+            char choice = 0;
+            print_win_screen();
+            while(choice == 0) {
+                printf("Do you want to play again? (Y/N): ");
+                fgets(&choice, 1, stdin);
+                char* args[4]; // Dummy args
+                if(choice == 'Y' || choice == 'y') {
+                    switch_to_play_phase(args, game_state);
+                } else if(choice == 'N' || choice == 'n') {
+                    handle_quit_game(args, game_state);
+                }
+                fflush(stdin);
+            }
         }
 
         if (status == -1) {

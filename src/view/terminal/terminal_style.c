@@ -57,7 +57,7 @@ void traverse_linked_list(LinkedCard* card, void (*callback)(LinkedCard*)) {
 }
 
 void print_foundation_numbers(int pile_number) {
-    printf("F%d", pile_number);
+    printf("\tF%d", pile_number);
 }
 
 void print_empty_card() {
@@ -93,9 +93,14 @@ void print_board(LinkedCard* columns[], LinkedCard* foundation_piles[]) {
             int pile = (int) floor(j / 2);
             printf("\t");
             print_card(get_top_card(foundation_piles[pile]));
-            printf("\tF%d", pile + 1);
+            print_foundation_numbers(pile + 1);
         }
         printf("\n");
         j++;
     }
+}
+
+void print_win_screen() {
+    clear_terminal(1);
+    printf("Congratulations! You win!\n");
 }
