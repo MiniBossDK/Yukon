@@ -185,18 +185,20 @@ int parse_command(const char* command, GameState* state) {
             return 0;
         }
     }
+    char* command_copy = strdup(command);
+    trim(command_copy);
+    strcpy(state->lastCommand, command_copy); // copy the command to the last command state->message
+    free(command_copy);
+
     ParsedCommand *cmd = extract_command(command);
     to_upper(cmd->command);
     if (!validate_command(cmd, state)) {
+        destroy_command(cmd);
         return 0;
     }
 
     int status = evaluate_command(cmd, state);
 
-    char* command_copy = strdup(command);
-    trim(command_copy);
-    strcpy(state->lastCommand, command_copy); // copy the command to the last command state->message
-    free(command_copy);
     destroy_command(cmd);
     return status;
 }
@@ -395,12 +397,14 @@ int parse_game_move(const char* command, GameState* state) {
     to_upper(command_copy);
     GameMove *move = extract_game_move(command_copy);
 
+    strcpy(state->lastCommand, command_copy);
+
     if(!validate_game_move_syntax(move, state)) {
         destroy_game_move(move);
+        free(command_copy);
         return 0;
     }
     int status = evaluate_game_move(move, state);
-    strcpy(state->lastCommand, command_copy);
 
     free(command_copy);
     destroy_game_move(move);
