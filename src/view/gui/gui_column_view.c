@@ -96,8 +96,7 @@ void destroy_column_view(ColumnView *column_view) {
     free(column_view);
 }
 
-void move_card_to_column_view(CardView *cards, CardView **src_pile, ColumnView *dst_column_view) {
-    // TODO - Source also need to be a foundation
+void move_card_to_column_view(CardView *cards, CardView **src_pile, ColumnView *sourcePile, ColumnView *dst_column_view) {
 
     // If the source column is the same as the destination column, do nothing
     if(*src_pile == dst_column_view->cards) return;
@@ -105,7 +104,7 @@ void move_card_to_column_view(CardView *cards, CardView **src_pile, ColumnView *
     if(cards->prev == NULL) {
         // if the source column is going to be empty, set the
         // destination column to the source column
-        src_pile = NULL;
+        sourcePile->cards = NULL;
     } else {
         // if the source column is not going to be empty, set the next card to nothing
         cards->prev->next = NULL;
@@ -120,7 +119,7 @@ void move_card_to_column_view(CardView *cards, CardView **src_pile, ColumnView *
     CardView *last_card = get_last_card_view(dst_column_view->cards);
     // Point the first card to the last card in the destination column
     cards->prev = last_card;
-    // ... and point the last card to the first card
+    // ... and point the last card to the newly added card
     last_card->next = cards;
 }
 

@@ -4,14 +4,12 @@
 
 typedef struct BoardView BoardView; // Forward declaration
 
-typedef struct ColumnView ColumnView;
-
-struct ColumnView {
+typedef struct {
     CardView *cards;
     int column_number;
     SDL_Rect *rect;
     SDL_Rect *snap_zone;
-};
+} ColumnView;
 
 ColumnView *create_column_view(SDL_Rect *rect, int column_number, CardView *cards);
 
@@ -27,7 +25,7 @@ CardView *get_card_view_at_position(ColumnView *column_view, SDL_Point *point);
 
 void set_column_view_selected(CardView *card_view, int is_selected);
 
-void move_card_to_column_view(CardView *cards, CardView **src_pile, ColumnView *dst_column_view);
+void move_card_to_column_view(CardView *cards, CardView **src_pile, ColumnView *sourcePile, ColumnView *dst_column_view);
 
 CardView *get_last_card_view(CardView *card_view);
 

@@ -40,3 +40,7 @@ SDL_Rect *create_cardview_rect(int x, int y);
 SDL_Rect *create_clickable_area(int x, int y, int is_overlayed);
 
 void set_clickable_area(CardView *card_view, int x, int y, int is_overlayed);
+
+void remove_clickable_area(CardView *card_view);
+
+void render_clickable_area(CardView *card_view, SDL_Renderer *renderer);

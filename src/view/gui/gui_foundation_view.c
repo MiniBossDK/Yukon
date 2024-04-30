@@ -93,6 +93,9 @@ SDL_Rect *create_foundationview_rect(int x, int y) {
 void move_card_to_foundation_view(CardView *card_view, FoundationView *foundation_view) {
     if(foundation_view->cards == NULL) {
         foundation_view->cards = card_view;
+        if(card_view->prev != NULL) {
+            card_view->prev->next = NULL;
+        }
         card_view->prev = NULL;
         card_view->next = NULL;
         //position_card_view(card_view, foundation_view->view_rect->x, foundation_view->view_rect->y);
@@ -103,6 +106,9 @@ void move_card_to_foundation_view(CardView *card_view, FoundationView *foundatio
         current = current->next;
     }
     current->next = card_view;
+    if(card_view->prev != NULL) {
+        card_view->prev->next = NULL;
+    }
     card_view->prev = current;
     card_view->next = NULL;
     //position_card_view(card_view, foundation_view->view_rect->x, foundation_view->view_rect->y);
@@ -120,7 +126,7 @@ FoundationView *get_foundation_view_at_point(BoardView *board_view, SDL_Point *p
 CardView *get_card_view_at_position_foundation(FoundationView *foundation_view, SDL_Point *point) {
     CardView *current = foundation_view->cards;
     while (current != NULL) {
-        if(SDL_PointInRect(point, current->card_image_rect)) {
+        if(SDL_PointInRect(point, current->clickable_area)) {
             return current;
         }
         current = current->next;

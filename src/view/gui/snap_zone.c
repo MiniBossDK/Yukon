@@ -40,18 +40,33 @@ void set_board_snap_zones(BoardView *board_view) {
 }
 
 void snap_card_view_to_column(CardView *card_view, SDL_Rect *snap_zone) {
+    int y_spacing = snap_zone->y;
     CardView *current = card_view;
     while (current != NULL) {
         current->card_image_rect->x = snap_zone->x;
-        current->card_image_rect->y = snap_zone->y;
-        snap_zone->y += CARD_SPACING;
+        current->card_image_rect->y = y_spacing;
+        if(current->next == NULL) {
+            remove_clickable_area(current);
+            set_clickable_area(current, snap_zone->x, y_spacing, 0);
+            break;
+        }
+        remove_clickable_area(current);
+        set_clickable_area(current, snap_zone->x, y_spacing, 1);
+        y_spacing += CARD_SPACING;
         current = current->next;
+    }
+    if(card_view->prev != NULL) {
+        remove_clickable_area(card_view->prev);
+        set_clickable_area(card_view->prev,
+                           card_view->prev->card_image_rect->x,
+                           card_view->prev->card_image_rect->y, 1);
     }
 }
 
 void snap_card_view_to_foundation(CardView *card_view, SDL_Rect *snap_zone) {
     card_view->card_image_rect->x = snap_zone->x;
     card_view->card_image_rect->y = snap_zone->y;
+    remove_clickable_area(card_view);
     set_clickable_area(card_view, snap_zone->x, snap_zone->y, 0);
 }
 
@@ -80,6 +95,6 @@ FoundationView *get_dropped_foundation(SDL_Point *dropped_point, BoardView *boar
 void render_snap_zone(SDL_Rect *snap_zone, SDL_Renderer *renderer) {
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
     SDL_RenderDrawRect(renderer, snap_zone);
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 }
 

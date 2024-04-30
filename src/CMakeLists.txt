@@ -52,6 +52,7 @@ IF (USER_INTERFACE)
         view/gui/gui_board_view.c
         view/gui/snap_zone.c
             view/gui/event_handler.c
+            view/gui/gui_pile.c
     )
 
     target_link_libraries(MainGui

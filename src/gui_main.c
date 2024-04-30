@@ -4,7 +4,8 @@
 #include <stdio.h>
 #include <controller/game_state.h>
 #include <view/gui/snap_zone.h>
-#include "view/gui/event_handler.h"
+#include <view/gui/event_handler.h>
+#include <controller/handle_game_moves.h>
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 1200;
@@ -171,7 +172,7 @@ int main( int argc, char* args[] )
     {
         SDL_PollEvent(&e);
         //Handle events on queue
-        int status = handle_event(&e, board_view, gRenderer);
+        int status = handle_event(&e, board_view, game_state, gRenderer);
         if(status == -1) {
             quit = 1;
             break;

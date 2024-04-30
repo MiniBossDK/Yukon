@@ -33,6 +33,7 @@ SDL_Texture *get_card_texture(const LinkedCard* card, SDL_Renderer *renderer) {
 void render_card_view(CardView *card_view, SDL_Renderer *renderer) {
     if(card_view == NULL) return;
     SDL_RenderCopy(renderer, card_view->image, NULL, card_view->card_image_rect);
+    render_clickable_area(card_view, renderer);
 }
 
 void render_empty_card_view(SDL_Rect *rect, SDL_Renderer *renderer) {
@@ -50,6 +51,15 @@ void position_card_view(CardView *card_view, int x, int y) {
 
 void set_clickable_area(CardView *card_view, int x, int y, int is_overlayed) {
     card_view->clickable_area = create_clickable_area(x, y, is_overlayed);
+}
+
+void remove_clickable_area(CardView *card_view) {
+    free(card_view->clickable_area);
+}
+
+void render_clickable_area(CardView *card_view, SDL_Renderer *renderer) {
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    SDL_RenderDrawRect(renderer, card_view->clickable_area);
 }
 
 void destroy_card_view(CardView *card_view) {
