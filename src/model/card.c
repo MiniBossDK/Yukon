@@ -42,6 +42,19 @@ int card_value(LinkedCard *card){
     }
 }
 
+int get_suite_value(LinkedCard *card){
+    if(card->suit == 'C'){
+        return 0;
+    } else if(card->suit == 'D') {
+        return 1;
+    } else if(card->suit == 'H') {
+        return 2;
+    } else if(card->suit == 'S') {
+        return 3;
+    }
+    return -1;
+}
+
 char* get_card(LinkedCard *card){
     char cardStr[2];
     cardStr[0] = card->rank;

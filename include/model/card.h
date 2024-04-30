@@ -28,6 +28,13 @@ void destroy_card(LinkedCard* card);
 
 int card_value(LinkedCard *card);
 
+/**
+ * Get the suite value
+ * @param card
+ * @return the suite value
+ */
+int get_suite_value(LinkedCard *card);
+
 /*
  * Hide the card
  */
