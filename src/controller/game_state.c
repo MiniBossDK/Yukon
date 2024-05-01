@@ -4,15 +4,18 @@
 #include <string.h>
 #include <stdio.h>
 
-
+// Function to create a new game state
 GameState* create_game_state(LinkedCard* deck, LinkedCard* columns[7], LinkedCard* foundation[4]) {
     GameState* game_state = (GameState*)malloc(sizeof(GameState));
     game_state->deck = deck;
     game_state->game_over = 0;
+
+    //for loop to set the columns
     for(int i = 0; i < 7; i++) {
         game_state->column[i] = columns[i];
     }
 
+    //for loop to set the foundation
     for(int i = 0; i < 4; i++) {
         game_state->foundation[i] = foundation[i];
     }
@@ -22,11 +25,15 @@ GameState* create_game_state(LinkedCard* deck, LinkedCard* columns[7], LinkedCar
     return game_state;
 }
 
+// Function to check if the game is over
 int check_win(GameState* game_state) {
+    // for loop to check if the foundation piles are full
     for (int i = 0; i < 4; i++) {
+        // if the foundation pile is not full, return 0
         if (game_state->foundation[i] == NULL) {
             return 0;
         }
+        // if the top card of the foundation pile is not a king, return 0
         if (get_top_card(game_state -> foundation[i])->rank != 'K') {
             return 0;
         }
@@ -65,6 +72,7 @@ void read_game_state_from_file(const char* filename, GameState* game_state) {
 
     free(temp);
 
+    // Check if the file was opened successfully
     if (file != NULL) {
         // Read the struct from the file
         fread(game_state, sizeof(GameState), 1, file);
@@ -76,15 +84,19 @@ void read_game_state_from_file(const char* filename, GameState* game_state) {
     }
 }
 
+// Function to destroy a game state
 void destroy_game_state(GameState* game_state) {
     free(game_state);
 }
 
+// Function to show the deck
 void show_deck(GameState* game_state, int hidden) {
     LinkedCard* deck_clone = clone_deck(game_state->deck, hidden);
     int index = 0;
     LinkedCard* temp = deck_clone->next;
+    // for loop to show the deck
     for (int i = 0; i < 52; i++) {
+        // if the card is not null, add it to the column
         if (game_state->column[index] != NULL) {
             LinkedCard* temp2 = game_state->column[index];
             temp2 = get_last_card(temp2);
@@ -115,6 +127,7 @@ void show_deck(GameState* game_state, int hidden) {
     destroy_deck(deck_clone);
 }
 
+// Function to initialize the game
 void game_init(GameState* game_state) {
 
     LinkedCard* deck_clone = clone_deck(game_state->deck,0);
@@ -125,6 +138,7 @@ void game_init(GameState* game_state) {
 
     LinkedCard* temp = deck_clone->next;
     for (int i = 0; i < 52; i++) {
+        // if the card is not null, add it to the column
         if (game_state->column[index] != NULL) {
             LinkedCard* temp2 = game_state->column[index];
             temp2 = get_last_card(temp2);
@@ -142,7 +156,6 @@ void game_init(GameState* game_state) {
             game_state->column[index] -> prev = NULL;
             game_state->column[index] -> next = NULL;
         }
-        //temp -> prev = NULL;
         if (temp -> next != NULL) {
             temp -> prev = NULL;
             deck_clone = temp;
