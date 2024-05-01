@@ -1,12 +1,14 @@
 #pragma once
-
 #include <model/card.h>
+#include <controller/game_state.h>
+
+typedef struct GameState GameState;
 
 LinkedCard* create_deck();
 
 void destroy_deck(LinkedCard* deck);
 
-int validate_deck(LinkedCard* deck);
+int validate_deck(GameState* game_state, LinkedCard* loaded_deck);
 
 int save_deck_to_file(LinkedCard* deck);
 

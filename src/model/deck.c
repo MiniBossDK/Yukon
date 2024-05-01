@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <model/deck.h>
+#include <controller/game_state.h>
+#include <string.h>
 
 LinkedCard* create_deck() {
     LinkedCard* deck = NULL;
@@ -34,28 +36,33 @@ void destroy_deck(LinkedCard* deck) {
 }
 
 
-int validate_deck(LinkedCard* deck) {
+int validate_deck(GameState* game_state, LinkedCard* loaded_deck) {
     int card_counts[4][14] = {0}; // Initialize all counts to 0
-    LinkedCard* temp = deck;
+    int line_number = 1;
+    LinkedCard* temp = loaded_deck;
     while (temp != NULL) {
         int rankIndex = card_value(temp);
         int suitIndex = get_suite_value(temp);
-        if (rankIndex < 1 || rankIndex > 13 || suitIndex < 0 || suitIndex > 3) {
-            return 0; // Invalid rank or suit
+        if (rankIndex == -1) {
+            sprintf(game_state->message, "Error: Invalid rank on line: %d", line_number);
+            return 0; // Invalid rank
+        }
+        if(suitIndex == -1){
+            sprintf(game_state->message, "Error: Invalid suit on line: %d", line_number);
+            return 0; // Invalid suit
         }
         if (card_counts[suitIndex][rankIndex] == 1) {
+            sprintf(game_state->message, "Error: Duplicate card on line: %d", line_number);
             return 0; // Duplicate card
         }
         card_counts[suitIndex][rankIndex] = 1; // Mark this card as found
         temp = temp->next;
+        line_number++;
     }
 
-    for (int i = 0; i < 4; i++) {
-        for (int j = 1; j < 14; j++) {
-            if (card_counts[i][j] == 0) {
-                return 0; // Missing card
-            }
-        }
+    if (line_number-1 != 52){
+        sprintf(game_state->message, "Error: Incorrect number of cards in deck");
+        return 0; // Incorrect number of cards
     }
     return 1; // All cards are present exactly once
 }
@@ -97,7 +104,7 @@ LinkedCard* load_deck_from_file_name(char* fileName){
     char rank, suit;
     while(fscanf(file, "%c%c\n", &rank, &suit) != EOF){
         LinkedCard* card = create_card(rank, suit);
-        hide_card(card);
+        //hide_card(card);
         if(deck == NULL){
             deck = card;
         }else{

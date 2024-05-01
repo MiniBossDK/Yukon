@@ -1,6 +1,10 @@
 #pragma once
 
 #include <controller/game_state.h>
+#include <controller/handle_game_moves.h>
+
+typedef struct GameMove GameMove;
+typedef struct GameMoveSource GameMoveSource;
 
 #define MAX_ARGS 4
 
@@ -19,20 +23,7 @@ typedef struct {
     char *args[MAX_ARGS];
 } ParsedCommand;
 
-typedef struct {
-    char *column;
-    char *card;
-    char *pile;
-} GameMoveSource;
-
-typedef struct {
-    GameMoveSource *from;
-    char *to;
-} GameMove;
-
 void destroy_command(ParsedCommand *command);
-
-void destroy_game_move(GameMove *move);
 
 int evaluate_command(ParsedCommand *command, GameState* state);
 

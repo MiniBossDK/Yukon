@@ -143,26 +143,6 @@ void destroy_command(ParsedCommand* command) {
     free(command);
 }
 
-void destroy_game_move(GameMove* move) {
-    if (move == NULL) return;
-    if (move->from != NULL) {
-        if (move->from->column != NULL) {
-            free(move->from->column);
-        }
-        if (move->from->card != NULL) {
-            free(move->from->card);
-        }
-        if (move->from->pile != NULL) {
-            free(move->from->pile);
-        }
-        free(move->from);
-    }
-    if (move->to != NULL) {
-        free(move->to);
-    }
-    free(move);
-}
-
 CommandType get_command_type(const char* command) {
     if (strstr(command, "->") != NULL) {
         return GAME_MOVE;
