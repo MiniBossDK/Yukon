@@ -176,7 +176,7 @@ int handle_split_deck(char* args[4], GameState* game_state) {
             return 0;
         }
         else {
-            if (atoi(args[0]) < 1 || atoi(args[0]) > 52) {
+            if (atoi(args[0]) < 1 || atoi(args[0]) > 51) {
                 strcpy(game_state->message, "Error: Invalid argument! <Integer> must be greater than 0 and less than 52");
                 return 0;
             } else {
