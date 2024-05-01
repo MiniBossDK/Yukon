@@ -3,6 +3,7 @@
 #include <model/column.h>
 #include <model/foundation_pile.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 int handle_game_move(GameMove *move, GameState *game_state) {
     // First validate if the move is valid according to the rules
@@ -97,4 +98,17 @@ LinkedCard* get_card_from_source(GameMoveSource* gameMoveSource, GameState *game
     }
 
     return NULL;
+}
+
+void destroy_game_move(GameMove *move) {
+    destroy_game_move_source(move->from);
+    free(move->to);
+    free(move);
+}
+
+void destroy_game_move_source(GameMoveSource *source) {
+    free(source->column);
+    free(source->card);
+    free(source->pile);
+    free(source);
 }
