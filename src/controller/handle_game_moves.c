@@ -105,13 +105,43 @@ int is_same_pile(LinkedCard *src, LinkedCard *dest) {
     return src == dest;
 }
 
-int execute_move() {
-
-    return 1;
-}
-
 int validate_column_not_empty(LinkedCard *column) {
     return column != NULL;
+}
+
+GameMove *create_game_move(GameMoveSource *from, char *to) {
+    GameMove *gameMove = malloc(sizeof(GameMove));
+    gameMove->from = from;
+    gameMove->to = to;
+    return gameMove;
+}
+
+GameMoveSource *create_game_move_source(char *column, char *card, char *pile) {
+    GameMoveSource *gameMoveSource = malloc(sizeof(GameMoveSource));
+    gameMoveSource->column = column;
+    gameMoveSource->card = card;
+    gameMoveSource->pile = pile;
+    return gameMoveSource;
+}
+
+void destroy_game_move(GameMove* move) {
+    if (move == NULL) return;
+    if (move->from != NULL) {
+        if (move->from->column != NULL) {
+            free(move->from->column);
+        }
+        if (move->from->card != NULL) {
+            free(move->from->card);
+        }
+        if (move->from->pile != NULL) {
+            free(move->from->pile);
+        }
+        free(move->from);
+    }
+    if (move->to != NULL) {
+        free(move->to);
+    }
+    free(move);
 }
 
 
