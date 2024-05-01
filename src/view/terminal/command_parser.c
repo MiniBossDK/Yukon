@@ -176,11 +176,9 @@ CommandType get_command_type(const char* command) {
 int parse_command(const char* command, GameState* state) {
     if(state->phase == PLAY) {
         if(get_command_type(command) == GAME_MOVE) {
-            if(parse_game_move(command, state)) {
-                strcpy(state->message, "OK");
-                return 1;
-            }
-            return 0;
+            int status = parse_game_move(command, state);
+            if(status == 1) strcpy(state->message, "OK");
+            return status;
         }
     }
     char* command_copy = strdup(command);
