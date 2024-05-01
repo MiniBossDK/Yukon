@@ -136,6 +136,9 @@ int handle_shuffle_deck(char* args[4], GameState* game_state) {
         return 0;
     }
     game_state->deck = shuffle_deck(game_state->deck);
+    empty_columns(game_state);
+    empty_foundations(game_state);
+    show_deck(game_state, 1);
     return 1;
 }
 
@@ -161,6 +164,9 @@ int handle_split_deck(char* args[4], GameState* game_state) {
     }
     if (args[0] == NULL) {
         game_state->deck = split_deck(game_state->deck);
+        empty_columns(game_state);
+        empty_foundations(game_state);
+        show_deck(game_state, 1);
     }
     else {
         if (!atoi(args[0])) {
@@ -168,11 +174,14 @@ int handle_split_deck(char* args[4], GameState* game_state) {
             return 0;
         }
         else {
-            if (atoi(args[0]) < 1 || atoi(args[0]) > 52) {
+            if (atoi(args[0]) < 1 || atoi(args[0]) > 51) {
                 strcpy(game_state->message, "Error: Invalid argument! <Integer> must be greater than 0 and less than 52");
                 return 0;
             } else {
                 game_state->deck = split_deck_int(game_state->deck, atoi(args[0]));
+                empty_columns(game_state);
+                empty_foundations(game_state);
+                show_deck(game_state, 1);
             }
         }
     }

@@ -107,7 +107,6 @@ void handle_win_game(GameState* game_state) {
     } else if (choice[0] == 'N' || choice[0] == 'n') {
         game_state->game_over = 0;
         handle_quit_game(args, game_state);
-        show_deck(game_state, 1);
         strcpy(game_state->message, "Welcome to Yukon Solitaire!");
     }
     fflush(stdin);
