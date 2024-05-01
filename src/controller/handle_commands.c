@@ -107,8 +107,8 @@ int switch_to_play_phase(char* args[4], GameState* game_state) {
     game_state->phase = PLAY;
     empty_columns(game_state);
     empty_foundations(game_state);
-    make_win_scenario(game_state->column, game_state->foundation);
-    //game_init(game_state);
+    //make_win_scenario(game_state->column, game_state->foundation);
+    game_init(game_state);
     return 1;
 }
 
@@ -181,7 +181,6 @@ int handle_split_deck(char* args[4], GameState* game_state) {
     return 1;
 }
 
-<<<<<<< Updated upstream
 int validate_deck_loaded(GameState* state) {
     if(state->deck == NULL) {
         strcpy(state->message, "Error: No deck loaded");
