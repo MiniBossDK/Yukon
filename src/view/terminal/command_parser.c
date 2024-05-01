@@ -75,8 +75,6 @@ int validate_command(const ParsedCommand* command, GameState *state) {
         strcpy(state->message, "Command not available in the PLAY phase");
         return 0;
     }
-
-    strcpy(state->message, "OK");
     return 1;
 }
 
@@ -198,8 +196,10 @@ int parse_command(const char* command, GameState* state) {
     }
 
     int status = evaluate_command(cmd, state);
-
     destroy_command(cmd);
+    if(status == 1) {
+        strcpy(state->message, "OK");
+    }
     return status;
 }
 

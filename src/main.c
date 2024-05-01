@@ -61,20 +61,23 @@ void free_foundation_piles(LinkedCard *card[4]) {
 }
 */
 
-
+void handle_win_game(GameState* game_state);
 
 int main() {
     LinkedCard* column[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
   
     LinkedCard* foundation_piles[4] = {NULL, NULL, NULL, NULL};
-    LinkedCard* deck = create_deck();
-    GameState* game_state = create_game_state(deck, column, foundation_piles);
-    show_deck(game_state,1);
-    //fill_columns(column);
-    //fill_foundation_piles(foundation_piles);
+    GameState* game_state = create_game_state(NULL, column, foundation_piles);
+    
     int keep_running = 1;
     char command[20];
     while (keep_running) {
+        if(game_state->game_over) {
+            // We to always show the win screen until the player has chosen
+            handle_win_game(game_state);
+            strcpy(command, "");
+            if(game_state->game_over == 1) continue;
+        }
         clear_terminal(1);
         print_board(game_state->column, game_state->foundation);
         print_last_command(game_state->lastCommand);
@@ -84,19 +87,29 @@ int main() {
         int status = parse_command(command, game_state);
         fflush(stdin);
 
-        if(game_state->game_over) {
-
-        }
-
         if (status == -1) {
             keep_running = 0;
         }
     }
-    //free_foundation_piles(foundation_piles);
     reset_terminal_color();
     return 0;
 }
 
-
-
+void handle_win_game(GameState* game_state) {
+    char choice[2];
+    char* args[4] = {NULL, NULL, NULL, NULL};
+    print_win_screen(game_state);
+    fgets(choice, 2, stdin);
+    if (choice[0] == 'Y' || choice[0] == 'y') {
+        game_state->game_over = 0;
+        switch_to_play_phase(args, game_state);
+        strcpy(game_state->message, "");
+    } else if (choice[0] == 'N' || choice[0] == 'n') {
+        game_state->game_over = 0;
+        handle_quit_game(args, game_state);
+        show_deck(game_state, 1);
+        strcpy(game_state->message, "Welcome to Yukon Solitaire!");
+    }
+    fflush(stdin);
+}
 
