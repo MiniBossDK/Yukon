@@ -1,5 +1,4 @@
 #include <controller/handle_game_moves.h>
-#include <stdlib.h>
 #include <string.h>
 #include <model/column.h>
 #include <model/foundation_pile.h>
@@ -99,20 +98,3 @@ LinkedCard* get_card_from_source(GameMoveSource* gameMoveSource, GameState *game
 
     return NULL;
 }
-
-int is_same_pile(LinkedCard *src, LinkedCard *dest) {
-    // TODO - Make a more valid check
-    return src == dest;
-}
-
-int execute_move() {
-
-    return 1;
-}
-
-int validate_column_not_empty(LinkedCard *column) {
-    return column != NULL;
-}
-
-
-

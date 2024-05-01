@@ -17,15 +17,6 @@ LinkedCard* create_card(char rank, char suit) {
     return NULL;
 }
 
-void destroy_card(LinkedCard* card){
-     while(card->next != NULL) {      // check the next card if it exists so condition true.
-        card = card->next;            // go to the next card.
-        free(card->prev);     // destroy the previous card.
-    }
-    free(card);               // if while condition false and there are NULL next cards then it destroy the present card.
-}
-
-
 int card_value(LinkedCard *card){
     if(card->rank == 'A'){
         return 1;
@@ -55,13 +46,6 @@ int get_suite_value(LinkedCard *card){
     return -1;
 }
 
-char* get_card(LinkedCard *card){
-    char cardStr[2];
-    cardStr[0] = card->rank;
-    cardStr[1] = card->suit;
-    return cardStr;
-}
-
 void print_card(LinkedCard *card){
     if(card == NULL || card->hidden) {
         printf("[]");
@@ -80,15 +64,6 @@ void unhide_card(LinkedCard *card){
 }
 
 int move_card(LinkedCard **source, LinkedCard **destination, LinkedCard *card) {
-    // If source is a column:card, then use find_card_column to see if the card is in the column.
-
-    // If source is just a column, then use get_last_card to get the last card in the column.
-
-    // If the target is a column, then use validate_move_to_column to see if the move is valid.
-
-    // If the target is a foundation, then use validate_move_to_foundation to see if the move is valid.
-
-    // If the move is valid, then move the card from the source to the destination.
 
     // If the move is not valid, then return 0.
     if (card == NULL) return 0;
@@ -116,28 +91,6 @@ int move_card(LinkedCard **source, LinkedCard **destination, LinkedCard *card) {
         card->prev = lastCard;
     }
     return 1;
-}
-
-int remove_card(char *card, LinkedCard **destination) {
-    LinkedCard *current = *destination;
-    while(current != NULL) {
-        char curr[2] = {current->rank, current->suit};
-        if(strcmp(curr, card) == 0) {
-            if(current->prev == NULL) {
-                *destination = current->next;
-            } else {
-                current->prev->next = current->next;
-            }
-            if(current->next != NULL) {
-                current->next->prev = current->prev;
-            }
-            free(current);
-            return 1;
-        }
-        current = current->next;
-    }
-    return 0;
-
 }
 
 int validate_rank(char rank){

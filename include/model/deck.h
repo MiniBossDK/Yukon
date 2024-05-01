@@ -1,10 +1,6 @@
-//
-// Created by Turan Talayhan on 10/04/2024.
-
-//
 #pragma once
 
-#include "card.h"
+#include <model/card.h>
 
 LinkedCard* create_deck();
 
