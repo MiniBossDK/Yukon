@@ -29,8 +29,6 @@ int handle_game_move(GameMove *move, GameState* state);
 
 int validate_move(LinkedCard **src, LinkedCard **dest, LinkedCard *card, GameState *game_state);
 
-int execute_move();
-
 LinkedCard* get_card_from_source(GameMoveSource* gameMoveSource, GameState *game_state);
 
 LinkedCard **get_pile(const char* pile, GameState *game_state);

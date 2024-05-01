@@ -65,7 +65,6 @@ void handle_win_game(GameState* game_state);
 
 int main() {
     LinkedCard* column[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-  
     LinkedCard* foundation_piles[4] = {NULL, NULL, NULL, NULL};
     GameState* game_state = create_game_state(NULL, column, foundation_piles);
     
@@ -107,8 +106,10 @@ void handle_win_game(GameState* game_state) {
     } else if (choice[0] == 'N' || choice[0] == 'n') {
         game_state->game_over = 0;
         handle_quit_game(args, game_state);
+        show_deck(game_state, 1);
         strcpy(game_state->message, "Welcome to Yukon Solitaire!");
     }
+    strcpy(game_state->lastCommand, choice);
     fflush(stdin);
 }
 

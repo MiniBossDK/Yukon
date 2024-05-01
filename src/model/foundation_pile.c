@@ -24,17 +24,6 @@ void empty_foundations(GameState* game_state) {
     }
 }
 
-LinkedCard* get_first_card(const char* card, LinkedCard* foundation) {
-    LinkedCard* current = foundation;
-    while(current != NULL) {
-        if(current->value == card[0] && current->suit == card[1]) {
-            return current;
-        }
-        current = current->next;
-    }
-    return NULL;
-}
-
 LinkedCard *get_top_card(LinkedCard *foundation_pile) {
     if(foundation_pile == NULL) {
         return NULL;
@@ -44,8 +33,4 @@ LinkedCard *get_top_card(LinkedCard *foundation_pile) {
         current = current->next;
     }
     return current;
-}
-
-int is_empty_foundation(LinkedCard *foundation_pile) {
-    return foundation_pile == NULL;
 }

@@ -1,7 +1,3 @@
-//
-// Created by Turan Talayhan on 10/04/2024.
-//
-#include <unistd.h>
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>

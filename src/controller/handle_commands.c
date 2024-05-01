@@ -1,10 +1,6 @@
 #include <controller/handle_commands.h>
-#include <model/deck.h>
-#include <model/card.h>
 #include <model/column.h>
 #include <model/foundation_pile.h>
-#include <controller/game_state.h>
-#include <controller/phase.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,7 +1,6 @@
 #include <view/terminal/terminal_style.h>
 #include <stdio.h>
 #include <math.h>
-#include <stdlib.h>
 
 // https://en.wikipedia.org/wiki/ANSI_escape_code#CSI_(Control_Sequence_Introducer)_sequences
 #define CLEAR_SCREEN "\e[2J" // ANSI escape code to clear the screen
@@ -46,13 +45,6 @@ void print_column_numbers() {
         if (i < 6) {
             printf("\t");
         }
-    }
-}
-
-void traverse_linked_list(LinkedCard* card, void (*callback)(LinkedCard*)) {
-    while (card != NULL) {
-        callback(card);
-        card = card->next;
     }
 }
 

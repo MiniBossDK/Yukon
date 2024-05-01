@@ -1,11 +1,6 @@
-//
-// Created by Turan Talayhan on 10/04/2024.
-
-//
 #pragma once
-
-#include "card.h"
-#include "controller/game_state.h"
+#include <model/card.h>
+#include <controller/game_state.h>
 
 typedef struct GameState GameState;
 

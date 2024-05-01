@@ -3,6 +3,8 @@ add_library(backend
         model/deck.c
         model/column.c
         model/foundation_pile.c
+        view/terminal/terminal_style.c
+        view/terminal/command_parser.c
         controller/handle_commands.c
         controller/handle_game_moves.c
         controller/game_state.c

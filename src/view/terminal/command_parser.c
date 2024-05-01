@@ -1,12 +1,9 @@
 #include <view/terminal/command_parser.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <model/card.h>
 #include <controller/handle_commands.h>
 #include <controller/handle_game_moves.h>
-#include <controller/phase.h>
 
 Command commands[] = {
         {"L", handle_load_game},
