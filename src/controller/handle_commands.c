@@ -113,6 +113,7 @@ int handle_quit_game(char* args[4], GameState* game_state) {
     game_state->phase = STARTUP;
     empty_columns(game_state);
     empty_foundations(game_state);
+    show_deck(game_state, 1);
     return 1;
 }
 
