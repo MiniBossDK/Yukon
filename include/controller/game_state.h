@@ -1,6 +1,5 @@
 #pragma once
 #include <model/deck.h>
-
 #include <controller/phase.h>
 
 

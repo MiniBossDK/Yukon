@@ -65,7 +65,6 @@ void handle_win_game(GameState* game_state);
 
 int main() {
     LinkedCard* column[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-  
     LinkedCard* foundation_piles[4] = {NULL, NULL, NULL, NULL};
     GameState* game_state = create_game_state(NULL, column, foundation_piles);
     
