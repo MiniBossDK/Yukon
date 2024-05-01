@@ -155,7 +155,7 @@ int handle_show_deck(char* args[4], GameState* game_state) {
 }
 
 int handle_split_deck(char* args[4], GameState* game_state) {
-    if(!validate_max_args(args, game_state, 2)) {
+    if(!validate_max_args(args, game_state, 1)) {
         return 0;
     }
     if(!validate_deck_loaded(game_state)) {
