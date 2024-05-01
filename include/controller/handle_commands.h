@@ -30,3 +30,6 @@ int handle_show_deck(char* args[4], GameState* game_state);
 int validate_deck_loaded(GameState* state);
 
 int validate_max_args(char* args[4], GameState* state, int max_args);
+
+void make_win_scenario(LinkedCard *column[7], LinkedCard *foundation_piles[4]);
+

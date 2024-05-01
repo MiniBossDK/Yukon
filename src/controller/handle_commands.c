@@ -105,6 +105,7 @@ int switch_to_play_phase(char* args[4], GameState* game_state) {
     game_state->phase = PLAY;
     empty_columns(game_state);
     empty_foundations(game_state);
+    //make_win_scenario(game_state->column, game_state->foundation);
     game_init(game_state);
     return 1;
 }
@@ -187,9 +188,37 @@ int validate_deck_loaded(GameState* state) {
 }
 
 int validate_max_args(char* args[4], GameState* state, int max_args) {
-    if(args[max_args] != NULL) {
+    if (args[max_args] != NULL) {
         strcpy(state->message, "Error: Too many arguments");
         return 0;
     }
     return 1;
+}
+
+void make_win_scenario(LinkedCard *column[7], LinkedCard *foundation_piles[4]) {
+    char suits[4] = {'C', 'D', 'H', 'S'};
+    char ranks[13] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
+
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 13; j++) {
+            if(i == 3 && j == 12) {
+                LinkedCard* card = create_card(ranks[j], suits[i]);
+                column[0] = card;
+                column[0]->next = NULL;
+                column[0]->prev = NULL;
+                break;
+            }
+            LinkedCard* card = create_card(ranks[j], suits[i]);
+            if (foundation_piles[i] == NULL) {
+                foundation_piles[i] = card;
+            } else {
+                LinkedCard* temp = foundation_piles[i];
+                while (temp->next != NULL) {
+                    temp = temp->next;
+                }
+                temp->next = card;
+                card->prev = temp;
+            }
+        }
+    }
 }
