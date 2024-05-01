@@ -3,7 +3,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <controller/handle_commands.h>
-#include <controller/handle_game_moves.h>
 
 Command commands[] = {
         {"L", handle_load_game},

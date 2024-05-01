@@ -85,17 +85,6 @@ CardView *get_card_view_at_position(ColumnView *column_view, SDL_Point *point) {
     return NULL;
 }
 
-void destroy_column_view(ColumnView *column_view) {
-    CardView *current = column_view->cards;
-    while (current != NULL) {
-        CardView *next = current->next;
-        destroy_card_view(current);
-        current = next;
-    }
-    free(column_view->rect);
-    free(column_view);
-}
-
 void move_card_to_column_view(CardView *cards, CardView **src_pile, ColumnView *sourcePile, ColumnView *dst_column_view) {
 
     // If the source column is the same as the destination column, do nothing

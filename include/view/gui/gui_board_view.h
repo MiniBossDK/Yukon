@@ -15,7 +15,3 @@ struct BoardView {
 BoardView *create_board_view(SDL_Rect *rect, ColumnView *columns[], FoundationView *foundations[]);
 
 void render_board_view(BoardView *board_view, SDL_Renderer *renderer);
-
-void destroy_board_view(BoardView *board_view);
-
-SDL_Rect *create_boardview_rect(int x, int y);

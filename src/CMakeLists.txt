@@ -19,7 +19,6 @@ if (NOT USER_INTERFACE)
     set(MAIN_TARGET Main)
     add_executable(Main
         main.c
-        view/terminal/column_view.c
         view/terminal/terminal_style.c
         view/terminal/command_parser.c
     )
@@ -54,7 +53,6 @@ IF (USER_INTERFACE)
         view/gui/gui_board_view.c
         view/gui/snap_zone.c
             view/gui/event_handler.c
-            view/gui/gui_pile.c
     )
 
     target_link_libraries(MainGui

@@ -15,13 +15,6 @@ BoardView *create_board_view(SDL_Rect *rect, ColumnView *columns[], FoundationVi
     return board_view;
 }
 
-void position_column_view(ColumnView *column_view, int x, int y) {
-
-}
-
-void position_foundation_view(FoundationView *foundation_view, int x, int y) {
-}
-
 void render_board_view(BoardView *board_view, SDL_Renderer *renderer) {
     for (int i = 0; i < 7; ++i) {
         render_column_view(board_view->columns[i], renderer);

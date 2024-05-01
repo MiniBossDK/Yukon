@@ -31,8 +31,6 @@ void render_card_view(CardView *card_view, SDL_Renderer *renderer);
 
 void render_empty_card_view(SDL_Rect *rect, SDL_Renderer *renderer);
 
-void position_card_view(CardView *card_view, int x, int y);
-
 void destroy_card_view(CardView *card_view);
 
 SDL_Rect *create_cardview_rect(int x, int y);
