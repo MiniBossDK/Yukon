@@ -17,8 +17,6 @@ ColumnView *convert_column_to_column_view(SDL_Rect *rect, LinkedCard **column, i
 
 void render_column_view(ColumnView *column_view, SDL_Renderer *renderer);
 
-void destroy_column_view(ColumnView *column_view);
-
 SDL_Rect *create_columnview_rect(int x, int y);
 
 CardView *get_card_view_at_position(ColumnView *column_view, SDL_Point *point);

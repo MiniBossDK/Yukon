@@ -1,6 +1,12 @@
 #pragma once
 #include <controller/game_state.h>
 
+/**
+ * @brief 
+ * @param args
+ * @param game_state
+ * @return
+ */
 int handle_load_game(char* args[4], GameState* game_state);
 
 int handle_save_game(char* args[4], GameState* game_state);

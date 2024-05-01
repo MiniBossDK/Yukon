@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <model/deck.h>
-#include <controller/game_state.h>
 #include <string.h>
 
 LinkedCard* create_deck() {

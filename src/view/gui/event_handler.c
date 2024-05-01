@@ -11,12 +11,12 @@ int original_y = 0;
 CardView *selected_card_stack = NULL;
 SourcePile source_pile = {NULL, NULL};
 
-int handle_event(SDL_Event *event, BoardView *board_view, GameState *state, SDL_Renderer *renderer) {
+int handle_event(SDL_Event *event, BoardView *board_view, SDL_Renderer *renderer) {
     switch (event->type) {
         case SDL_QUIT:
             return -1; // Special return value to indicate that the program should exit
         case SDL_MOUSEBUTTONDOWN:
-            return handle_mouse_button_down(event, board_view, renderer);
+            return handle_mouse_button_down(event, board_view);
         case SDL_MOUSEBUTTONUP:
             return handle_mouse_button_up(event, board_view, renderer);
         case SDL_MOUSEMOTION:
@@ -30,13 +30,13 @@ int handle_mouse_motion(SDL_Event *event, BoardView *board_view, SDL_Renderer *r
     mouse_pos.y = event->motion.y;
 
     if(dragging) {
-        return handle_dragging(event, board_view, renderer);
+        return handle_dragging(board_view, renderer);
     }
 
     return 1;
 }
 
-int handle_dragging(SDL_Event *event, BoardView *board_view, SDL_Renderer *renderer) {
+int handle_dragging(BoardView *board_view, SDL_Renderer *renderer) {
     if(dragged_card == NULL) {
         dragging = 0;
         return 0;
@@ -62,7 +62,7 @@ int handle_dragging(SDL_Event *event, BoardView *board_view, SDL_Renderer *rende
     return 1;
 }
 
-int handle_mouse_button_down(SDL_Event *event, BoardView *board_view, SDL_Renderer *renderer) {
+int handle_mouse_button_down(SDL_Event *event, BoardView *board_view) {
     if (event->button.button != SDL_BUTTON_LEFT || dragging) return 1;
 
     ColumnView *clicked_column = get_column_view_at_point(&mouse_pos, board_view);
@@ -186,16 +186,4 @@ int handle_mouse_button_up(SDL_Event *event, BoardView *board_view, SDL_Renderer
     source_pile.foundation_view = NULL;
 
     return 1;
-}
-
-char* get_column_number(ColumnView *column_view) {
-    char* column_number = malloc(sizeof(char) * 2);
-    sprintf(column_number, "C%d", column_view->column_number);
-    return column_number;
-}
-
-char* get_foundation_number(FoundationView *foundation_view) {
-    char* foundation_number = malloc(sizeof(char) * 2);
-    sprintf(foundation_number, "F%d", foundation_view->foundation_number);
-    return foundation_number;
 }

@@ -44,7 +44,6 @@ void render_foundation_view(FoundationView *foundation_view, SDL_Renderer *rende
  * Destroys the foundation view.
  * @param foundation_view The foundation view to destroy
  */
-void destroy_foundation_view(FoundationView *foundation_view);
 
 /**
  * Get the card view at the given point in the foundation view.

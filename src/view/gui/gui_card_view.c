@@ -44,11 +44,6 @@ void render_empty_card_view(SDL_Rect *rect, SDL_Renderer *renderer) {
     SDL_DestroyTexture(texture);
 }
 
-void position_card_view(CardView *card_view, int x, int y) {
-    card_view->card_image_rect->x = x;
-    card_view->card_image_rect->y = y;
-}
-
 void set_clickable_area(CardView *card_view, int x, int y, int is_overlayed) {
     card_view->clickable_area = create_clickable_area(x, y, is_overlayed);
 }
