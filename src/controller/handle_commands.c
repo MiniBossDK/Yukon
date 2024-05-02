@@ -6,16 +6,19 @@
 #include <string.h>
 #include <sys/stat.h>
 
+// Function to handle the load game command
 int handle_load_game(char* args[4], GameState* game_state) {
     if(!validate_max_args(args, game_state, 1)) {
         return 0;
     }
+    // Check if the filename is provided
     if(args[0] == NULL) {
         strcpy(game_state->message, "Error: No filename provided");
         return 0;
     }
     struct stat buffer;
     args[0][strcspn(args[0], "\r\n")] = 0; //trim newline from filename
+    // Check if the file exists
     if(stat(args[0], &buffer) == 0) {
         sprintf(game_state->message, "Loaded from %s", args[0]);
         read_game_state_from_file(args[0], game_state);
@@ -26,6 +29,7 @@ int handle_load_game(char* args[4], GameState* game_state) {
     return 1;
 }
 
+// Function to handle the save game command
 int handle_save_game(char* args[4], GameState* game_state) {
     if(!validate_max_args(args, game_state, 1)) {
         return 0;
@@ -39,6 +43,7 @@ int handle_save_game(char* args[4], GameState* game_state) {
     return 1;
 }
 
+// Function to handle the load deck command
 int handle_load_deck(char* args[4], GameState* game_state) {
     if(!validate_max_args(args, game_state, 1)) {
         return 0;
@@ -73,14 +78,17 @@ int handle_load_deck(char* args[4], GameState* game_state) {
     return 1;
 }
 
-
+// Function to handle the save deck command
 int handle_save_deck(char* args[4], GameState* game_state) {
+    // Check if the maximum number of arguments is exceeded
     if(!validate_max_args(args, game_state, 1)) {
         return 0;
     }
+    // Check if the deck is loaded
     if(!validate_deck_loaded(game_state)){
         return 0;
     }
+    // Check if the filename is provided
     if(args[0] == NULL) {
         save_deck_to_file(game_state->deck);
     }
@@ -91,10 +99,13 @@ int handle_save_deck(char* args[4], GameState* game_state) {
     return 1;
 }
 
+// Function to switch to the play phase
 int switch_to_play_phase(char* args[4], GameState* game_state) {
+    // Check if the maximum number of arguments is exceeded
     if(!validate_max_args(args, game_state, 0)) {
         return 0;
     }
+    // Check if the deck is loaded
     if(!validate_deck_loaded(game_state)) {
         return 0;
     }
@@ -106,7 +117,9 @@ int switch_to_play_phase(char* args[4], GameState* game_state) {
     return 1;
 }
 
+// Function to handle the quit game command
 int handle_quit_game(char* args[4], GameState* game_state) {
+    // Check if the maximum number of arguments is exceeded
     if(!validate_max_args(args, game_state, 0)) {
         return 0;
     }
@@ -117,7 +130,9 @@ int handle_quit_game(char* args[4], GameState* game_state) {
     return 1;
 }
 
+// Function to handle the quit application command
 int handle_quit_application(char* args[4], GameState* game_state) {
+    // Check if the maximum number of arguments is exceeded
     if(!validate_max_args(args, game_state, 0)) {
         return 0;
     }
@@ -125,10 +140,13 @@ int handle_quit_application(char* args[4], GameState* game_state) {
     return -1; // This is the special signal to quit the application
 }
 
+// Function to handle the shuffle deck command
 int handle_shuffle_deck(char* args[4], GameState* game_state) {
+    // Check if the maximum number of arguments is exceeded
     if(!validate_max_args(args, game_state, 0)) {
         return 0;
     }
+    // Check if the deck is loaded
     if(!validate_deck_loaded(game_state)) {
         return 0;
     }
@@ -139,10 +157,13 @@ int handle_shuffle_deck(char* args[4], GameState* game_state) {
     return 1;
 }
 
+// Function to handle the show deck command
 int handle_show_deck(char* args[4], GameState* game_state) {
+    // Check if the maximum number of arguments is exceeded
     if(!validate_max_args(args, game_state, 0)) {
         return 0;
     }
+    // Check if the deck is loaded
     if(!validate_deck_loaded(game_state)) {
         return 0;
     }
@@ -152,13 +173,17 @@ int handle_show_deck(char* args[4], GameState* game_state) {
     return 1;
 }
 
+// Function to handle the split deck command
 int handle_split_deck(char* args[4], GameState* game_state) {
+    // Check if the maximum number of arguments is exceeded
     if(!validate_max_args(args, game_state, 1)) {
         return 0;
     }
+    // Check if the deck is loaded
     if(!validate_deck_loaded(game_state)) {
         return 0;
     }
+    // Check if the argument is provided
     if (args[0] == NULL) {
         game_state->deck = split_deck(game_state->deck);
         empty_columns(game_state);
@@ -166,11 +191,13 @@ int handle_split_deck(char* args[4], GameState* game_state) {
         show_deck(game_state, 1);
     }
     else {
+        // Check if the argument is a valid integer
         if (!atoi(args[0])) {
             strcpy(game_state->message, "Error: Invalid argument! <Integer> must be greater than 0 and less than 52");
             return 0;
         }
         else {
+            // Check if the integer is within the valid range
             if (atoi(args[0]) < 1 || atoi(args[0]) > 51) {
                 strcpy(game_state->message, "Error: Invalid argument! <Integer> must be greater than 0 and less than 52");
                 return 0;
@@ -185,7 +212,9 @@ int handle_split_deck(char* args[4], GameState* game_state) {
     return 1;
 }
 
+// Function to validate if the deck is loaded
 int validate_deck_loaded(GameState* state) {
+    // Check if the deck is loaded
     if(state->deck == NULL) {
         strcpy(state->message, "Error: No deck loaded");
         return 0;
@@ -193,7 +222,9 @@ int validate_deck_loaded(GameState* state) {
     return 1;
 }
 
+// Function to validate the maximum number of arguments
 int validate_max_args(char* args[4], GameState* state, int max_args) {
+    // Check if the maximum number of arguments is exceeded
     if (args[max_args] != NULL) {
         strcpy(state->message, "Error: Too many arguments");
         return 0;
@@ -201,10 +232,12 @@ int validate_max_args(char* args[4], GameState* state, int max_args) {
     return 1;
 }
 
+// Function to create a win scenario
 void make_win_scenario(LinkedCard *column[7], LinkedCard *foundation_piles[4]) {
     char suits[4] = {'C', 'D', 'H', 'S'};
     char ranks[13] = {'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'};
 
+    // Initialize the foundation piles
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 13; j++) {
             if(i == 3 && j == 12) {
