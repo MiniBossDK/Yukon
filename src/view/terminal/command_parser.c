@@ -217,6 +217,7 @@ GameMoveSource *extract_move_source(const char *source) {
     game_move_source->card = NULL;
     game_move_source->pile = NULL;
     if (is_specific_card(source)) {
+        // Split the source string by the colon character
         char *rest;
         game_move_source->column = strdup(strtok_r(source_copy, ":", &rest));
         game_move_source->card = strdup(strtok_r(NULL, ":", &rest));
@@ -233,6 +234,7 @@ GameMoveSource *extract_move_source(const char *source) {
 }
 
 int is_specific_card(const char *command) {
+    // If the source contains a ":"
     if (strstr(command, ":") != NULL) {
         return 1;
     }
@@ -241,7 +243,7 @@ int is_specific_card(const char *command) {
 
 int is_column(const char *command) {
     if(is_specific_card(command)) return 0;
-
+    // Checks if the specified command contains the letter C or c (indicating a column)
     if (strstr(command, "C") != NULL || strstr(command, "c") != NULL) {
         return 1;
     }
@@ -249,6 +251,7 @@ int is_column(const char *command) {
 }
 
 int is_foundation_pile(const char *command) {
+    // Checks if the specified command contains the letter F or f (indicating a foundation pile)
     if (strstr(command, "F") != NULL || strstr(command, "f") != NULL) {
         return 1;
     }
@@ -367,9 +370,9 @@ int validate_card_input(const char *card) {
 }
 
 int parse_game_move(const char* command, GameState* state) {
-    char* command_copy = strdup(command);
-    remove_all_spaces(command_copy);
-    to_upper(command_copy);
+    char* command_copy = strdup(command); // Copy the command to avoid modifying the original string
+    remove_all_spaces(command_copy); // Remove all spaces from the command
+    to_upper(command_copy); // Convert the command to uppercase to avoid case sensitivity
     GameMove *move = extract_game_move(command_copy);
 
     strcpy(state->lastCommand, command_copy);

@@ -60,12 +60,15 @@ void print_board(LinkedCard* columns[], LinkedCard* foundation_piles[]) {
     clear_terminal(1);
     print_column_numbers();
     printf("\n\n");
+    // Copy the array into a temp array to make sure the original is not modified
     LinkedCard* tempArr[7];
     for (int i = 0; i < 7; ++i) {
         tempArr[i] = columns[i];
     }
     int cards_left = 1;
     int j = 0;
+    // Even if the board is empty we still want to print a certain amount
+    // of times (7) to show the foundation piles.
     while (cards_left || j <= 7) {
         cards_left = 0;
         for (int i = 0; i < 7; i++) {
@@ -77,10 +80,13 @@ void print_board(LinkedCard* columns[], LinkedCard* foundation_piles[]) {
             print_card(card);
             printf("\t");
             tempArr[i] = card->next;
+            // There is another card, print another row to the terminal
             if(tempArr[i] != NULL) {
                 cards_left = 1;
             }
         }
+        // Only print the foundation piles, staring at j = 0 to j = 6
+        // and print them only when j is even or 0
         if((j % 2) == 0 && j <= 6) {
             int pile = (int) floor(j / 2);
             printf("\t");
